@@ -62,8 +62,8 @@ doCreateNewPartitions() {
 	parted -a optimal "$INSTALL_DEVICE" << __END__
 mklabel msdos
 u MiB
-mkpart primary linux-swap 1 $BOOT_SIZE
-mkpart primary linux-swap $BOOT_SIZE 100%
+mkpart primary linux-swap 1 $BOOT_PARTITION_SIZE
+mkpart primary linux-swap $BOOT_PARTITION_SIZE 100%
 toggle 1 boot
 quit
 __END__
@@ -99,7 +99,7 @@ doCreateLuksLvm() {
 doCreateLvmVolumes() {
 	pvcreate /dev/mapper/lvm
 	vgcreate main /dev/mapper/lvm
-	lvcreate -L "$SWAP_SIZE"M -n swap main
+	lvcreate -L "$SWAP_PARTITION_SIZE"M -n swap main
 	lvcreate -l 100%FREE -n root main
 }
 
