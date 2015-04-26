@@ -46,12 +46,12 @@ doDeleteAllPartitions() {
 o
 w
 __END__
-	sync
+	partprobe "$INSTALL_DEVICE"
 }
 
 doWipeDevice() {
 	dd if=/dev/zero of="$INSTALL_DEVICE" bs=10240k count=1
-	sync
+	partprobe "$INSTALL_DEVICE"
 }
 
 doCreateNewPartitions() {
@@ -63,7 +63,7 @@ mkpart primary linux-swap $BOOT_SIZE 100%
 toggle 1 boot
 quit
 __END__
-	sync
+	partprobe "$INSTALL_DEVICE"
 
 	fdisk "$INSTALL_DEVICE" << __END__
 t
@@ -74,7 +74,7 @@ t
 8e
 w
 __END__
-	sync
+	partprobe "$INSTALL_DEVICE"
 }
 
 identifyPartitions() {
