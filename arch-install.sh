@@ -92,7 +92,7 @@ identifyPartitions() {
 }
 
 doCreateLuksLvm() {
-	cryptsetup -q -c aes-xts-plain64 -s 512 -h sha512 luksFormat "$LUKS_PARTITION"
+	cryptsetup -q -y -c aes-xts-plain64 -s 512 -h sha512 luksFormat "$LUKS_PARTITION"
 	cryptsetup luksOpen "$LUKS_PARTITION" lvm
 }
 
