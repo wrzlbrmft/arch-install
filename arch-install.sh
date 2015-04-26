@@ -108,10 +108,19 @@ doMount() {
 	swapon /dev/mapper/main-swap
 }
 
+doPacstrap() {
+	pacstrap /mnt base
+}
+
+doGenfstab() {
+	genfstab -p -U /mnt >> /mnt/etc/fstab
+}
+
 doDeactivateAllSwaps
 doWipeAllPartitions
 doDeleteAllPartitions
 doWipeDevice
+
 doCreateNewPartitions
 doWipeAllPartitions
 identifyPartitions
@@ -119,3 +128,6 @@ doCreateLuksLvm
 doCreateLvmVolumes
 doFormat
 doMount
+
+doPacstrap
+doGenfstab
