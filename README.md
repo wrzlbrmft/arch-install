@@ -8,6 +8,6 @@ A script installing Arch Linux (encrypted, LVM on LUKS)
 ```
 pacman -Sy
 pacman -S --noconfirm git
-git clone https://github.com/wrzlbrmft/arch-install.git     
+git clone https://github.com/wrzlbrmft/arch-install.git
 arch-install/arch-install.sh
 ```
