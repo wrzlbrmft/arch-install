@@ -38,7 +38,7 @@ doWipeAllPartitions() {
 	for i in $( getAllPartitions | sort -r ); do
 		dd if=/dev/zero of=/dev/"$i" bs=10240k count=1
 	done
-	sync
+	sync; sync; sync
 }
 
 doDeleteAllPartitions() {
@@ -47,10 +47,14 @@ o
 w
 __END__
 	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
 }
 
 doWipeDevice() {
 	dd if=/dev/zero of="$INSTALL_DEVICE" bs=10240k count=1
+	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
 	partprobe "$INSTALL_DEVICE"
 }
 
@@ -64,6 +68,8 @@ toggle 1 boot
 quit
 __END__
 	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
 
 	fdisk "$INSTALL_DEVICE" << __END__
 t
@@ -74,6 +80,8 @@ t
 8e
 w
 __END__
+	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
 	partprobe "$INSTALL_DEVICE"
 }
 
