@@ -3,7 +3,7 @@
 
 case "$1" in
 	-h|--help)
-		printf "usage: ./arch-install.sh [-h|--help|<conf>]\n"
+		printf "usage: ./`basename "${BASH_SOURCE[0]}"` [-h|--help|<conf>]\n"
 		exit 0
 		;;
 
