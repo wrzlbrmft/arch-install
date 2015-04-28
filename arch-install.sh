@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 # usage: ./arch-install.sh [-h|--help|<conf>]
 
+INSTALL_HOME=$( cd "`dirname "${BASH_SOURCE[0]}"`" && pwd )
+INSTALL_NAME="`basename "${BASH_SOURCE[0]}"`"
+INSTALL_BASE="`printf "$INSTALL_NAME" | awk -F '.' '{ print $1 }'`"
+
+printHelpMessage() {
+	printf "usage: ./$INSTALL_NAME [-h|--help|<conf>]\n"
+}
+
 case "$1" in
 	-h|--help)
-		printf "usage: ./`basename "${BASH_SOURCE[0]}"` [-h|--help|<conf>]\n"
+		printHelpMessage
 		exit 0
 		;;
 
@@ -11,10 +19,6 @@ case "$1" in
 		INSTALL_CONF="$1"
 		;;
 esac
-
-INSTALL_HOME=$( cd "`dirname "${BASH_SOURCE[0]}"`" && pwd )
-INSTALL_NAME="`basename "${BASH_SOURCE[0]}"`"
-INSTALL_BASE="`printf "$INSTALL_NAME" | awk -F '.' '{ print $1 }'`"
 
 if [ -z "$INSTALL_CONF" ]; then
 	INSTALL_CONF="$INSTALL_HOME/$INSTALL_BASE.conf"
