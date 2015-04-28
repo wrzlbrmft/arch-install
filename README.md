@@ -6,8 +6,7 @@ A script installing Arch Linux (encrypted, LVM on LUKS)
 **WARNING:** Script is under development -- not ready for use!!!
 
 ```
-pacman -Sy
-pacman -S --noconfirm git
+pacman -Sy --noconfirm git
 git clone https://github.com/wrzlbrmft/arch-install.git
 arch-install/arch-install.sh
 ```
