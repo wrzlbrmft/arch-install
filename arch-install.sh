@@ -13,10 +13,11 @@ case "$1" in
 esac
 
 INSTALL_HOME=$( cd "`dirname "${BASH_SOURCE[0]}"`" && pwd )
-INSTALL_NAME="`basename "${BASH_SOURCE[0]}" | awk -F '.' '{ print $1 }'`"
+INSTALL_NAME="`basename "${BASH_SOURCE[0]}"`"
+INSTALL_BASE="`basename "${BASH_SOURCE[0]}" | awk -F '.' '{ print $1 }'`"
 
 if [ -z "$INSTALL_CONF" ]; then
-	INSTALL_CONF="$INSTALL_HOME/$INSTALL_NAME.conf"
+	INSTALL_CONF="$INSTALL_HOME/$INSTALL_BASE.conf"
 fi
 
 if [ ! -f "$INSTALL_CONF" ]; then
