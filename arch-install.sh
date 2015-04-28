@@ -228,8 +228,11 @@ if [ "$IN_CHROOT" == "1" ]; then
 
 	doSetRootPassword
 
+	determineNewPartitions
 	determineLuksUuid
+
 	doInstallGrub
+
 	doCreateCrypttab
 
 	exit 0
