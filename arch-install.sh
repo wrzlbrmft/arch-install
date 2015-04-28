@@ -153,7 +153,7 @@ doCopyToChroot() {
 doChroot() {
 	local IN_CHROOT_INSTALL_HOME="/root/`basename "$CHROOT_INSTALL_HOME"`"
 	local IN_CHROOT_INSTALL_CONF="$IN_CHROOT_INSTALL_HOME/`basename "$INSTALL_CONF"`"
-	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_NAME' '$IN_CHROOT_INSTALL_CONF' --chroot"
+	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_NAME' -c '$IN_CHROOT_INSTALL_CONF'"
 }
 
 doSetHostname() {
