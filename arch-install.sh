@@ -102,7 +102,7 @@ __END__
 	partprobe "$INSTALL_DEVICE"
 }
 
-identifyPartitions() {
+determineNewPartitions() {
 	local ALL_PARTITIONS=($( getAllPartitions ))
 	BOOT_PARTITION="/dev/${ALL_PARTITIONS[0]}"
 	LUKS_PARTITION="/dev/${ALL_PARTITIONS[1]}"
@@ -111,8 +111,6 @@ identifyPartitions() {
 doCreateLuksLvm() {
 	cryptsetup -q -y -c aes-xts-plain64 -s 512 -h sha512 luksFormat "$LUKS_PARTITION"
 	cryptsetup luksOpen "$LUKS_PARTITION" lvm
-
-	LUKS_UUID="`cryptsetup luksUUID "$LUKS_PARTITION"`"
 }
 
 doCreateLvmVolumes() {
@@ -196,6 +194,10 @@ doSetRootPassword() {
 	passwd root
 }
 
+determineLuksUuid() {
+	LUKS_UUID="`cryptsetup luksUUID "$LUKS_PARTITION"`"
+}
+
 doInstallGrub() {
 	pacman -S --noconfirm grub
 
@@ -226,8 +228,8 @@ if [ "$IN_CHROOT" == "1" ]; then
 
 	doSetRootPassword
 
+	determineLuksUuid
 	doInstallGrub
-
 	doCreateCrypttab
 
 	exit 0
@@ -241,7 +243,7 @@ else
 
 	doCreateNewPartitions
 	doWipeAllPartitions
-	identifyPartitions
+	determineNewPartitions
 	doCreateLuksLvm
 	doCreateLvmVolumes
 	doFormat
