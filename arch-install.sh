@@ -52,7 +52,7 @@ getAllPartitions() {
 
 doWipeAllPartitions() {
 	for i in $( getAllPartitions | sort -r ); do
-		dd if=/dev/zero of=/dev/"$i" bs=10240k count=1
+		dd if=/dev/zero of="/dev/$i" bs=10240k count=1
 	done
 	sync; sync; sync
 }
