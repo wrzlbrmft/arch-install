@@ -125,6 +125,19 @@ doGenfstab() {
 	genfstab -p -U /mnt >> /mnt/etc/fstab
 }
 
+doCopyToChroot() {
+	CHROOT_INSTALL_HOME="/mnt/root/`basename "$INSTALL_HOME"`"
+	mkdir -p "$CHROOT_INSTALL_HOME"
+	cp -p "${BASH_SOURCE[0]}" "$CHROOT_INSTALL_HOME"
+	cp -p "$INSTALL_CONF" "$CHROOT_INSTALL_HOME"
+}
+
+doChroot() {
+	local IN_CHROOT_INSTALL_HOME="~/`basename "$CHROOT_INSTALL_HOME"`"
+	local IN_CHROOT_INSTALL_CONF="$IN_CHROOT_INSTALL_HOME/`basename "$INSTALL_CONF"`"
+	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_NAME' '$IN_CHROOT_INSTALL_CONF' --chroot"
+}
+
 doDeactivateAllSwaps
 doWipeAllPartitions
 doDeleteAllPartitions
@@ -140,3 +153,6 @@ doMount
 
 doPacstrap
 doGenfstab
+
+doCopyToChroot
+doChroot
