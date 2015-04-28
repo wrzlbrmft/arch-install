@@ -137,7 +137,7 @@ doPacstrap() {
 	pacstrap /mnt base
 }
 
-doGenfstab() {
+doGenerateFstab() {
 	genfstab -p -U /mnt >> /mnt/etc/fstab
 }
 
@@ -253,7 +253,7 @@ else
 	doMount
 
 	doPacstrap
-	doGenfstab
+	doGenerateFstab
 
 	doCopyToChroot
 	doChroot
