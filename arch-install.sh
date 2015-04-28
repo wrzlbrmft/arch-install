@@ -70,7 +70,7 @@ getAllPartitions() {
 
 # flushes memory to disk, e.g. flash drives
 doFlush() {
-	# done 3x, because it can fail if called too quickly
+	# 3x, because it can fail if called too quickly
 	sync
 	sync
 	sync
@@ -89,7 +89,7 @@ doWipeAllPartitions() {
 
 # informs the OS of partition table changes
 doPartProbe() {
-	# done 3x, because it can fail if called too quickly
+	# 3x, because it can fail if called too quickly
 	partprobe "$INSTALL_DEVICE"
 	partprobe "$INSTALL_DEVICE"
 	partprobe "$INSTALL_DEVICE"
