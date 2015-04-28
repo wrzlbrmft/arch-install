@@ -68,13 +68,31 @@ getAllPartitions() {
 	lsblk -l -n -o NAME "$INSTALL_DEVICE" | grep -v "^`basename "$INSTALL_DEVICE"`$"
 }
 
+# flushes memory to disk, e.g. flash drives
+doFlush() {
+	# done 3x, because it can fail if called too quickly
+	sync
+	sync
+	sync
+}
+
 # wipes the superblocks of all partitions on the installation device
 doWipeAllPartitions() {
 	# sort in reverse order, so that logical partitions are wiped first
 	for i in $( getAllPartitions | sort -r ); do
 		dd if=/dev/zero of="/dev/$i" bs=1024k count=1
 	done
-	sync; sync; sync
+
+	# flush memory to disk
+	doFlush
+}
+
+# informs the OS of partition table changes
+doPartProbe() {
+	# done 3x, because it can fail if called too quickly
+	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
 }
 
 # deletes all partitions on the installation device
@@ -84,17 +102,17 @@ doDeleteAllPartitions() {
 o
 w
 __END__
-	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
+
+	# inform the OS of partition table changes
+	doPartProbe
 }
 
 # wipes the partition table of the installation device
 doWipeDevice() {
 	dd if=/dev/zero of="$INSTALL_DEVICE" bs=1024k count=1
-	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
+
+	# inform the OS of partition table changes
+	doPartProbe
 }
 
 # creates the new partitions on the installation device
@@ -110,9 +128,9 @@ mkpart primary linux-swap $BOOT_PARTITION_SIZE 100%
 toggle 1 boot
 quit
 __END__
-	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
+
+	# inform the OS of partition table changes
+	doPartProbe
 
 	# change the partition types (83 = Linux, 8e = Linux LVM)
 	fdisk "$INSTALL_DEVICE" << __END__
@@ -124,9 +142,9 @@ t
 8e
 w
 __END__
-	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
+
+	# inform the OS of partition table changes
+	doPartProbe
 }
 
 # determines the two new primary partitions
@@ -174,6 +192,9 @@ doMount() {
 # installs the Arch Linux base system
 doPacstrap() {
 	pacstrap /mnt base
+
+	# flush memory to disk
+	doFlush
 }
 
 # generates the fstab file
@@ -334,6 +355,9 @@ if [ "$IN_CHROOT" == "1" ]; then
 	# create the crypttab file
 	doCreateCrypttab
 
+	# flush memory to disk
+	doFlush
+
 	# exit the chroot environment
 	exit 0
 
@@ -366,5 +390,8 @@ else
 	#       started again with the "-c" option (sets IN_CHROOT="1")
 	doCopyToChroot
 	doChroot
+
+	# flush memory to disk
+	doFlush
 
 fi
