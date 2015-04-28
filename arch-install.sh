@@ -11,7 +11,7 @@ printHelpMessage() {
 
 IN_CHROOT="0"
 
-while getopts :h opt; do
+while getopts :hc opt; do
 	case $opt in
 		h)
 			printHelpMessage
@@ -28,6 +28,7 @@ while getopts :h opt; do
 			;;
 	esac
 done
+shift $((OPTIND - 1))
 
 INSTALL_CONF="$1"
 
@@ -150,7 +151,7 @@ doCopyToChroot() {
 }
 
 doChroot() {
-	local IN_CHROOT_INSTALL_HOME="~/`basename "$CHROOT_INSTALL_HOME"`"
+	local IN_CHROOT_INSTALL_HOME="/root/`basename "$CHROOT_INSTALL_HOME"`"
 	local IN_CHROOT_INSTALL_CONF="$IN_CHROOT_INSTALL_HOME/`basename "$INSTALL_CONF"`"
 	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_NAME' '$IN_CHROOT_INSTALL_CONF' --chroot"
 }
