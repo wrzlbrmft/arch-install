@@ -1,24 +1,29 @@
 #!/usr/bin/env bash
-# usage: ./arch-install.sh [-h|--help|<conf>]
+# usage: ./arch-install.sh [-h] [<conf>]
 
 INSTALL_HOME=$( cd "`dirname "${BASH_SOURCE[0]}"`" && pwd )
 INSTALL_NAME="`basename "${BASH_SOURCE[0]}"`"
 INSTALL_BASE="`printf "$INSTALL_NAME" | awk -F '.' '{ print $1 }'`"
 
 printHelpMessage() {
-	printf "usage: ./$INSTALL_NAME [-h|--help|<conf>]\n"
+	printf "usage: ./$INSTALL_NAME [-h] [<conf>]\n"
 }
 
-case "$1" in
-	-h|--help)
-		printHelpMessage
-		exit 0
-		;;
+while getopts :h opt; do
+	case $opt in
+		h)
+			printHelpMessage
+			exit 0
+			;;
 
-	*)
-		INSTALL_CONF="$1"
-		;;
-esac
+		\?)
+			printf "ERROR: Invalid option ('-$OPTARG')\n"
+			exit 1
+			;;
+	esac
+done
+
+INSTALL_CONF="$1"
 
 if [ -z "$INSTALL_CONF" ]; then
 	INSTALL_CONF="$INSTALL_HOME/$INSTALL_BASE.conf"
