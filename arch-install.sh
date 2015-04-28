@@ -9,11 +9,17 @@ printHelpMessage() {
 	printf "usage: ./$INSTALL_NAME [-h] [<conf>]\n"
 }
 
+IN_CHROOT="0"
+
 while getopts :h opt; do
 	case $opt in
 		h)
 			printHelpMessage
 			exit 0
+			;;
+
+		c)
+			IN_CHROOT="1"
 			;;
 
 		\?)
@@ -147,21 +153,29 @@ doChroot() {
 	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_NAME' '$IN_CHROOT_INSTALL_CONF' --chroot"
 }
 
-doDeactivateAllSwaps
-doWipeAllPartitions
-doDeleteAllPartitions
-doWipeDevice
+if [ "$IN_CHROOT" == "1" ]; then
 
-doCreateNewPartitions
-doWipeAllPartitions
-identifyPartitions
-doCreateLuksLvm
-doCreateLvmVolumes
-doFormat
-doMount
+	exit 0
 
-doPacstrap
-doGenfstab
+else
 
-doCopyToChroot
-doChroot
+	doDeactivateAllSwaps
+	doWipeAllPartitions
+	doDeleteAllPartitions
+	doWipeDevice
+
+	doCreateNewPartitions
+	doWipeAllPartitions
+	identifyPartitions
+	doCreateLuksLvm
+	doCreateLvmVolumes
+	doFormat
+	doMount
+
+	doPacstrap
+	doGenfstab
+
+	doCopyToChroot
+	doChroot
+
+fi
