@@ -86,7 +86,7 @@ __END__
 }
 
 identifyPartitions() {
-	ALL_PARTITIONS=($( getAllPartitions ))
+	local ALL_PARTITIONS=($( getAllPartitions ))
 	BOOT_PARTITION="/dev/${ALL_PARTITIONS[0]}"
 	LUKS_PARTITION="/dev/${ALL_PARTITIONS[1]}"
 }
