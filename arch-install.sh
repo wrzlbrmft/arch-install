@@ -153,7 +153,62 @@ doChroot() {
 	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_NAME' '$IN_CHROOT_INSTALL_CONF' --chroot"
 }
 
+doSetHostname() {
+	printf "$HOSTNAME\n" > /etc/hostname
+}
+
+doSetTimezone() {
+	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+}
+
+doSetLocale() {
+	cat /etc/locale.gen | sed -e 's/^#\('"$LOCALE"'\)\s*$/\1/' > /tmp/locale.gen
+	cat /tmp/locale.gen > /etc/locale.gen
+	rm /tmp/locale.gen
+
+	locale-gen
+
+	printf "LANG=$LOCALE_LANG\n" > /etc/locale.conf
+}
+
+doSetVConsole() {
+	printf "KEYMAP=$VCONSOLE_KEYMAP\n" > /etc/vconsole.conf
+	printf "FONT=$VCONSOLE_FONT\n" >> /etc/vconsole.conf
+}
+
+doMkinitcpio() {
+	cat /etc/mkinitcpio.conf | sed -e 's/^\(HOOKS="\([^"]\+\)"\)$/#\1\nHOOKS="\2"/' > /tmp/mkinitcpio.conf
+	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS="([^"]+)"$/ { \
+			gsub(/keyboard/, "", $0); \
+			gsub(/filesystems/, "keyboard keymap encrypt lvm2 filesystems", $0); \
+			gsub(/  /, " ", $0); \
+			print \
+		} !m { print }' > /etc/mkinitcpio.conf
+	rm /tmp/mkinitcpio.conf
+
+	mkinitcpio -p linux
+}
+
+doSetRootPassword() {
+	passwd root
+}
+
+doInstallGrub() {
+	pacman -S --noconfirm grub
+}
+
 if [ "$IN_CHROOT" == "1" ]; then
+
+	doSetHostname
+	doSetTimezone
+	doSetLocale
+	doSetVConsole
+
+	doMkinitcpio
+
+	doSetRootPassword
+
+	doInstallGrub
 
 	exit 0
 
