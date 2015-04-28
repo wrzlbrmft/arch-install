@@ -110,6 +110,8 @@ identifyPartitions() {
 doCreateLuksLvm() {
 	cryptsetup -q -y -c aes-xts-plain64 -s 512 -h sha512 luksFormat "$LUKS_PARTITION"
 	cryptsetup luksOpen "$LUKS_PARTITION" lvm
+
+	LUKS_UUID="`cryptsetup luksUUID "$LUKS_PARTITION"`"
 }
 
 doCreateLvmVolumes() {
@@ -177,7 +179,7 @@ doSetVConsole() {
 }
 
 doMkinitcpio() {
-	cat /etc/mkinitcpio.conf | sed -e 's/^\(HOOKS="\([^"]\+\)"\)$/#\1\nHOOKS="\2"/' > /tmp/mkinitcpio.conf
+	cat /etc/mkinitcpio.conf | sed -e 's/^\(\(HOOKS\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/mkinitcpio.conf
 	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS="([^"]+)"$/ { \
 			gsub(/keyboard/, "", $0); \
 			gsub(/filesystems/, "keyboard keymap encrypt lvm2 filesystems", $0); \
@@ -195,6 +197,21 @@ doSetRootPassword() {
 
 doInstallGrub() {
 	pacman -S --noconfirm grub
+
+	grub-install --target=i386-pc --recheck "$INSTALL_DEVICE"
+
+	cat /etc/default/grub | sed -e 's/^\(\(GRUB_CMDLINE_LINUX_DEFAULT\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/default-grub
+	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT="([^"]+)"$/ { \
+			gsub(/quiet/, "quiet cryptdevice=UUID=\"'"$LUKS_UUID"'\":main root=/dev/mapper/main-root lang='"$VCONSOLE_KEYMAP"' locale='"$LOCALE_LANG"'", $0); \
+			print \
+		} !m { print }' > /etc/default/grub
+	rm /tmp/default-grub
+
+	grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+doCreateCrypttab() {
+	printf "main UUID=\"$LUKS_UUID\" none luks\n" > /etc/crypttab
 }
 
 if [ "$IN_CHROOT" == "1" ]; then
@@ -209,6 +226,8 @@ if [ "$IN_CHROOT" == "1" ]; then
 	doSetRootPassword
 
 	doInstallGrub
+
+	doCreateCrypttab
 
 	exit 0
 
