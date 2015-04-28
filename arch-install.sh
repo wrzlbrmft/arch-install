@@ -77,8 +77,9 @@ doWipeAllPartitions() {
 	sync; sync; sync
 }
 
-# deletes all partitions on the installation device by creating a new empty partition table
+# deletes all partitions on the installation device
 doDeleteAllPartitions() {
+	# simply create a new empty partition table
 	fdisk "$INSTALL_DEVICE" << __END__
 o
 w
