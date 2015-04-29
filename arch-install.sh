@@ -329,6 +329,32 @@ doCreateCrypttab() {
 	printf "main UUID=\"$LUKS_UUID\" none luks\n" > /etc/crypttab
 }
 
+# adds a host user, named after the hostname by default
+doAddHostUser() {
+	groupadd "$HOST_USER_GROUP"
+	useradd -g "$HOST_USER_GROUP" -G "$HOST_USER_GROUP_EXTRA" -d "/$HOST_USER_USERNAME" -s /bin/bash -c "$HOST_USER_REALNAME" -m "$HOST_USER_USERNAME"
+	chmod 0751 "~$HOST_USER_USERNAME"
+	passwd -l "$HOST_USER_USERNAME"
+}
+
+# add the main user
+doAddMainUser() {
+	useradd -g "$MAIN_USER_GROUP" -G "$MAIN_USER_GROUP_EXTRA" -s /bin/bash -c "$MAIN_USER_REALNAME" -m "$MAIN_USER_USERNAME"
+	chmod 0751 "~$MAIN_USER_USERNAME"
+	passwd "$MAIN_USER_USERNAME"
+}
+
+# installs and configures sudo
+doInstallSudo() {
+	# install the package
+	pacman -S --noconfirm sudo
+
+	# add wheel group to sudoers
+	cat /etc/sudoers | sed -e 's/^#\s*\(%wheel ALL=(ALL) ALL\)\s*$/\1/' > /tmp/sudoers
+	cat /tmp/sudoers > /etc/sudoers
+	rm /tmp/sudoers
+}
+
 # ========= main program =========
 
 if [ "$IN_CHROOT" == "1" ]; then
@@ -356,6 +382,20 @@ if [ "$IN_CHROOT" == "1" ]; then
 
 	# create the crypttab file
 	doCreateCrypttab
+
+	if [ "$ADD_HOST_USER" == "yes" ]; then
+		# add a host user, if enabled
+		doAddHostUser
+	fi
+
+	if [ "$ADD_MAIN_USER" == "yes" ]; then
+		# add the main user, if enabled
+		doAddMainUser
+	fi
+
+	if [ "$INSTALL_SUDO" == "yes" ]; then
+		doInstallSudo
+	fi
 
 	# flush memory to disk
 	doFlush
@@ -388,7 +428,7 @@ else
 	doGenerateFstab
 
 	# chroot into the new installed system
-	# NOTE: the install script is copied into the chroot environment then
+	# NOTE: the install script is copied into the chroot environment and then
 	#       started again with the "-c" option (sets IN_CHROOT="1")
 	doCopyToChroot
 	doChroot
