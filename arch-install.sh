@@ -5,7 +5,7 @@ INSTALL_SCRIPT="`basename "${BASH_SOURCE[0]}"`"
 INSTALL_NAME="`printf "$INSTALL_SCRIPT" | awk -F '.' '{ print $1 }'`"
 
 doPrintHelpMessage() {
-	printf "Usage: ./$INSTALL_SCRIPT [-h] [-c <config>] [<action>]\n"
+	printf "Usage: ./$INSTALL_SCRIPT [-h] [-c config] [action]\n"
 }
 
 while getopts :hc: opt; do
