@@ -5,7 +5,7 @@ INSTALL_SCRIPT="`basename "${BASH_SOURCE[0]}"`"
 INSTALL_NAME="`printf "$INSTALL_SCRIPT" | awk -F '.' '{ print $1 }'`"
 
 doPrintHelpMessage() {
-	printf "Usage: ./$INSTALL_SCRIPT [-h] [-c config] [action]\n"
+	printf "Usage: ./$INSTALL_SCRIPT [-h] [-c config] [target]\n"
 }
 
 while getopts :hc: opt; do
@@ -38,7 +38,7 @@ while getopts :hc: opt; do
 done
 shift $((OPTIND - 1))
 
-INSTALL_ACTION="$1"
+INSTALL_TARGET="$1"
 
 if [ -z "$INSTALL_CONFIG" ]; then
 	INSTALL_CONFIG="$INSTALL_HOME/$INSTALL_NAME.conf"
@@ -49,8 +49,8 @@ if [ ! -f "$INSTALL_CONFIG" ]; then
 	exit 1
 fi
 
-if [ -z "$INSTALL_ACTION" ]; then
-	INSTALL_ACTION="base"
+if [ -z "$INSTALL_TARGET" ]; then
+	INSTALL_TARGET="base"
 fi
 
 . "$INSTALL_CONFIG"
