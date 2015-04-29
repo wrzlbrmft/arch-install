@@ -70,18 +70,41 @@ doChroot() {
 	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_CHROOT_INSTALL_CONFIG' chroot"
 }
 
+doCopyToSu() {
+	SU_INSTALL_HOME="~$SU_USER/`basename "$INSTALL_HOME"`"
+	mkdir -p "$SU_INSTALL_HOME"
+
+	cp -p "${BASH_SOURCE[0]}" "$SU_INSTALL_HOME"
+	cp -p "$INSTALL_CONFIG" "$SU_INSTALL_HOME"
+
+	local SU_USER_GROUP="`id -gn "$SU_USER"`"
+	chown -R "$SU_USER:$SU_USER_GROUP" "$SU_INSTALL_HOME"
+}
+
+doSu() {
+	local IN_SU_INSTALL_HOME="~$SU_USER/`basename "$SU_INSTALL_HOME"`"
+	local IN_SU_INSTALL_CONFIG="$IN_SU_INSTALL_HOME/`basename "$INSTALL_CONFIG"`"
+
+	/bin/su - "$SU_USER" -c "'$IN_SU_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_SU_INSTALL_CONFIG' $@"
+}
+
 case "$INSTALL_TARGET" in
 	base)
-
 		doCopyToChroot
 		doChroot
 
 		;;
 
 	chroot)
+		doCopyToSu
+		doSu suInstallYaourt
 
 		exit 0
 
+		;;
+
+	suInstallYaourt)
+		exit 0
 		;;
 
 	*)
