@@ -54,3 +54,38 @@ if [ -z "$INSTALL_TARGET" ]; then
 fi
 
 . "$INSTALL_CONFIG"
+
+doCopyToChroot() {
+	CHROOT_INSTALL_HOME="/mnt/root/`basename "$INSTALL_HOME"`"
+	mkdir -p "$CHROOT_INSTALL_HOME"
+
+	cp -p "${BASH_SOURCE[0]}" "$CHROOT_INSTALL_HOME"
+	cp -p "$INSTALL_CONFIG" "$CHROOT_INSTALL_HOME"
+}
+
+doChroot() {
+	local IN_CHROOT_INSTALL_HOME="/root/`basename "$CHROOT_INSTALL_HOME"`"
+	local IN_CHROOT_INSTALL_CONFIG="$IN_CHROOT_INSTALL_HOME/`basename "$INSTALL_CONFIG"`"
+
+	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_CHROOT_INSTALL_CONFIG' chroot"
+}
+
+case "$INSTALL_TARGET" in
+	base)
+
+		doCopyToChroot
+		doChroot
+
+		;;
+
+	chroot)
+
+		exit 0
+
+		;;
+
+	*)
+		printf "ERROR: Unknown target ('$INSTALL_TARGET')\n"
+		exit 1
+		;;
+esac
