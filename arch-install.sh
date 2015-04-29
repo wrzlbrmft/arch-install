@@ -80,7 +80,7 @@ doFlush() {
 doWipeAllPartitions() {
 	# sort in reverse order, so that logical partitions are wiped first
 	for i in $( getAllPartitions | sort -r ); do
-		dd if=/dev/zero of="/dev/$i" bs=1024k count=1
+		dd if=/dev/zero of="`dirname "$INSTALL_DEVICE"`/$i" bs=1024k count=1
 	done
 
 	# flush memory to disk
@@ -151,8 +151,8 @@ __END__
 determineNewPartitions() {
 	local ALL_PARTITIONS=($( getAllPartitions ))
 	# add the missing "/dev/" to the partitions returned by getAllPartitions
-	BOOT_PARTITION="/dev/${ALL_PARTITIONS[0]}"
-	LUKS_PARTITION="/dev/${ALL_PARTITIONS[1]}"
+	BOOT_PARTITION="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[0]}"
+	LUKS_PARTITION="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[1]}"
 }
 
 # creates the encrypted partition using LUKS and opens it
