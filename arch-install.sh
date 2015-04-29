@@ -332,14 +332,14 @@ doCreateCrypttab() {
 # adds a host user, named after the hostname by default
 doAddHostUser() {
 	groupadd "$HOST_USER_GROUP"
-	useradd -g "$HOST_USER_GROUP" -G "$HOST_USER_GROUP_EXTRA" -d "/$HOST_USER_USERNAME" -s /bin/bash -c "$HOST_USER_REALNAME" -m "$HOST_USER_USERNAME"
+	useradd -g "$HOST_USER_GROUP" -G "$HOST_USER_GROUPS_EXTRA" -d "/$HOST_USER_USERNAME" -s /bin/bash -c "$HOST_USER_REALNAME" -m "$HOST_USER_USERNAME"
 	chmod 0751 "~$HOST_USER_USERNAME"
 	passwd -l "$HOST_USER_USERNAME"
 }
 
 # add the main user
 doAddMainUser() {
-	useradd -g "$MAIN_USER_GROUP" -G "$MAIN_USER_GROUP_EXTRA" -s /bin/bash -c "$MAIN_USER_REALNAME" -m "$MAIN_USER_USERNAME"
+	useradd -g "$MAIN_USER_GROUP" -G "$MAIN_USER_GROUPS_EXTRA" -s /bin/bash -c "$MAIN_USER_REALNAME" -m "$MAIN_USER_USERNAME"
 	chmod 0751 "~$MAIN_USER_USERNAME"
 	passwd "$MAIN_USER_USERNAME"
 }
