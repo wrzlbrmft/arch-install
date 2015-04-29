@@ -394,6 +394,7 @@ if [ "$IN_CHROOT" == "1" ]; then
 	fi
 
 	if [ "$INSTALL_SUDO" == "yes" ]; then
+		# install sudo, if enabled
 		doInstallSudo
 	fi
 
