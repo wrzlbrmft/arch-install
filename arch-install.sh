@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
 # usage: ./arch-install.sh [-h] [<conf>]
 
-# HOME is the directory of the install script, e.g. "/root/arch-install"
-# NAME is the file name, e.g. "arch-install.sh"
-# BASE is the file name without extension, e.g. "install-arch"
+# the directory of the install script, e.g. "/root/arch-install"
 INSTALL_HOME=$( cd "`dirname "${BASH_SOURCE[0]}"`" && pwd )
+
+# the file name of the install script, e.g. "arch-install.sh"
 INSTALL_NAME="`basename "${BASH_SOURCE[0]}"`"
+
+# the file name of the install script without its extension, e.g. "install-arch"
 INSTALL_BASE="`printf "$INSTALL_NAME" | awk -F '.' '{ print $1 }'`"
 
-# prints a help message about the script usage
+# prints a help message about the install script usage
 printHelpMessage() {
 	printf "usage: ./$INSTALL_NAME [-h] [<conf>]\n"
 }
 
-# whether we are inside the chroot environment (default: no)
+# whether we are inside the chroot environment, default: 0 (no)
 IN_CHROOT="0"
 
 # process command-line options
@@ -70,7 +72,7 @@ getAllPartitions() {
 
 # flushes memory to disk, e.g. flash drives
 doFlush() {
-	# 3x, because it can fail if called too quickly
+	# 3x, because it can fail if called too soon
 	sync
 	sync
 	sync
@@ -89,7 +91,7 @@ doWipeAllPartitions() {
 
 # informs the OS of partition table changes
 doPartProbe() {
-	# 3x, because it can fail if called too quickly
+	# 3x, because it can fail if called too soon
 	partprobe "$INSTALL_DEVICE"
 	partprobe "$INSTALL_DEVICE"
 	partprobe "$INSTALL_DEVICE"
@@ -205,7 +207,7 @@ doGenerateFstab() {
 
 # copies both the install script and the current conf file into the chroot environment
 doCopyToChroot() {
-	# create a sub-directory (ideally named after the git checkout folder)
+	# create a sub-directory (ideally named after the git checkout directory)
 	CHROOT_INSTALL_HOME="/mnt/root/`basename "$INSTALL_HOME"`"
 	mkdir -p "$CHROOT_INSTALL_HOME"
 
@@ -226,14 +228,14 @@ doChroot() {
 
 # sets the hostname
 # NOTE: you can configure the hostname via HOSTNAME
-#       see README for further information about the available conf settings
+#       see README for further information about the available conf file settings
 doSetHostname() {
 	printf "$HOSTNAME\n" > /etc/hostname
 }
 
 # sets the time zone
 # NOTE: you can configure the timezone via TIMEZONE
-#       see README for further information about the available conf settings
+#       see README for further information about the available conf file settings
 doSetTimezone() {
 	# the timezone needs to be in /usr/share/zoneinfo
 	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
@@ -241,7 +243,7 @@ doSetTimezone() {
 
 # generates the locale about to be set
 # NOTE: you can configure the locale via LOCALE
-#       see README for further information about the available conf settings
+#       see README for further information about the available conf file settings
 doGenerateLocale() {
 	# remove the "#" in front of the desired locale in /etc/locale.gen
 	cat /etc/locale.gen | sed -e 's/^#\('"$LOCALE"'\)\s*$/\1/' > /tmp/locale.gen
@@ -254,7 +256,7 @@ doGenerateLocale() {
 
 # sets the locale language
 # NOTE: you can configure the locale language via LOCALE_LANG (usually derived from LOCALE)
-#       see README for further information about the available conf settings
+#       see README for further information about the available conf file settings
 doSetLocale() {
 	# create /etc/locale.conf
 	printf "LANG=$LOCALE_LANG\n" > /etc/locale.conf
@@ -262,7 +264,7 @@ doSetLocale() {
 
 # sets both the keymap and font of the virtual console
 # NOTE: you can configure the virtual console via VCONSOLE_*
-#       see README for further information about the available conf settings
+#       see README for further information about the available conf file settings
 doSetVConsole() {
 	# create /etc/vconsole.conf
 	printf "KEYMAP=$VCONSOLE_KEYMAP\n" > /etc/vconsole.conf
