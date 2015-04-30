@@ -291,7 +291,7 @@ doSetRootPassword() {
 }
 
 doInstallGrub() {
-	pacman -S --noconfirm grub
+	pacman -S --noconfirm --needed grub
 
 	grub-install --target=i386-pc --recheck "$INSTALL_DEVICE"
 }
@@ -339,6 +339,46 @@ doAddMainUser() {
 	MAIN_USER_HOME="`eval printf "~$MAIN_USER_USERNAME"`"
 	chmod 0751 "$MAIN_USER_HOME"
 	passwd "$MAIN_USER_USERNAME"
+}
+
+doInstallSudo() {
+	pacman -S --noconfirm --needed sudo
+
+	cat /etc/sudoers | sed -e 's/^#\s*\(%wheel ALL=(ALL) ALL\)$/\1/' > /tmp/sudoers
+	cat /tmp/sudoers > /etc/sudoers
+	rm /tmp/sudoers
+}
+
+doCreateSoftwareDirectory() {
+	mkdir -p software/aaa.dist
+	chmod 0700 software
+	chmod 0700 software/aaa.dist
+}
+
+doInstallYaourt() {
+	pacman -S --noconfirm --needed base-devel wget
+
+	doCreateSoftwareDirectory
+
+	cd software/aaa.dist
+
+	wget https://aur.archlinux.org/packages/pa/package-query/package-query.tar.gz
+	tar xvf package-query.tar.gz
+	cd package-query
+	makepkg -i -s --noconfirm --needed
+	cd ..
+
+	wget https://aur.archlinux.org/packages/ya/yaourt/yaourt.tar.gz
+	tar xvf yaourt.tar.gz
+	cd yaourt
+	makepkg -i -s --noconfirm --needed
+	cd ..
+
+	cd ../..
+}
+
+doYaourt() {
+	printf "yaourt: $INSTALL_OPTIONS\n"
 }
 
 case "$INSTALL_TARGET" in
@@ -413,20 +453,28 @@ case "$INSTALL_TARGET" in
 			doAddMainUser
 		fi
 
+		if [ "$INSTALL_SUDO" == "yes" ]; then
+			doInstallSudo
+		fi
+
 		doCopyToSu
-		doSu suInstallYaourt
+
+		if [ "$INSTALL_YAOURT" == "yes" ]; then
+			doSu suInstallYaourt
+		fi
+
 		doSu suYaourt foo bar
 
 		exit 0
 		;;
 
 	suInstallYaourt)
-		printf "suInstallYaourt\n"
+		doInstallYaourt
 		exit 0
 		;;
 
 	suYaourt)
-		printf "suYaourt: $INSTALL_OPTIONS\n"
+		doYaourt
 		exit 0
 		;;
 
