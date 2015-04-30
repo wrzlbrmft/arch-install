@@ -349,6 +349,10 @@ doInstallSudo() {
 	rm /tmp/sudoers
 }
 
+doInstallDevel() {
+	pacman -S --noconfirm --needed base-devel
+}
+
 doCreateSoftwareDirectory() {
 	mkdir -p software/aaa.dist
 	chmod 0700 software
@@ -356,19 +360,16 @@ doCreateSoftwareDirectory() {
 }
 
 doInstallYaourt() {
-	pacman -S --noconfirm --needed base-devel wget
-
 	doCreateSoftwareDirectory
-
 	cd software/aaa.dist
 
-	wget https://aur.archlinux.org/packages/pa/package-query/package-query.tar.gz
+	curl -O https://aur.archlinux.org/packages/pa/package-query/package-query.tar.gz
 	tar xvf package-query.tar.gz
 	cd package-query
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
-	wget https://aur.archlinux.org/packages/ya/yaourt/yaourt.tar.gz
+	curl -O https://aur.archlinux.org/packages/ya/yaourt/yaourt.tar.gz
 	tar xvf yaourt.tar.gz
 	cd yaourt
 	makepkg -i -s --noconfirm --needed
@@ -457,9 +458,12 @@ case "$INSTALL_TARGET" in
 			doInstallSudo
 		fi
 
-		doCopyToSu
+		if [ "$INSTALL_DEVEL" == "yes" ]; then
+			doInstallDevel
+		fi
 
 		if [ "$INSTALL_YAOURT" == "yes" ]; then
+			doCopyToSu
 			doSu suInstallYaourt
 		fi
 
