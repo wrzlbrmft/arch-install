@@ -353,6 +353,8 @@ case "$INSTALL_TARGET" in
 
 		doCopyToChroot
 		doChroot
+
+		exit 0
 		;;
 
 	chroot)
