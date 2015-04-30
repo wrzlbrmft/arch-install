@@ -201,6 +201,37 @@ doDetectDevicesLuks() {
 	LUKS_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[1]}"
 }
 
+doCreateLuks() {
+	cryptsetup -q -y -c aes-xts-plain64 -s 512 -h sha512 luksFormat "$LUKS_DEVICE"
+	cryptsetup luksOpen "$LUKS_DEVICE" "$LUKS_NAME"
+}
+
+doCreateLuksLvm() {
+	local LUKS_LVM_DEVICE="$LVM_DEVICE_HOME/$LUKS_NAME"
+	pvcreate "$LUKS_LVM_DEVICE"
+	vgcreate "$LUKS_LVM_NAME" "$LUKS_LVM_DEVICE"
+	lvcreate -L "${SWAP_SIZE}M" -n "$SWAP_LABEL" "$LUKS_LVM_NAME"
+	lvcreate -l 100%FREE -n "$ROOT_LABEL" "$LUKS_LVM_NAME"
+}
+
+doDetectDevicesLuksLvm() {
+	SWAP_DEVICE="$LVM_DEVICE_HOME/$LUKS_LVM_NAME-$SWAP_LABEL"
+	ROOT_DEVICE="$LVM_DEVICE_HOME/$LUKS_LVM_NAME-$ROOT_LABEL"
+}
+
+doFormat() {
+	mkfs.ext2 -L "$BOOT_LABEL" "$BOOT_DEVICE"
+	mkswap -L "$SWAP_LABEL" "$SWAP_DEVICE"
+	mkfs.ext4 -L "$ROOT_LABEL" "$ROOT_DEVICE"
+}
+
+doMount() {
+	mount "$ROOT_DEVICE" /mnt
+	mkdir /mnt/boot
+	mount "$BOOT_DEVICE" /mnt/boot
+	swapon "$SWAP_DEVICE"
+}
+
 case "$INSTALL_TARGET" in
 	base)
 		doDeactivateAllSwaps
@@ -211,10 +242,16 @@ case "$INSTALL_TARGET" in
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doCreateNewPartitionsLuks
 			doDetectDevicesLuks
+			doCreateLuks
+			doCreateLuksLvm
+			doDetectDevicesLuksLvm
 		else
 			doCreateNewPartitions
 			doDetectDevices
 		fi
+
+		doFormat
+		doMount
 
 		doCopyToChroot
 		doChroot
