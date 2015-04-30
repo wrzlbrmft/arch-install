@@ -135,15 +135,18 @@ doWipeDevice() {
 }
 
 doCreateNewPartitions() {
-	parted -a optimal "$INSTALL_DEVICE" << __END__
-mklabel msdos
-u MiB
-mkpart primary linux-swap 1 $BOOT_SIZE
-mkpart primary linux-swap $BOOT_SIZE $SWAP_SIZE
-mkpart primary linux-swap $SWAP_SIZE 100%
-toggle 1 boot
-quit
-__END__
+	parted -s -a optimal "$INSTALL_DEVICE" mklabel msdos
+
+	local START="1"; local END="$BOOT_SIZE"
+	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
+
+	START="$END"; let END+=SWAP_SIZE
+	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
+
+	START="$END"; END="100%"
+	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
+
+	parted -s -a optimal "$INSTALL_DEVICE" toggle 1 boot
 
 	doPartProbe
 
@@ -171,14 +174,15 @@ doDetectDevices() {
 }
 
 doCreateNewPartitionsLuks() {
-	parted -a optimal "$INSTALL_DEVICE" << __END__
-mklabel msdos
-u MiB
-mkpart primary linux-swap 1 $BOOT_SIZE
-mkpart primary linux-swap $BOOT_SIZE 100%
-toggle 1 boot
-quit
-__END__
+	parted -s -a optimal "$INSTALL_DEVICE" mklabel msdos
+
+	local START="1"; local END="$BOOT_SIZE"
+	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
+
+	START="$END"; END="100%"
+	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
+
+	parted -s -a optimal "$INSTALL_DEVICE" toggle 1 boot
 
 	doPartProbe
 
@@ -254,7 +258,7 @@ case "$INSTALL_TARGET" in
 		doMount
 
 		doCopyToChroot
-		doChroot
+		#doChroot
 		;;
 
 	chroot)
