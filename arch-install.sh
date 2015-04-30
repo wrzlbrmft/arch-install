@@ -390,12 +390,18 @@ case "$INSTALL_TARGET" in
 
 		doCopyToSu
 		doSu suInstallYaourt
+		doSu suYaourt foo bar
 
 		exit 0
 		;;
 
 	suInstallYaourt)
-		printf "suInstallYaourt: $INSTALL_OPTIONS\n"
+		printf "suInstallYaourt\n"
+		exit 0
+		;;
+
+	suYaourt)
+		printf "suYaourt: $INSTALL_OPTIONS\n"
 		exit 0
 		;;
 
