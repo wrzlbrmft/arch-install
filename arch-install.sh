@@ -91,8 +91,56 @@ doSu() {
 	/bin/su - "$SU_USER" -c "'$IN_SU_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_SU_INSTALL_CONFIG' $@"
 }
 
+doDeactivateAllSwaps() {
+	swapoff -a
+}
+
+getAllPartitions() {
+	lsblk -l -n -o NAME "$INSTALL_DEVICE" | grep -v "^`basename "$INSTALL_DEVICE"`$"
+}
+
+doFlush() {
+	sync
+	sync
+	sync
+}
+
+doWipeAllPartitions() {
+	for i in $( getAllPartitions | sort -r ); do
+		dd if=/dev/zero of="`dirname "$INSTALL_DEVICE"`/$i" bs=1024k count=1
+	done
+
+	doFlush
+}
+
+doPartProbe() {
+	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
+	partprobe "$INSTALL_DEVICE"
+}
+
+doDeleteAllPartitions() {
+	fdisk "$INSTALL_DEVICE" << __END__
+o
+w
+__END__
+
+	doPartProbe
+}
+
+doWipeDevice() {
+	dd if=/dev/zero of="$INSTALL_DEVICE" bs=1024k count=1
+
+	doPartProbe
+}
+
 case "$INSTALL_TARGET" in
 	base)
+		doDeactivateAllSwaps
+		doWipeAllPartitions
+		doDeleteAllPartitions
+		doWipeDevice
+
 		doCopyToChroot
 		doChroot
 		;;
