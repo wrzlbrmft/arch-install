@@ -163,6 +163,13 @@ __END__
 	doPartProbe
 }
 
+doDetectDevices() {
+	local ALL_PARTITIONS=($( getAllPartitions ))
+	BOOT_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[0]}"
+	SWAP_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[1]}"
+	ROOT_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[2]}"
+}
+
 doCreateNewPartitionsLuks() {
 	parted -a optimal "$INSTALL_DEVICE" << __END__
 mklabel msdos
@@ -188,6 +195,12 @@ __END__
 	doPartProbe
 }
 
+doDetectDevicesLuks() {
+	local ALL_PARTITIONS=($( getAllPartitions ))
+	BOOT_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[0]}"
+	LUKS_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[1]}"
+}
+
 case "$INSTALL_TARGET" in
 	base)
 		doDeactivateAllSwaps
@@ -197,8 +210,10 @@ case "$INSTALL_TARGET" in
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doCreateNewPartitionsLuks
+			doDetectDevicesLuks
 		else
 			doCreateNewPartitions
+			doDetectDevices
 		fi
 
 		doCopyToChroot
