@@ -236,6 +236,41 @@ doMount() {
 	swapon "$SWAP_DEVICE"
 }
 
+doPacstrap() {
+	pacstrap /mnt base
+
+	doFlush
+}
+
+doGenerateFstab() {
+	genfstab -p -U /mnt >> /mnt/etc/fstab
+}
+
+doSetHostname() {
+	printf "$HOSTNAME\n" > /etc/hostname
+}
+
+doSetTimezone() {
+	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+}
+
+doGenerateLocale() {
+	cat /etc/locale.gen | sed -e 's/^#\('"$LOCALE"'\)\s*$/\1/' > /tmp/locale.gen
+	cat /tmp/locale.gen > /etc/locale.gen
+	rm /tmp/locale.gen
+
+	locale-gen
+}
+
+doSetLocale() {
+	printf "LANG=$LOCALE_LANG\n" > /etc/locale.conf
+}
+
+doSetConsole() {
+	printf "KEYMAP=$CONSOLE_KEYMAP\n" > /etc/vconsole.conf
+	printf "FONT=$CONSOLE_FONT\n" >> /etc/vconsole.conf
+}
+
 case "$INSTALL_TARGET" in
 	base)
 		doDeactivateAllSwaps
@@ -257,11 +292,21 @@ case "$INSTALL_TARGET" in
 		doFormat
 		doMount
 
+		doPacstrap
+
+		doGenerateFstab
+
 		doCopyToChroot
-		#doChroot
+		doChroot
 		;;
 
 	chroot)
+		doSetHostname
+		doSetTimezone
+		doGenerateLocale
+		doSetLocale
+		doSetConsole
+
 		doCopyToSu
 		doSu suInstallYaourt
 
@@ -269,6 +314,7 @@ case "$INSTALL_TARGET" in
 		;;
 
 	suInstallYaourt)
+		printf "suInstallYaourt: $INSTALL_OPTIONS\n"
 		exit 0
 		;;
 
