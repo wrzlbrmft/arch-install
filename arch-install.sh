@@ -91,6 +91,15 @@ doSu() {
 	/bin/su - "$SU_USER" -c "'$IN_SU_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_SU_INSTALL_CONFIG' $*"
 }
 
+doSuSudo() {
+	local SU_USER_SUDO_NOPASSWD="/etc/sudoers.d/$SU_USER.NOPASSWD"
+	printf "$SU_USER ALL=(ALL) NOPASSWD: ALL\n" > "$SU_USER_SUDO_NOPASSWD"
+
+	doSu $*
+
+	rm "$SU_USER_SUDO_NOPASSWD"
+}
+
 doDeactivateAllSwaps() {
 	swapoff -a
 }
@@ -464,10 +473,10 @@ case "$INSTALL_TARGET" in
 
 		if [ "$INSTALL_YAOURT" == "yes" ]; then
 			doCopyToSu
-			doSu suInstallYaourt
+			doSuSudo suInstallYaourt
 		fi
 
-		doSu suYaourt foo bar
+		doSuSudo suYaourt foo bar
 
 		exit 0
 		;;
