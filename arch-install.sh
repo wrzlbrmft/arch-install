@@ -271,6 +271,61 @@ doSetConsole() {
 	printf "FONT=$CONSOLE_FONT\n" >> /etc/vconsole.conf
 }
 
+doEditMkinitcpioLuks() {
+	cat /etc/mkinitcpio.conf | sed -e 's/^\(\(HOOKS\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/mkinitcpio.conf
+	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS="([^"]+)"$/ { \
+			gsub(/keyboard/, "", $0); \
+			gsub(/filesystems/, "keyboard keymap encrypt lvm2 filesystems", $0); \
+			gsub(/  /, " ", $0); \
+			print \
+		} !m { print }' > /etc/mkinitcpio.conf
+	rm /tmp/mkinitcpio.conf
+}
+
+doMkinitcpio() {
+	mkinitcpio -p linux
+}
+
+doSetRootPassword() {
+	passwd root
+}
+
+doInstallGrub() {
+	pacman -S --noconfirm grub
+
+	grub-install --target=i386-pc --recheck "$INSTALL_DEVICE"
+}
+
+doEditGrubConfig() {
+	cat /etc/default/grub | sed -e 's/^\(\(GRUB_CMDLINE_LINUX_DEFAULT\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/default-grub
+	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT="([^"]+)"$/ { \
+			gsub(/quiet/, "quiet root='"$ROOT_DEVICE"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"'", $0); \
+			print \
+		} !m { print }' > /etc/default/grub
+	rm /tmp/default-grub
+}
+
+doDetectLuksUuid() {
+	LUKS_UUID="`cryptsetup luksUUID "$LUKS_DEVICE"`"
+}
+
+doEditGrubConfigLuks() {
+	cat /etc/default/grub | sed -e 's/^\(\(GRUB_CMDLINE_LINUX_DEFAULT\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/default-grub
+	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT="([^"]+)"$/ { \
+			gsub(/quiet/, "quiet cryptdevice=UUID=\"'"$LUKS_UUID"'\":'"$LUKS_LVM_NAME"' root='"$ROOT_DEVICE"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"'", $0); \
+			print \
+		} !m { print }' > /etc/default/grub
+	rm /tmp/default-grub
+}
+
+doGenerateGrubConfig() {
+	grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+doCreateCrypttabLuks() {
+	printf "$LUKS_LVM_NAME UUID=\"$LUKS_UUID\" none luks\n" > /etc/crypttab
+}
+
 case "$INSTALL_TARGET" in
 	base)
 		doDeactivateAllSwaps
@@ -306,6 +361,32 @@ case "$INSTALL_TARGET" in
 		doGenerateLocale
 		doSetLocale
 		doSetConsole
+
+		if [ "$LVM_ON_LUKS" == "yes" ]; then
+			doEditMkinitcpioLuks
+		fi
+
+		doMkinitcpio
+
+		doSetRootPassword
+
+		doInstallGrub
+
+		if [ "$LVM_ON_LUKS" = "yes" ]; then
+			doDetectDevicesLuks
+			doDetectDevicesLuksLvm
+			doDetectLuksUuid
+			doEditGrubConfigLuks
+		else
+			doDetectDevices
+			doEditGrubConfig
+		fi
+
+		doGenerateGrubConfig
+
+		if [ "$LVM_ON_LUKS" == "yes" ]; then
+			doCreateCrypttabLuks
+		fi
 
 		doCopyToSu
 		doSu suInstallYaourt
