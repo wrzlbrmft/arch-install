@@ -92,7 +92,7 @@ doSu() {
 }
 
 doSuSudo() {
-	local SU_USER_SUDO_NOPASSWD="/etc/sudoers.d/$SU_USER.NOPASSWD"
+	local SU_USER_SUDO_NOPASSWD="/etc/sudoers.d/$SU_USER"
 	printf "$SU_USER ALL=(ALL) NOPASSWD: ALL\n" > "$SU_USER_SUDO_NOPASSWD"
 
 	doSu $*
