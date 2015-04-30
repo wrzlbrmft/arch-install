@@ -107,7 +107,7 @@ doFlush() {
 
 doWipeAllPartitions() {
 	for i in $( getAllPartitions | sort -r ); do
-		dd if=/dev/zero of="`dirname "$INSTALL_DEVICE"`/$i" bs=1M count=1
+		dd if=/dev/zero of="$INSTALL_DEVICE_HOME/$i" bs=1M count=1
 	done
 
 	doFlush
@@ -165,9 +165,9 @@ __END__
 
 doDetectDevices() {
 	local ALL_PARTITIONS=($( getAllPartitions ))
-	BOOT_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[0]}"
-	SWAP_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[1]}"
-	ROOT_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[2]}"
+	BOOT_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[0]}"
+	SWAP_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[1]}"
+	ROOT_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[2]}"
 }
 
 doCreateNewPartitionsLuks() {
@@ -197,8 +197,8 @@ __END__
 
 doDetectDevicesLuks() {
 	local ALL_PARTITIONS=($( getAllPartitions ))
-	BOOT_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[0]}"
-	LUKS_DEVICE="`dirname "$INSTALL_DEVICE"`/${ALL_PARTITIONS[1]}"
+	BOOT_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[0]}"
+	LUKS_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[1]}"
 }
 
 case "$INSTALL_TARGET" in
