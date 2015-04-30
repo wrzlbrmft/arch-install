@@ -5,7 +5,7 @@ INSTALL_SCRIPT="`basename "${BASH_SOURCE[0]}"`"
 INSTALL_NAME="`printf "$INSTALL_SCRIPT" | awk -F '.' '{ print $1 }'`"
 
 doPrintHelpMessage() {
-	printf "Usage: ./$INSTALL_SCRIPT [-h] [-c config] [target]\n"
+	printf "Usage: ./$INSTALL_SCRIPT [-h] [-c config] [target [options...]]\n"
 }
 
 while getopts :hc: opt; do
@@ -39,6 +39,8 @@ done
 shift $((OPTIND - 1))
 
 INSTALL_TARGET="$1"
+shift
+INSTALL_OPTIONS="$@"
 
 if [ -z "$INSTALL_CONFIG" ]; then
 	INSTALL_CONFIG="$INSTALL_HOME/$INSTALL_NAME.conf"
@@ -93,7 +95,6 @@ case "$INSTALL_TARGET" in
 	base)
 		doCopyToChroot
 		doChroot
-
 		;;
 
 	chroot)
@@ -101,7 +102,6 @@ case "$INSTALL_TARGET" in
 		doSu suInstallYaourt
 
 		exit 0
-
 		;;
 
 	suInstallYaourt)
