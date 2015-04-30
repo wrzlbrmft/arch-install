@@ -134,12 +134,72 @@ doWipeDevice() {
 	doPartProbe
 }
 
+doCreateNewPartitions() {
+	parted -a optimal "$INSTALL_DEVICE" << __END__
+mklabel msdos
+u MiB
+mkpart primary linux-swap 1 $BOOT_SIZE
+mkpart primary linux-swap $BOOT_SIZE $SWAP_SIZE
+mkpart primary linux-swap $SWAP_SIZE 100%
+toggle 1 boot
+quit
+__END__
+
+	doPartProbe
+
+	fdisk "$INSTALL_DEVICE" << __END__
+t
+1
+83
+t
+2
+82
+t
+3
+83
+w
+__END__
+
+	doPartProbe
+}
+
+doCreateNewPartitionsLuks() {
+	parted -a optimal "$INSTALL_DEVICE" << __END__
+mklabel msdos
+u MiB
+mkpart primary linux-swap 1 $BOOT_SIZE
+mkpart primary linux-swap $BOOT_SIZE 100%
+toggle 1 boot
+quit
+__END__
+
+	doPartProbe
+
+	fdisk "$INSTALL_DEVICE" << __END__
+t
+1
+83
+t
+2
+8e
+w
+__END__
+
+	doPartProbe
+}
+
 case "$INSTALL_TARGET" in
 	base)
 		doDeactivateAllSwaps
 		doWipeAllPartitions
 		doDeleteAllPartitions
 		doWipeDevice
+
+		if [ "$LVM_ON_LUKS" == "yes" ]; then
+			doCreateNewPartitionsLuks
+		else
+			doCreateNewPartitions
+		fi
 
 		doCopyToChroot
 		doChroot
