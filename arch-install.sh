@@ -326,6 +326,21 @@ doCreateCrypttabLuks() {
 	printf "$LUKS_LVM_NAME UUID=\"$LUKS_UUID\" none luks\n" > /etc/crypttab
 }
 
+doAddHostUser() {
+	groupadd "$HOST_USER_GROUP"
+	useradd -g "$HOST_USER_GROUP" -G "$HOST_USER_GROUPS_EXTRA" -d "/$HOST_USER_USERNAME" -s /bin/bash -c "$HOST_USER_REALNAME" -m "$HOST_USER_USERNAME"
+	HOST_USER_HOME="`eval printf "~$HOST_USER_USERNAME"`"
+	chmod 0751 "$HOST_USER_HOME"
+	passwd -l "$HOST_USER_USERNAME"
+}
+
+doAddMainUser() {
+	useradd -g "$MAIN_USER_GROUP" -G "$MAIN_USER_GROUPS_EXTRA" -s /bin/bash -c "$MAIN_USER_REALNAME" -m "$MAIN_USER_USERNAME"
+	MAIN_USER_HOME="`eval printf "~$MAIN_USER_USERNAME"`"
+	chmod 0751 "$MAIN_USER_HOME"
+	passwd "$MAIN_USER_USERNAME"
+}
+
 case "$INSTALL_TARGET" in
 	base)
 		doDeactivateAllSwaps
@@ -388,6 +403,14 @@ case "$INSTALL_TARGET" in
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doCreateCrypttabLuks
+		fi
+
+		if [ "$ADD_HOST_USER" == "yes" ]; then
+			doAddHostUser
+		fi
+
+		if [ "$ADD_MAIN_USER" == "yes" ]; then
+			doAddMainUser
 		fi
 
 		doCopyToSu
