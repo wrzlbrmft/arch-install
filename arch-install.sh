@@ -107,7 +107,7 @@ doFlush() {
 
 doWipeAllPartitions() {
 	for i in $( getAllPartitions | sort -r ); do
-		dd if=/dev/zero of="`dirname "$INSTALL_DEVICE"`/$i" bs=1024k count=1
+		dd if=/dev/zero of="`dirname "$INSTALL_DEVICE"`/$i" bs=1M count=1
 	done
 
 	doFlush
@@ -129,7 +129,7 @@ __END__
 }
 
 doWipeDevice() {
-	dd if=/dev/zero of="$INSTALL_DEVICE" bs=1024k count=1
+	dd if=/dev/zero of="$INSTALL_DEVICE" bs=1M count=1
 
 	doPartProbe
 }
