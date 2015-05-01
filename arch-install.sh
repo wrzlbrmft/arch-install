@@ -367,6 +367,14 @@ doAddMainUser() {
 	passwd "$MAIN_USER_USERNAME"
 }
 
+doInstallOpenssh() {
+	pacman -S --noconfirm --needed openssh
+}
+
+doEnableServiceSshd() {
+	systemctl enable sshd.service
+}
+
 doInstallSudo() {
 	pacman -S --noconfirm --needed sudo
 
@@ -481,6 +489,14 @@ case "$INSTALL_TARGET" in
 
 		if [ "$ADD_MAIN_USER" == "yes" ]; then
 			doAddMainUser
+		fi
+
+		if [ "$INSTALL_OPENSSH" == "yes" ]; then
+			doInstallOpenssh
+
+			if [ "$ENABLE_SERVICE_SSHD" == "yes" ]; then
+				doEnableServiceSshd
+			fi
 		fi
 
 		if [ "$INSTALL_SUDO" == "yes" ]; then
