@@ -263,11 +263,13 @@ doSetTimezone() {
 	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
 }
 
-doGenerateLocale() {
+doEnableLocale() {
 	cat /etc/locale.gen | sed -e 's/^#\('"$LOCALE"'\)\s*$/\1/' > /tmp/locale.gen
 	cat /tmp/locale.gen > /etc/locale.gen
 	rm /tmp/locale.gen
+}
 
+doGenerateLocale() {
 	locale-gen
 }
 
@@ -425,8 +427,11 @@ case "$INSTALL_TARGET" in
 	chroot)
 		doSetHostname
 		doSetTimezone
+
+		doEnableLocale
 		doGenerateLocale
 		doSetLocale
+
 		doSetConsole
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
