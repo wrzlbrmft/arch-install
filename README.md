@@ -1,5 +1,5 @@
 # arch-install
-A script installing Arch Linux (encrypted, LVM on LUKS)
+A script installing Arch Linux (optionally encrypted, with LVM on LUKS)
 
 *(work in progress)*
 
