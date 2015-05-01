@@ -94,8 +94,12 @@ doSu() {
 doSuSudo() {
 	local SU_USER_SUDO_NOPASSWD="/etc/sudoers.d/$SU_USER"
 
-	printf "$SU_USER ALL=(ALL) NOPASSWD: ALL\n" > "$SU_USER_SUDO_NOPASSWD"
+	printf > "$SU_USER_SUDO_NOPASSWD" << __END__
+$SU_USER ALL=(ALL) NOPASSWD: ALL
+__END__
+
 	doSu $*
+
 	rm "$SU_USER_SUDO_NOPASSWD"
 }
 
@@ -258,7 +262,9 @@ doGenerateFstab() {
 }
 
 doSetHostname() {
-	printf "$HOSTNAME\n" > /etc/hostname
+	printf > /etc/hostname << __END__
+$HOSTNAME
+__END__
 }
 
 doSetTimezone() {
@@ -276,12 +282,16 @@ doGenerateLocale() {
 }
 
 doSetLocale() {
-	printf "LANG=$LOCALE_LANG\n" > /etc/locale.conf
+	printf > /etc/locale.conf << __END__
+LANG=$LOCALE_LANG
+__END__
 }
 
 doSetConsole() {
-	printf "KEYMAP=$CONSOLE_KEYMAP\n" > /etc/vconsole.conf
-	printf "FONT=$CONSOLE_FONT\n" >> /etc/vconsole.conf
+	printf > /etc/vconsole.conf << __END__
+KEYMAP=$CONSOLE_KEYMAP
+FONT=$CONSOLE_FONT
+__END__
 }
 
 doEditMkinitcpioLuks() {
@@ -336,7 +346,9 @@ doGenerateGrubConfig() {
 }
 
 doCreateCrypttabLuks() {
-	printf "$LUKS_LVM_NAME UUID=\"$LUKS_UUID\" none luks\n" > /etc/crypttab
+	printf > /etc/crypttab << __END__
+$LUKS_LVM_NAME UUID="$LUKS_UUID" none luks
+__END__
 }
 
 doAddHostUser() {
