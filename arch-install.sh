@@ -93,10 +93,9 @@ doSu() {
 
 doSuSudo() {
 	local SU_USER_SUDO_NOPASSWD="/etc/sudoers.d/$SU_USER"
+
 	printf "$SU_USER ALL=(ALL) NOPASSWD: ALL\n" > "$SU_USER_SUDO_NOPASSWD"
-
 	doSu $*
-
 	rm "$SU_USER_SUDO_NOPASSWD"
 }
 
@@ -177,6 +176,7 @@ __END__
 
 doDetectDevices() {
 	local ALL_PARTITIONS=($( getAllPartitions ))
+
 	BOOT_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[0]}"
 	SWAP_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[1]}"
 	ROOT_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[2]}"
@@ -210,6 +210,7 @@ __END__
 
 doDetectDevicesLuks() {
 	local ALL_PARTITIONS=($( getAllPartitions ))
+
 	BOOT_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[0]}"
 	LUKS_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[1]}"
 }
@@ -221,6 +222,7 @@ doCreateLuks() {
 
 doCreateLuksLvm() {
 	local LUKS_LVM_DEVICE="$LVM_DEVICE_HOME/$LUKS_NAME"
+
 	pvcreate "$LUKS_LVM_DEVICE"
 	vgcreate "$LUKS_LVM_NAME" "$LUKS_LVM_DEVICE"
 	lvcreate -L "${SWAP_SIZE}M" -n "$SWAP_LABEL" "$LUKS_LVM_NAME"
@@ -339,6 +341,7 @@ doCreateCrypttabLuks() {
 
 doAddHostUser() {
 	groupadd "$HOST_USER_GROUP"
+
 	useradd -g "$HOST_USER_GROUP" -G "$HOST_USER_GROUPS_EXTRA" -d "/$HOST_USER_USERNAME" -s /bin/bash -c "$HOST_USER_REALNAME" -m "$HOST_USER_USERNAME"
 	HOST_USER_HOME="`eval printf "~$HOST_USER_USERNAME"`"
 	chmod 0751 "$HOST_USER_HOME"
