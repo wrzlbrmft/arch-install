@@ -94,7 +94,7 @@ doSu() {
 doSuSudo() {
 	local SU_USER_SUDO_NOPASSWD="/etc/sudoers.d/$SU_USER"
 
-	printf > "$SU_USER_SUDO_NOPASSWD" << __END__
+	cat > "$SU_USER_SUDO_NOPASSWD" << __END__
 $SU_USER ALL=(ALL) NOPASSWD: ALL
 __END__
 
@@ -262,7 +262,7 @@ doGenerateFstab() {
 }
 
 doSetHostname() {
-	printf > /etc/hostname << __END__
+	cat > /etc/hostname << __END__
 $HOSTNAME
 __END__
 }
@@ -282,13 +282,13 @@ doGenerateLocale() {
 }
 
 doSetLocale() {
-	printf > /etc/locale.conf << __END__
+	cat > /etc/locale.conf << __END__
 LANG=$LOCALE_LANG
 __END__
 }
 
 doSetConsole() {
-	printf > /etc/vconsole.conf << __END__
+	cat > /etc/vconsole.conf << __END__
 KEYMAP=$CONSOLE_KEYMAP
 FONT=$CONSOLE_FONT
 __END__
@@ -346,7 +346,7 @@ doGenerateGrubConfig() {
 }
 
 doCreateCrypttabLuks() {
-	printf > /etc/crypttab << __END__
+	cat > /etc/crypttab << __END__
 $LUKS_LVM_NAME UUID="$LUKS_UUID" none luks
 __END__
 }
