@@ -424,10 +424,11 @@ doInstallX11() {
 		xorg-xinit \
 		xorg-fonts-75dpi \
 		xorg-fonts-100dpi \
-		xf86-input-synaptics \
 		xorg-twm \
 		xorg-xclock \
-		xterm
+		xterm \
+		"$X11_VIDEO_DRIVER_PACKAGE" \
+		"$X11_EXTRA_PACKAGES"
 }
 
 doInstallX11Fonts() {
@@ -442,6 +443,16 @@ doInstallX11Xfce() {
 	pacman -S --noconfirm --needed \
 		xfce4 \
 		xfce4-goodies
+}
+
+doInstallX11Lightdm() {
+	pacman -S --noconfirm --needed \
+		lightdm \
+		lightdm-gtk-greeter
+}
+
+doEnableServiceLightdm() {
+	systemctl enable lightdm.service
 }
 
 case "$INSTALL_TARGET" in
@@ -551,6 +562,14 @@ case "$INSTALL_TARGET" in
 
 			if [ "$INSTALL_X11_XFCE" == "yes" ]; then
 				doInstallX11Xfce
+			fi
+
+			if [ "$INSTALL_X11_LIGHTDM" == "yes" ]; then
+				doInstallX11Lightdm
+
+				if [ "$ENABLE_SERVICE_LIGHTDM" == "yes" ]; then
+					doEnableServiceLightdm
+				fi
 			fi
 		fi
 
