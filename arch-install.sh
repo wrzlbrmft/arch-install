@@ -448,8 +448,14 @@ doInstallX11Xfce() {
 }
 
 doX11InstallUbuntuFontRendering() {
-	pacman -Rdd --noconfirm cairo freetype2 fontconfig
-	doSuSudo suYaourt cairo-ubuntu freetype2-ubuntu fontconfig-ubuntu
+	pacman -Rdd --noconfirm cairo
+	doSuSudo suYaourt cairo-ubuntu
+
+	pacman -Rdd --noconfirm freetype2
+	doSuSudo suYaourt freetype2-ubuntu
+
+	pacman -Rdd --noconfirm fontconfig
+	doSuSudo suYaourt fontconfig-ubuntu
 }
 
 doInstallX11Lightdm() {
