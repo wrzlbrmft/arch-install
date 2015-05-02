@@ -416,6 +416,34 @@ doYaourt() {
 	printf "yaourt: $INSTALL_OPTIONS\n"
 }
 
+doInstallX11() {
+	pacman -S --noconfirm --needed \
+		xorg-server \
+		xorg-server-utils \
+		xorg-utils \
+		xorg-xinit \
+		xorg-fonts-75dpi \
+		xorg-fonts-100dpi \
+		xf86-input-synaptics \
+		xorg-twm \
+		xorg-xclock \
+		xterm
+}
+
+doInstallX11Fonts() {
+	pacman -S --noconfirm --needed \
+		ttf-dejavu \
+		ttf-droid \
+		ttf-liberation \
+		ttf-symbola
+}
+
+doInstallX11Xfce() {
+	pacman -S --noconfirm --needed \
+		xfce4 \
+		xfce4-goodies
+}
+
 case "$INSTALL_TARGET" in
 	base)
 		doDeactivateAllSwaps
@@ -443,6 +471,18 @@ case "$INSTALL_TARGET" in
 
 		doCopyToChroot
 		doChroot
+
+		if [ "$INSTALL_X11" == "yes" ]; then
+			doInstallX11
+
+			if [ "$INSTALL_X11_FONTS" == "yes" ]; then
+				doInstallX11Fonts
+			fi
+
+			if [ "$INSTALL_X11_XFCE" == "yes" ]; then
+				doInstallX11Xfce
+			fi
+		fi
 
 		exit 0
 		;;
