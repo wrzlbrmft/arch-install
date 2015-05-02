@@ -413,7 +413,7 @@ doInstallYaourt() {
 }
 
 doYaourt() {
-	printf "yaourt: $INSTALL_OPTIONS\n"
+	yaourt -S --noconfirm --needed $INSTALL_OPTIONS
 }
 
 doInstallX11() {
@@ -437,12 +437,19 @@ doInstallX11Fonts() {
 		ttf-droid \
 		ttf-liberation \
 		ttf-symbola
+
+	doSuSudo suYaourt ttf-ms-fonts
 }
 
 doInstallX11Xfce() {
 	pacman -S --noconfirm --needed \
 		xfce4 \
 		xfce4-goodies
+}
+
+doX11InstallUbuntuFontRendering() {
+	pacman -Rdd --noconfirm cairo freetype2 fontconfig
+	doSuSudo suYaourt cairo-ubuntu freetype2-ubuntu fontconfig-ubuntu
 }
 
 doInstallX11Lightdm() {
@@ -551,8 +558,6 @@ case "$INSTALL_TARGET" in
 			doSuSudo suInstallYaourt
 		fi
 
-		doSuSudo suYaourt foo bar
-
 		if [ "$INSTALL_X11" == "yes" ]; then
 			doInstallX11
 
@@ -562,6 +567,10 @@ case "$INSTALL_TARGET" in
 
 			if [ "$INSTALL_X11_XFCE" == "yes" ]; then
 				doInstallX11Xfce
+			fi
+
+			if [ "$X11_INSTALL_UBUNTU_FONT_RENDERING" == "yes" ]; then
+				doX11InstallUbuntuFontRendering
 			fi
 
 			if [ "$INSTALL_X11_LIGHTDM" == "yes" ]; then
