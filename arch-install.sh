@@ -69,7 +69,7 @@ doChroot() {
 	local IN_CHROOT_INSTALL_HOME="/root/`basename "$CHROOT_INSTALL_HOME"`"
 	local IN_CHROOT_INSTALL_CONFIG="$IN_CHROOT_INSTALL_HOME/`basename "$INSTALL_CONFIG"`"
 
-	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_CHROOT_INSTALL_CONFIG' chroot"
+	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_CHROOT_INSTALL_CONFIG' $*"
 }
 
 doCopyToSu() {
@@ -481,7 +481,7 @@ case "$INSTALL_TARGET" in
 		doGenerateFstab
 
 		doCopyToChroot
-		doChroot
+		doChroot chroot
 
 		exit 0
 		;;
