@@ -367,7 +367,7 @@ doAddMainUser() {
 	passwd "$MAIN_USER_USERNAME"
 }
 
-doInstallOpenssh() {
+doInstallSsh() {
 	pacman -S --noconfirm --needed openssh
 }
 
@@ -491,8 +491,8 @@ case "$INSTALL_TARGET" in
 			doAddMainUser
 		fi
 
-		if [ "$INSTALL_OPENSSH" == "yes" ]; then
-			doInstallOpenssh
+		if [ "$INSTALL_SSH" == "yes" ]; then
+			doInstallSsh
 
 			if [ "$ENABLE_SERVICE_SSHD" == "yes" ]; then
 				doEnableServiceSshd
