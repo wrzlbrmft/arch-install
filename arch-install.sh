@@ -472,18 +472,6 @@ case "$INSTALL_TARGET" in
 		doCopyToChroot
 		doChroot
 
-		if [ "$INSTALL_X11" == "yes" ]; then
-			doInstallX11
-
-			if [ "$INSTALL_X11_FONTS" == "yes" ]; then
-				doInstallX11Fonts
-			fi
-
-			if [ "$INSTALL_X11_XFCE" == "yes" ]; then
-				doInstallX11Xfce
-			fi
-		fi
-
 		exit 0
 		;;
 
@@ -553,6 +541,18 @@ case "$INSTALL_TARGET" in
 		fi
 
 		doSuSudo suYaourt foo bar
+
+		if [ "$INSTALL_X11" == "yes" ]; then
+			doInstallX11
+
+			if [ "$INSTALL_X11_FONTS" == "yes" ]; then
+				doInstallX11Fonts
+			fi
+
+			if [ "$INSTALL_X11_XFCE" == "yes" ]; then
+				doInstallX11Xfce
+			fi
+		fi
 
 		exit 0
 		;;
