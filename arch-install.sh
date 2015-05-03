@@ -481,6 +481,12 @@ doEnableServiceLightdm() {
 	systemctl enable lightdm.service
 }
 
+doDisablePcSpeaker() {
+	cat >> /etc/modprobe.d/blacklist.conf << __END__
+blacklist pcspkr
+__END__
+}
+
 case "$INSTALL_TARGET" in
 	base)
 		doDeactivateAllSwaps
@@ -603,6 +609,10 @@ case "$INSTALL_TARGET" in
 					doEnableServiceLightdm
 				fi
 			fi
+		fi
+
+		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
+			doDisablePcSpeaker
 		fi
 
 		exit 0
