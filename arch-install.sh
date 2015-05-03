@@ -431,7 +431,7 @@ doInstallX11() {
 		"$X11_EXTRA_PACKAGES"
 }
 
-doInstallX11Fonts() {
+doX11InstallFonts() {
 	pacman -S --noconfirm --needed \
 		ttf-dejavu \
 		ttf-droid \
@@ -441,7 +441,7 @@ doInstallX11Fonts() {
 	doSuSudo suYaourt ttf-ms-fonts
 }
 
-doInstallX11Xfce() {
+doX11InstallXfce() {
 	pacman -S --noconfirm --needed \
 		xfce4 \
 		xfce4-goodies
@@ -570,12 +570,12 @@ case "$INSTALL_TARGET" in
 		if [ "$INSTALL_X11" == "yes" ]; then
 			doInstallX11
 
-			if [ "$INSTALL_X11_FONTS" == "yes" ]; then
-				doInstallX11Fonts
+			if [ "$X11_INSTALL_FONTS" == "yes" ]; then
+				doX11InstallFonts
 			fi
 
-			if [ "$INSTALL_X11_XFCE" == "yes" ]; then
-				doInstallX11Xfce
+			if [ "$X11_INSTALL_XFCE" == "yes" ]; then
+				doX11InstallXfce
 			fi
 
 			if [ "$X11_INSTALL_UBUNTU_FONT_RENDERING" == "yes" ]; then
