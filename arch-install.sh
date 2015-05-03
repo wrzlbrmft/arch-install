@@ -461,7 +461,7 @@ doX11InstallUbuntuFontRendering() {
 	doSuSudo suYaourt fontconfig-ubuntu
 }
 
-doInstallX11Lightdm() {
+doX11InstallLightdm() {
 	pacman -S --noconfirm --needed \
 		lightdm \
 		lightdm-gtk-greeter
@@ -582,8 +582,8 @@ case "$INSTALL_TARGET" in
 				doX11InstallUbuntuFontRendering
 			fi
 
-			if [ "$INSTALL_X11_LIGHTDM" == "yes" ]; then
-				doInstallX11Lightdm
+			if [ "$X11_INSTALL_LIGHTDM" == "yes" ]; then
+				doX11InstallLightdm
 
 				if [ "$ENABLE_SERVICE_LIGHTDM" == "yes" ]; then
 					doEnableServiceLightdm
