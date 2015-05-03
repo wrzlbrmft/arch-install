@@ -431,6 +431,10 @@ doInstallX11() {
 		"$X11_EXTRA_PACKAGES"
 }
 
+doX11SetKeymap() {
+	localectl --no-convert set-x11-keymap "$X11_KEYMAP"
+}
+
 doX11InstallFonts() {
 	pacman -S --noconfirm --needed \
 		ttf-dejavu \
@@ -585,6 +589,10 @@ case "$INSTALL_TARGET" in
 
 		if [ "$INSTALL_X11" == "yes" ]; then
 			doInstallX11
+
+			if [ ! -z "$X11_KEYMAP" ]; then
+				doX11SetKeymap
+			fi
 
 			if [ "$X11_INSTALL_FONTS" == "yes" ]; then
 				doX11InstallFonts
