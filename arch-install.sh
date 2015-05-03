@@ -461,6 +461,16 @@ doX11InstallUbuntuFontRendering() {
 	doSuSudo suYaourt fontconfig-ubuntu
 }
 
+doX11InstallThemes() {
+	pacman -S --noconfirm --needed numix-themes
+
+	doSuSudo suYaourt \
+		xfce-theme-numix-extra-colors \
+		gtk-theme-config \
+		elementary-xfce-icons \
+		xcursor-human
+}
+
 doX11InstallLightdm() {
 	pacman -S --noconfirm --needed \
 		lightdm \
@@ -580,6 +590,10 @@ case "$INSTALL_TARGET" in
 
 			if [ "$X11_INSTALL_UBUNTU_FONT_RENDERING" == "yes" ]; then
 				doX11InstallUbuntuFontRendering
+			fi
+
+			if [ "$X11_INSTALL_THEMES" == "yes" ]; then
+				doX11InstallThemes
 			fi
 
 			if [ "$X11_INSTALL_LIGHTDM" == "yes" ]; then
