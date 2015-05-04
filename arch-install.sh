@@ -508,6 +508,18 @@ doEnableServiceLightdm() {
 	systemctl enable lightdm.service
 }
 
+doInstallNetworkManager() {
+	pacman -S --noconfirm --needed networkmanager modemmanager
+}
+
+doInstallNetworkManagerGui() {
+	pacman -S --noconfirm --needed nm-settings-editor network-manager-applet
+}
+
+doEnableServiceNetworkManager() {
+	systemctl enable NetworkManager.service
+}
+
 doDisablePcSpeaker() {
 	cat >> /etc/modprobe.d/blacklist.conf << __END__
 blacklist pcspkr
@@ -643,6 +655,18 @@ case "$INSTALL_TARGET" in
 				if [ "$ENABLE_SERVICE_LIGHTDM" == "yes" ]; then
 					doEnableServiceLightdm
 				fi
+			fi
+		fi
+
+		if [ "$INSTALL_NETWORK_MANAGER" == "yes" ]; then
+			doInstallNetworkManager
+
+			if [ "$INSTALL_NETWORK_MANAGER_GUI" == "yes" ]; then
+				doInstallNetworkManagerGui
+			fi
+
+			if [ "$ENABLE_SERVICE_NETWORK_MANAGER" == "yes" ]; then
+				doEnableServiceNetworkManager
 			fi
 		fi
 
