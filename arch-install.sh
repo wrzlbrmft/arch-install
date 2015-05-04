@@ -301,6 +301,10 @@ FONT=$CONSOLE_FONT
 __END__
 }
 
+doEnableServiceDhcpcd() {
+	systemctl enable dhcpcd.service
+}
+
 doEditMkinitcpioLuks() {
 	cat /etc/mkinitcpio.conf | sed -e 's/^\(\(HOOKS\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/mkinitcpio.conf
 	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS="([^"]+)"$/ { \
@@ -541,6 +545,10 @@ case "$INSTALL_TARGET" in
 		doSetLocale
 
 		doSetConsole
+
+		if [ "$ENABLE_SERVICE_DHCPCD" == "yes" ]; then
+			doEnableServiceDhcpcd
+		fi
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doEditMkinitcpioLuks
