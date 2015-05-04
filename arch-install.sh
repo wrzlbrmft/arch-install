@@ -445,8 +445,17 @@ doInstallX11() {
 		"$X11_PACKAGES_EXTRA"
 }
 
-doX11SetKeymap() {
-	localectl --no-convert set-x11-keymap "$X11_KEYMAP"
+doX11KeyboardConf() {
+	cat > /etc/X11/xorg.conf.d/00-keyboard.conf << __END__
+Section "InputClass"
+        Identifier "system-keyboard"
+        MatchIsKeyboard "on"
+        Option "XkbLayout" "$X11_KEYBOARD_LAYOUT"
+        Option "XkbModel" "$X11_KEYBOARD_MODEL"
+        Option "XkbVariant" "$X11_KEYBOARD_VARIANT"
+        Option "XkbOptions" "$X11_KEYBOARD_OPTIONS"
+EndSection
+__END__
 }
 
 doX11InstallFonts() {
@@ -608,8 +617,8 @@ case "$INSTALL_TARGET" in
 		if [ "$INSTALL_X11" == "yes" ]; then
 			doInstallX11
 
-			if [ ! -z "$X11_KEYMAP" ]; then
-				doX11SetKeymap
+			if [ "$X11_KEYBOARD_CONF" == "yes" ]; then
+				doX11KeyboardConf
 			fi
 
 			if [ "$X11_INSTALL_FONTS" == "yes" ]; then
