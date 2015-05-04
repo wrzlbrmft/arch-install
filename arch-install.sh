@@ -4,6 +4,10 @@ INSTALL_HOME=$( cd "`dirname "${BASH_SOURCE[0]}"`" && pwd )
 INSTALL_SCRIPT="`basename "${BASH_SOURCE[0]}"`"
 INSTALL_NAME="`printf "$INSTALL_SCRIPT" | awk -F '.' '{ print $1 }'`"
 
+doPrint() {
+	printf "[$INSTALL_NAME] $*\n"
+}
+
 doPrintHelpMessage() {
 	printf "Usage: ./$INSTALL_SCRIPT [-h] [-c config] [target [options...]]\n"
 }
@@ -220,7 +224,10 @@ doDetectDevicesLuks() {
 }
 
 doCreateLuks() {
+	doPrint "Formatting LUKS device"
 	cryptsetup -q -y -c aes-xts-plain64 -s 512 -h sha512 luksFormat "$LUKS_DEVICE"
+
+	doPrint "Opening LUKS device"
 	cryptsetup luksOpen "$LUKS_DEVICE" "$LUKS_NAME"
 }
 
@@ -310,6 +317,7 @@ doMkinitcpio() {
 }
 
 doSetRootPassword() {
+	doPrint "Setting password for user 'root'"
 	passwd root
 }
 
@@ -357,6 +365,7 @@ doAddHostUser() {
 	useradd -g "$HOST_USER_GROUP" -G "$HOST_USER_GROUPS_EXTRA" -d "/$HOST_USER_USERNAME" -s /bin/bash -c "$HOST_USER_REALNAME" -m "$HOST_USER_USERNAME"
 	HOST_USER_HOME="`eval printf "~$HOST_USER_USERNAME"`"
 	chmod 0751 "$HOST_USER_HOME"
+	doPrint "Setting password for host user '$HOST_USER_USERNAME'"
 	passwd -l "$HOST_USER_USERNAME"
 }
 
@@ -364,6 +373,7 @@ doAddMainUser() {
 	useradd -g "$MAIN_USER_GROUP" -G "$MAIN_USER_GROUPS_EXTRA" -s /bin/bash -c "$MAIN_USER_REALNAME" -m "$MAIN_USER_USERNAME"
 	MAIN_USER_HOME="`eval printf "~$MAIN_USER_USERNAME"`"
 	chmod 0751 "$MAIN_USER_HOME"
+	doPrint "Setting password for main user '$MAIN_USER_USERNAME'"
 	passwd "$MAIN_USER_USERNAME"
 }
 
