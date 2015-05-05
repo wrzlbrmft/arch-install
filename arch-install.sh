@@ -430,6 +430,19 @@ doYaourt() {
 	yaourt -S --noconfirm --needed $INSTALL_OPTIONS
 }
 
+doEnableMultilib() {
+	cat /etc/pacman.conf | sed -e '/^#\[multilib\]$/ {
+			N; /\n#Include/ {
+				s/^#//
+				s/\n#/\n/
+			}
+		}' > /tmp/pacman.conf
+	cat /tmp/pacman.conf > /etc/pacman.conf
+	rm /tmp/pacman.conf
+
+	pacman -Sy
+}
+
 doInstallX11() {
 	pacman -S --noconfirm --needed \
 		xorg-server \
@@ -624,6 +637,10 @@ case "$INSTALL_TARGET" in
 		if [ "$INSTALL_YAOURT" == "yes" ]; then
 			doCopyToSu
 			doSuSudo suInstallYaourt
+		fi
+
+		if [ "$ENABLE_MULTILIB" == "yes" ]; then
+			doEnableMultilib
 		fi
 
 		if [ "$INSTALL_X11" == "yes" ]; then
