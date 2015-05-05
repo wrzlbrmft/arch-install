@@ -534,7 +534,7 @@ doInstallNetworkManager() {
 }
 
 doInstallNetworkManagerGui() {
-	pacman -S --noconfirm --needed nm-settings-editor network-manager-applet
+	pacman -S --noconfirm --needed network-manager-applet
 }
 
 doEnableServiceNetworkManager() {
