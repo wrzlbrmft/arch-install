@@ -501,6 +501,12 @@ doX11InstallUbuntuFontRendering() {
 	doSuSudo suYaourt fontconfig-ubuntu
 }
 
+doUpdateIconCache() {
+	for i in $( find /usr/share/icons/* -maxdepth 0 -type d ); do
+		gtk-update-icon-cache "$i"
+	done
+}
+
 doX11InstallThemes() {
 	pacman -S --noconfirm --needed numix-themes
 
@@ -509,6 +515,8 @@ doX11InstallThemes() {
 		gtk-theme-config \
 		elementary-xfce-icons \
 		xcursor-human
+
+	doUpdateIconCache
 }
 
 doX11InstallLightdm() {
