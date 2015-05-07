@@ -454,7 +454,7 @@ doInstallX11() {
 		xorg-twm \
 		xorg-xclock \
 		xterm \
-		"$X11_PACKAGE_VIDEO" \
+		"$X11_PACKAGES_VIDEO" \
 		"$X11_PACKAGES_EXTRA"
 }
 
