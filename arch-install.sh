@@ -454,8 +454,8 @@ doInstallX11() {
 		xorg-twm \
 		xorg-xclock \
 		xterm \
-		"$X11_PACKAGES_VIDEO" \
-		"$X11_PACKAGES_EXTRA"
+		$X11_PACKAGES_VIDEO \
+		$X11_PACKAGES_EXTRA
 }
 
 doX11KeyboardConf() {
