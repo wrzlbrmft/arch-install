@@ -540,6 +540,7 @@ doEnableServiceTeamviewerd() {
 doInstallNetworkManager() {
 	pacman -S --noconfirm --needed \
 		networkmanager \
+		networkmanager-vpnc \
 		modemmanager
 
 	if [ "$INSTALL_X11" == "yes" ]; then
