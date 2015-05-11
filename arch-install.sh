@@ -561,6 +561,13 @@ doInstallPulseaudio() {
 	fi
 }
 
+doInstallSoftware() {
+	pacman -S --noconfirm --needed $INSTALL_SOFTWARE_PACMAN
+
+	doSuSudo suYaourt \
+			$INSTALL_SOFTWARE_YAOURT
+}
+
 doDisablePcSpeaker() {
 	cat >> /etc/modprobe.d/blacklist.conf << __END__
 blacklist pcspkr
@@ -721,6 +728,10 @@ case "$INSTALL_TARGET" in
 
 		if [ "$INSTALL_PULSEAUDIO" == "yes" ]; then
 			doInstallPulseaudio
+		fi
+
+		if [ "$INSTALL_SOFTWARE" == "yes" ]; then
+			doInstallSoftware
 		fi
 
 		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
