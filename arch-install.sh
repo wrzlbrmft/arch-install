@@ -572,9 +572,17 @@ __END__
 }
 
 doInstallSoftware() {
-	pacman -S --noconfirm --needed $INSTALL_SOFTWARE_PACMAN
+	for i in $INSTALL_SOFTWARE; do
+		j="$i":pacman
+		if [ ! -z "${SOFTWARE[$j]}" ]; then
+			pacman -S --noconfirm --needed ${SOFTWARE[$j]}
+		fi
 
-	doSuSudo suYaourt $INSTALL_SOFTWARE_YAOURT
+		j="$i":yaourt
+		if [ ! -z "${SOFTWARE[$j]}" ]; then
+			doSuSudo suYaourt ${SOFTWARE[$j]}
+		fi
+	done
 }
 
 case "$INSTALL_TARGET" in
