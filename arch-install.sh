@@ -571,16 +571,16 @@ blacklist pcspkr
 __END__
 }
 
-doInstallSoftware() {
-	for i in $INSTALL_SOFTWARE; do
+doInstallPackageSets() {
+	for i in $INSTALL_PACKAGE_SETS; do
 		j="$i":pacman
-		if [ ! -z "${SOFTWARE[$j]}" ]; then
-			pacman -S --noconfirm --needed ${SOFTWARE[$j]}
+		if [ ! -z "${PACKAGE_SET[$j]}" ]; then
+			pacman -S --noconfirm --needed ${PACKAGE_SET[$j]}
 		fi
 
 		j="$i":yaourt
-		if [ ! -z "${SOFTWARE[$j]}" ]; then
-			doSuSudo suYaourt ${SOFTWARE[$j]}
+		if [ ! -z "${PACKAGE_SET[$j]}" ]; then
+			doSuSudo suYaourt ${PACKAGE_SET[$j]}
 		fi
 	done
 }
@@ -745,8 +745,8 @@ case "$INSTALL_TARGET" in
 			doDisablePcSpeaker
 		fi
 
-		if [ "$INSTALL_SOFTWARE" == "yes" ]; then
-			doInstallSoftware
+		if [ ! -z "$INSTALL_PACKAGE_SETS" ]; then
+			doInstallPackageSets
 		fi
 
 		exit 0
