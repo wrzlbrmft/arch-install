@@ -531,10 +531,10 @@ doEnableServiceLightdm() {
 
 doInstallNetworkManager() {
 	pacman -S --noconfirm --needed networkmanager modemmanager
-}
 
-doInstallNetworkManagerGui() {
-	pacman -S --noconfirm --needed network-manager-applet
+	if [ "$INSTALL_X11" == "yes" ]; then
+		pacman -S --noconfirm --needed network-manager-applet
+	fi
 }
 
 doEnableServiceNetworkManager() {
@@ -685,10 +685,6 @@ case "$INSTALL_TARGET" in
 
 		if [ "$INSTALL_NETWORK_MANAGER" == "yes" ]; then
 			doInstallNetworkManager
-
-			if [ "$INSTALL_NETWORK_MANAGER_GUI" == "yes" ]; then
-				doInstallNetworkManagerGui
-			fi
 
 			if [ "$ENABLE_SERVICE_NETWORK_MANAGER" == "yes" ]; then
 				doEnableServiceNetworkManager
