@@ -402,14 +402,14 @@ doInstallDevel() {
 }
 
 doCreateSoftwareDirectory() {
-	mkdir -p software/aaa.dist
-	chmod 0700 software
-	chmod 0700 software/aaa.dist
+	mkdir -p ~/software/aaa.dist
+	chmod 0700 ~/software
+	chmod 0700 ~/software/aaa.dist
 }
 
 doInstallYaourt() {
 	doCreateSoftwareDirectory
-	cd software/aaa.dist
+	cd ~/software/aaa.dist
 
 	curl -O https://aur.archlinux.org/packages/pa/package-query/package-query.tar.gz
 	tar xvf package-query.tar.gz
