@@ -530,8 +530,7 @@ doEnableServiceLightdm() {
 }
 
 doX11InstallTeamviewer() {
-	doSuSudo suYaourt \
-		teamviewer
+	doSuSudo suYaourt teamviewer
 }
 
 doEnableServiceTeamviewerd() {
@@ -539,7 +538,9 @@ doEnableServiceTeamviewerd() {
 }
 
 doInstallNetworkManager() {
-	pacman -S --noconfirm --needed networkmanager modemmanager
+	pacman -S --noconfirm --needed \
+		networkmanager \
+		modemmanager
 
 	if [ "$INSTALL_X11" == "yes" ]; then
 		pacman -S --noconfirm --needed network-manager-applet
@@ -551,13 +552,16 @@ doEnableServiceNetworkManager() {
 }
 
 doInstallPulseaudio() {
-	pacman -S --noconfirm --needed pulseaudio pulseaudio-alsa
+	pacman -S --noconfirm --needed \
+		pulseaudio \
+		pulseaudio-alsa
 
 	if [ "$INSTALL_X11" == "yes" ]; then
-		pacman -S --noconfirm --needed paprefs pavucontrol
+		pacman -S --noconfirm --needed \
+			paprefs \
+			pavucontrol
 
-		doSuSudo suYaourt \
-			pulseaudio-ctl
+		doSuSudo suYaourt pulseaudio-ctl
 	fi
 }
 
@@ -570,8 +574,7 @@ __END__
 doInstallSoftware() {
 	pacman -S --noconfirm --needed $INSTALL_SOFTWARE_PACMAN
 
-	doSuSudo suYaourt \
-			$INSTALL_SOFTWARE_YAOURT
+	doSuSudo suYaourt $INSTALL_SOFTWARE_YAOURT
 }
 
 case "$INSTALL_TARGET" in
