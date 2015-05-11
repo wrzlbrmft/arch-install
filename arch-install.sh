@@ -561,17 +561,17 @@ doInstallPulseaudio() {
 	fi
 }
 
+doDisablePcSpeaker() {
+	cat >> /etc/modprobe.d/blacklist.conf << __END__
+blacklist pcspkr
+__END__
+}
+
 doInstallSoftware() {
 	pacman -S --noconfirm --needed $INSTALL_SOFTWARE_PACMAN
 
 	doSuSudo suYaourt \
 			$INSTALL_SOFTWARE_YAOURT
-}
-
-doDisablePcSpeaker() {
-	cat >> /etc/modprobe.d/blacklist.conf << __END__
-blacklist pcspkr
-__END__
 }
 
 case "$INSTALL_TARGET" in
