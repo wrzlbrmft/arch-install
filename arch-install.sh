@@ -730,12 +730,12 @@ case "$INSTALL_TARGET" in
 			doInstallPulseaudio
 		fi
 
-		if [ "$INSTALL_SOFTWARE" == "yes" ]; then
-			doInstallSoftware
-		fi
-
 		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
 			doDisablePcSpeaker
+		fi
+
+		if [ "$INSTALL_SOFTWARE" == "yes" ]; then
+			doInstallSoftware
 		fi
 
 		exit 0
