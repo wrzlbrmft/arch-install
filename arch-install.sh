@@ -541,6 +541,17 @@ doEnableServiceNetworkManager() {
 	systemctl enable NetworkManager.service
 }
 
+doInstallPulseaudio() {
+	pacman -S --noconfirm --needed pulseaudio pulseaudio-alsa
+
+	if [ "$INSTALL_X11" == "yes" ]; then
+		pacman -S --noconfirm --needed paprefs pavucontrol
+
+		doSuSudo suYaourt \
+			pulseaudio-ctl
+	fi
+}
+
 doDisablePcSpeaker() {
 	cat >> /etc/modprobe.d/blacklist.conf << __END__
 blacklist pcspkr
@@ -689,6 +700,10 @@ case "$INSTALL_TARGET" in
 			if [ "$ENABLE_SERVICE_NETWORK_MANAGER" == "yes" ]; then
 				doEnableServiceNetworkManager
 			fi
+		fi
+
+		if [ "$INSTALL_PULSEAUDIO" == "yes" ]; then
+			doInstallPulseaudio
 		fi
 
 		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
