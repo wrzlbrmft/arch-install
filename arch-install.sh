@@ -270,16 +270,16 @@ doGenerateFstab() {
 
 doSetHostname() {
 	cat > /etc/hostname << __END__
-$HOSTNAME
+$1
 __END__
 }
 
 doSetTimezone() {
-	ln -sf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+	ln -sf "/usr/share/zoneinfo/$1" /etc/localtime
 }
 
 doEnableLocale() {
-	cat /etc/locale.gen | sed -e 's/^#\('"$LOCALE"'\)\s*$/\1/' > /tmp/locale.gen
+	cat /etc/locale.gen | sed -e 's/^#\('"$1"'\)\s*$/\1/' > /tmp/locale.gen
 	cat /tmp/locale.gen > /etc/locale.gen
 	rm /tmp/locale.gen
 }
@@ -290,14 +290,14 @@ doGenerateLocale() {
 
 doSetLocale() {
 	cat > /etc/locale.conf << __END__
-LANG=$LOCALE_LANG
+LANG=$1
 __END__
 }
 
 doSetConsole() {
 	cat > /etc/vconsole.conf << __END__
-KEYMAP=$CONSOLE_KEYMAP
-FONT=$CONSOLE_FONT
+KEYMAP=$1
+FONT=$2
 __END__
 }
 
@@ -463,10 +463,10 @@ doX11KeyboardConf() {
 Section "InputClass"
         Identifier "system-keyboard"
         MatchIsKeyboard "on"
-        Option "XkbLayout" "$X11_KEYBOARD_LAYOUT"
-        Option "XkbModel" "$X11_KEYBOARD_MODEL"
-        Option "XkbVariant" "$X11_KEYBOARD_VARIANT"
-        Option "XkbOptions" "$X11_KEYBOARD_OPTIONS"
+        Option "XkbLayout" "$1"
+        Option "XkbModel" "$2"
+        Option "XkbVariant" "$3"
+        Option "XkbOptions" "$4"
 EndSection
 __END__
 }
@@ -618,14 +618,15 @@ case "$INSTALL_TARGET" in
 		;;
 
 	chroot)
-		doSetHostname
-		doSetTimezone
+		doSetHostname "$HOSTNAME"
+		doSetTimezone "$TIMEZONE"
 
-		doEnableLocale
+		doEnableLocale "en_US.UTF-8 UTF-8"
+		doEnableLocale "$LOCALE"
 		doGenerateLocale
-		doSetLocale
+		doSetLocale "$LOCALE_LANG"
 
-		doSetConsole
+		doSetConsole "$CONSOLE_KEYMAP" "$CONSOLE_FONT"
 
 		if [ "$ENABLE_SERVICE_DHCPCD" == "yes" ]; then
 			doEnableServiceDhcpcd
@@ -694,7 +695,7 @@ case "$INSTALL_TARGET" in
 			doInstallX11
 
 			if [ "$X11_KEYBOARD_CONF" == "yes" ]; then
-				doX11KeyboardConf
+				doX11KeyboardConf "$X11_KEYBOARD_LAYOUT" "$X11_KEYBOARD_MODEL" "$X11_KEYBOARD_VARIANT" "$X11_KEYBOARD_OPTIONS"
 			fi
 
 			if [ "$X11_INSTALL_FONTS" == "yes" ]; then
