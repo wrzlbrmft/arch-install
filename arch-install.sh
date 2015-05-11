@@ -92,7 +92,7 @@ doSu() {
 	local IN_SU_INSTALL_HOME="$SU_USER_HOME/`basename "$SU_INSTALL_HOME"`"
 	local IN_SU_INSTALL_CONFIG="$IN_SU_INSTALL_HOME/`basename "$INSTALL_CONFIG"`"
 
-	/bin/su - "$SU_USER" -c "'$IN_SU_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_SU_INSTALL_CONFIG' $*"
+	/bin/su "$SU_USER" -c "'$IN_SU_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_SU_INSTALL_CONFIG' $*"
 }
 
 doSuSudo() {
