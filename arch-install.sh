@@ -485,8 +485,6 @@ doX11InstallXfce() {
 	pacman -S --noconfirm --needed \
 		xfce4 \
 		xfce4-goodies
-
-	doSuSudo suYaourt menulibre
 }
 
 doX11InstallUbuntuFontRendering() {
