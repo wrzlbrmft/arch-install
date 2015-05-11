@@ -529,6 +529,15 @@ doEnableServiceLightdm() {
 	systemctl enable lightdm.service
 }
 
+doX11InstallTeamviewer() {
+	doSuSudo suYaourt \
+		teamviewer
+}
+
+doEnableServiceTeamviewerd() {
+	systemctl enable teamviewerd
+}
+
 doInstallNetworkManager() {
 	pacman -S --noconfirm --needed networkmanager modemmanager
 
@@ -690,6 +699,14 @@ case "$INSTALL_TARGET" in
 
 				if [ "$ENABLE_SERVICE_LIGHTDM" == "yes" ]; then
 					doEnableServiceLightdm
+				fi
+			fi
+
+			if [ "$X11_INSTALL_TEAMVIEWER" == "yes" ]; then
+				doX11InstallTeamviewer
+
+				if [ "$ENABLE_SERVICE_TEAMVIEWERD" == "yes" ]; then
+					doEnableServiceTeamviewerd
 				fi
 			fi
 		fi
