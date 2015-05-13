@@ -385,7 +385,7 @@ doInstallSsh() {
 	pacman -S --noconfirm --needed openssh
 }
 
-doEnableServiceSshd() {
+doEnableServiceSsh() {
 	systemctl enable sshd.service
 }
 
@@ -678,8 +678,8 @@ case "$INSTALL_TARGET" in
 		if [ "$INSTALL_SSH" == "yes" ]; then
 			doInstallSsh
 
-			if [ "$ENABLE_SERVICE_SSHD" == "yes" ]; then
-				doEnableServiceSshd
+			if [ "$ENABLE_SERVICE_SSH" == "yes" ]; then
+				doEnableServiceSsh
 			fi
 		fi
 
