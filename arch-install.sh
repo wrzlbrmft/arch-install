@@ -552,6 +552,15 @@ doEnableServiceNetworkManager() {
 	systemctl enable NetworkManager.service
 }
 
+doInstallTlp() {
+	pacman -S --noconfirm --needed tlp
+}
+
+doEnableServiceTlp() {
+	systemctl enable tlp.service
+	systemctl enable tlp-sleep.service
+}
+
 doInstallPulseaudio() {
 	pacman -S --noconfirm --needed \
 		pulseaudio \
@@ -736,6 +745,14 @@ case "$INSTALL_TARGET" in
 
 			if [ "$ENABLE_SERVICE_NETWORK_MANAGER" == "yes" ]; then
 				doEnableServiceNetworkManager
+			fi
+		fi
+
+		if [ "$INSTALL_TLP" == "yes" ]; then
+			doInstallTlp
+
+			if [ "$ENABLE_SERVICE_TLP" == "yes" ]; then
+				doEnableServiceTlp
 			fi
 		fi
 
