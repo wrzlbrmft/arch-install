@@ -533,7 +533,7 @@ doX11InstallTeamviewer() {
 	doSuSudo suYaourt teamviewer
 }
 
-doEnableServiceTeamviewerd() {
+doEnableServiceTeamviewer() {
 	systemctl enable teamviewerd
 }
 
@@ -734,8 +734,8 @@ case "$INSTALL_TARGET" in
 			if [ "$X11_INSTALL_TEAMVIEWER" == "yes" ]; then
 				doX11InstallTeamviewer
 
-				if [ "$ENABLE_SERVICE_TEAMVIEWERD" == "yes" ]; then
-					doEnableServiceTeamviewerd
+				if [ "$ENABLE_SERVICE_TEAMVIEWER" == "yes" ]; then
+					doEnableServiceTeamviewer
 				fi
 			fi
 		fi
