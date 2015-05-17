@@ -361,6 +361,37 @@ doGenerateGrubConfig() {
 	grub-mkconfig -o /boot/grub/grub.cfg
 }
 
+doInstallGummiboot() {
+	pacman -S --noconfirm --needed dosfstools efibootmgr gummiboot
+
+	gummiboot --path=/boot install
+}
+
+doCreateGummibootEntry() {
+	cat > /boot/loader/entries/default.conf << __END__
+title Arch Linux
+linux /vmlinuz-linux
+initrd /initramfs-linux.img
+options quiet root=$ROOT_DEVICE rw
+__END__
+}
+
+doCreateGummibootEntryLuks() {
+	cat > /boot/loader/entries/default.conf << __END__
+title Arch Linux
+linux /vmlinuz-linux
+initrd /initramfs-linux.img
+options quiet cryptdevice=UUID="$LUKS_UUID":$LUKS_LVM_NAME root=$ROOT_DEVICE lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG
+__END__
+}
+
+doCreateGummibootConfig() {
+	cat > /boot/loader/loader.conf << __END__
+default default
+timeout 5
+__END__
+}
+
 doCreateCrypttabLuks() {
 	cat > /etc/crypttab << __END__
 $LUKS_LVM_NAME UUID="$LUKS_UUID" none luks
@@ -657,19 +688,39 @@ case "$INSTALL_TARGET" in
 
 		doSetRootPassword
 
-		doInstallGrub
+		case "$BOOT_METHOD" in
+			legacy)
+				doInstallGrub
 
-		if [ "$LVM_ON_LUKS" = "yes" ]; then
-			doDetectDevicesLuks
-			doDetectDevicesLuksLvm
-			doDetectLuksUuid
-			doEditGrubConfigLuks
-		else
-			doDetectDevices
-			doEditGrubConfig
-		fi
+				if [ "$LVM_ON_LUKS" = "yes" ]; then
+					doDetectDevicesLuks
+					doDetectDevicesLuksLvm
+					doDetectLuksUuid
+					doEditGrubConfigLuks
+				else
+					doDetectDevices
+					doEditGrubConfig
+				fi
 
-		doGenerateGrubConfig
+				doGenerateGrubConfig
+				;;
+
+			efi)
+				doInstallGummiboot
+
+				if [ "$LVM_ON_LUKS" == "yes" ]; then
+					doDetectDevicesLuks
+					doDetectDevicesLuksLvm
+					doDetectLuksUuid
+					doCreateGummibootEntryLuks
+				else
+					doDetectDevices
+					doCreateGummibootEntry
+				fi
+
+				doCreateGummibootConfig
+				;;
+		esac
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doCreateCrypttabLuks
