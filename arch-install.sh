@@ -249,10 +249,22 @@ doDetectDevicesLuksLvm() {
 	ROOT_DEVICE="$LVM_DEVICE_HOME/$LUKS_LVM_NAME-$ROOT_LABEL"
 }
 
+doMkfs() {
+	case "$1" in
+		fat32)
+			mkfs -t fat -F 32 -n "$2" "$3"
+			;;
+
+		*)
+			mkfs -t "$1" -L "$2" "$3"
+			;;
+	esac
+}
+
 doFormat() {
-	mkfs -t $BOOT_FILESYSTEM -L "$BOOT_LABEL" "$BOOT_DEVICE"
+	doMkfs "$BOOT_FILESYSTEM" "$BOOT_LABEL" "$BOOT_DEVICE"
 	mkswap -L "$SWAP_LABEL" "$SWAP_DEVICE"
-	mkfs -t $ROOT_FILESYSTEM -L "$ROOT_LABEL" "$ROOT_DEVICE"
+	doMkfs "$ROOT_FILESYSTEM" "$ROOT_LABEL" "$ROOT_DEVICE"
 }
 
 doMount() {
