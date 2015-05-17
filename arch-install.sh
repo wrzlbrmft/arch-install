@@ -167,7 +167,9 @@ doCreateNewPartitions() {
 	parted -s -a optimal "$INSTALL_DEVICE" toggle 1 boot
 
 	doPartProbe
+}
 
+doSetNewPartitionTypes() {
 	fdisk "$INSTALL_DEVICE" << __END__
 t
 1
@@ -202,7 +204,9 @@ doCreateNewPartitionsLuks() {
 	parted -s -a optimal "$INSTALL_DEVICE" toggle 1 boot
 
 	doPartProbe
+}
 
+doSetNewPartitionTypesLuks() {
 	fdisk "$INSTALL_DEVICE" << __END__
 t
 1
@@ -606,12 +610,14 @@ case "$INSTALL_TARGET" in
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doCreateNewPartitionsLuks
+			doSetNewPartitionTypesLuks
 			doDetectDevicesLuks
 			doCreateLuks
 			doCreateLuksLvm
 			doDetectDevicesLuksLvm
 		else
 			doCreateNewPartitions
+			doSetNewPartitionTypes
 			doDetectDevices
 		fi
 
