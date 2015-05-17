@@ -173,13 +173,13 @@ doSetNewPartitionTypes() {
 	fdisk "$INSTALL_DEVICE" << __END__
 t
 1
-83
+$BOOT_PARTITION_TYPE
 t
 2
-82
+$SWAP_PARTITION_TYPE
 t
 3
-83
+$ROOT_PARTITION_TYPE
 w
 __END__
 
@@ -210,10 +210,10 @@ doSetNewPartitionTypesLuks() {
 	fdisk "$INSTALL_DEVICE" << __END__
 t
 1
-83
+$BOOT_PARTITION_TYPE
 t
 2
-8e
+$LUKS_PARTITION_TYPE
 w
 __END__
 
