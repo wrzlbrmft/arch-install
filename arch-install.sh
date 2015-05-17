@@ -250,9 +250,9 @@ doDetectDevicesLuksLvm() {
 }
 
 doFormat() {
-	mkfs -t "$BOOT_FILESYSTEM" -L "$BOOT_LABEL" "$BOOT_DEVICE"
+	mkfs -t $BOOT_FILESYSTEM -L "$BOOT_LABEL" "$BOOT_DEVICE"
 	mkswap -L "$SWAP_LABEL" "$SWAP_DEVICE"
-	mkfs -t "$ROOT_FILESYSTEM" -L "$ROOT_LABEL" "$ROOT_DEVICE"
+	mkfs -t $ROOT_FILESYSTEM -L "$ROOT_LABEL" "$ROOT_DEVICE"
 }
 
 doMount() {
