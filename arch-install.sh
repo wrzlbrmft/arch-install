@@ -150,9 +150,11 @@ doWipeDevice() {
 	doPartProbe
 }
 
-doCreateNewPartitions() {
+doCreateNewPartitionTable() {
 	parted -s -a optimal "$INSTALL_DEVICE" mklabel msdos
+}
 
+doCreateNewPartitions() {
 	local START="1"; local END="$BOOT_SIZE"
 	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
 
@@ -191,8 +193,6 @@ doDetectDevices() {
 }
 
 doCreateNewPartitionsLuks() {
-	parted -s -a optimal "$INSTALL_DEVICE" mklabel msdos
-
 	local START="1"; local END="$BOOT_SIZE"
 	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
 
@@ -601,6 +601,8 @@ case "$INSTALL_TARGET" in
 		doWipeAllPartitions
 		doDeleteAllPartitions
 		doWipeDevice
+
+		doCreateNewPartitionTable
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doCreateNewPartitionsLuks
