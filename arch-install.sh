@@ -151,7 +151,7 @@ doWipeDevice() {
 }
 
 doCreateNewPartitionTable() {
-	parted -s -a optimal "$INSTALL_DEVICE" mklabel msdos
+	parted -s -a optimal "$INSTALL_DEVICE" mklabel "$PARTITION_TABLE_TYPE"
 }
 
 doCreateNewPartitions() {
