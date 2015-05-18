@@ -383,7 +383,7 @@ doInstallGrub() {
 }
 
 doDetectRootUuid() {
-	ROOT_UUID="`lsblk -l -n -o UUID "$ROOT_DEVICE"`"
+	ROOT_UUID="`blkid -o value -s UUID "$ROOT_DEVICE"`"
 }
 
 doEditGrubConfig() {
