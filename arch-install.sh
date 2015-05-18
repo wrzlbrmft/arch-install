@@ -107,6 +107,21 @@ __END__
 	rm "$SU_USER_SUDO_NOPASSWD"
 }
 
+doConfirmInstall() {
+	doPrint "Installing to '$INSTALL_DEVICE' - ALL DATA WILL BE LOST!"
+	doPrint "Enter 'YES' (in capitals) to confirm:"
+	read i
+	if [ "$i" != "YES" ]; then
+		doPrint "Aborted."
+		exit 0
+	fi
+
+	for i in {10..1}; do
+		doPrint "Starting in $i - Press CTRL-C to abort..."
+		sleep 1
+	done
+}
+
 doDeactivateAllSwaps() {
 	swapoff -a
 }
@@ -648,6 +663,8 @@ doInstallPackageSets() {
 
 case "$INSTALL_TARGET" in
 	base)
+		doConfirmInstall
+
 		doDeactivateAllSwaps
 		doWipeAllPartitions
 		doDeleteAllPartitions
@@ -677,6 +694,8 @@ case "$INSTALL_TARGET" in
 
 		doCopyToChroot
 		doChroot chroot
+
+		doPrint "Done."
 
 		exit 0
 		;;
