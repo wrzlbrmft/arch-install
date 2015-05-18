@@ -406,7 +406,7 @@ __END__
 
 doCreateCrypttabLuks() {
 	cat > /etc/crypttab << __END__
-$LUKS_LVM_NAME UUID="$LUKS_UUID" none luks
+$LUKS_LVM_NAME UUID=$LUKS_UUID none luks
 __END__
 }
 
