@@ -151,7 +151,7 @@ doWipeDevice() {
 }
 
 doCreateNewPartitionTable() {
-	parted -s -a optimal "$INSTALL_DEVICE" mklabel "$PARTITION_TABLE_TYPE"
+	parted -s -a optimal "$INSTALL_DEVICE" mklabel "$1"
 }
 
 doCreateNewPartitions() {
@@ -649,7 +649,7 @@ case "$INSTALL_TARGET" in
 		doDeleteAllPartitions
 		doWipeDevice
 
-		doCreateNewPartitionTable
+		doCreateNewPartitionTable "$PARTITION_TABLE_TYPE"
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doCreateNewPartitionsLuks
