@@ -165,6 +165,26 @@ doWipeDevice() {
 	doPartProbe
 }
 
+doSetPartitionTypes() {
+	case "$1" in
+		legacy)
+			PARTITION_TABLE_TYPE="msdos"
+			BOOT_PARTITION_TYPE="83"
+			LUKS_PARTITION_TYPE="8e"
+			SWAP_PARTITION_TYPE="82"
+			ROOT_PARTITION_TYPE="83"
+			;;
+
+		efi)
+			PARTITION_TABLE_TYPE="gpt"
+			BOOT_PARTITION_TYPE="1"
+			LUKS_PARTITION_TYPE="23"
+			SWAP_PARTITION_TYPE="14"
+			ROOT_PARTITION_TYPE="18"
+			;;
+	esac
+}
+
 doCreateNewPartitionTable() {
 	parted -s -a optimal "$INSTALL_DEVICE" mklabel "$1"
 }
@@ -670,6 +690,7 @@ case "$INSTALL_TARGET" in
 		doDeleteAllPartitions
 		doWipeDevice
 
+		doSetPartitionTypes "$BOOT_METHOD"
 		doCreateNewPartitionTable "$PARTITION_TABLE_TYPE"
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
