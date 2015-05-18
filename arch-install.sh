@@ -363,7 +363,7 @@ doDetectLuksUuid() {
 doEditGrubConfigLuks() {
 	cat /etc/default/grub | sed -e 's/^\(\(GRUB_CMDLINE_LINUX_DEFAULT\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/default-grub
 	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT="([^"]+)"$/ {
-			gsub(/quiet/, "quiet cryptdevice=UUID=\"'"$LUKS_UUID"'\":'"$LUKS_LVM_NAME"' root='"$ROOT_DEVICE"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"'", $0);
+			gsub(/quiet/, "quiet cryptdevice=UUID='"$LUKS_UUID"':'"$LUKS_LVM_NAME"' root='"$ROOT_DEVICE"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"'", $0);
 			print
 		} !m { print }' > /etc/default/grub
 	rm /tmp/default-grub
@@ -393,7 +393,7 @@ doCreateGummibootEntryLuks() {
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options quiet cryptdevice=UUID="$LUKS_UUID":$LUKS_LVM_NAME root=$ROOT_DEVICE lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG
+options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME root=$ROOT_DEVICE rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG
 __END__
 }
 
