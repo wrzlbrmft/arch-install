@@ -415,7 +415,11 @@ doGenerateGrubConfig() {
 doInstallGummiboot() {
 	pacman -S --noconfirm --needed dosfstools efibootmgr gummiboot
 
-	gummiboot --path=/boot install
+	if [ "$EFI_BOOT_VARIABLES" == "yes" ]; then
+		gummiboot --path=/boot install
+	else
+		gummiboot --path=/boot --no-variables install
+	fi
 }
 
 doCreateGummibootEntry() {
