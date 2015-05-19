@@ -382,6 +382,12 @@ doInstallGrub() {
 	grub-install --target=i386-pc --recheck "$INSTALL_DEVICE"
 }
 
+doInstallGrubEfi() {
+	pacman -S --noconfirm --needed dosfstools efibootmgr grub
+
+	grub-install --target=x86_64-efi --efi-directory=/boot --recheck
+}
+
 doDetectRootUuid() {
 	ROOT_UUID="`blkid -o value -s UUID "$ROOT_DEVICE"`"
 }
@@ -764,21 +770,43 @@ case "$INSTALL_TARGET" in
 				;;
 
 			efi)
-				doInstallGummiboot
-
 				if [ "$LVM_ON_LUKS" == "yes" ]; then
 					doDetectDevicesLuks
 					doDetectDevicesLuksLvm
 					doDetectLuksUuid
 					doDetectRootUuid
-					doCreateGummibootEntryLuks
+
+					case "$EFI_BOOT_LOADER" in
+						grub)
+							doInstallGrubEfi
+							doEditGrubConfigLuks
+							doGenerateGrubConfig
+							;;
+
+						gummiboot)
+							doInstallGummiboot
+							doCreateGummibootEntryLuks
+							doCreateGummibootConfig
+							;;
+					esac
 				else
 					doDetectDevices
 					doDetectRootUuid
-					doCreateGummibootEntry
-				fi
 
-				doCreateGummibootConfig
+					case "$EFI_BOOT_LOADER" in
+						grub)
+							doInstallGrubEfi
+							doEditGrubConfig
+							doGenerateGrubConfig
+							;;
+
+						gummiboot)
+							doInstallGummiboot
+							doCreateGummibootEntry
+							doCreateGummibootConfig
+							;;
+					esac
+				fi
 				;;
 		esac
 
