@@ -8,9 +8,11 @@ A highly configurable script installing
 ## Feature Highlights
 
 * Fully automated installation of a ready-to-use [Arch Linux](https://www.archlinux.org/) system
+* Installation to any device, including USB sticks
 * Supports both BIOS (legacy) and EFI boot methods
   * for BIOS: `grub` boot loader
   * for EFI: choose between `grub` or the `gummiboot` boot loader
+* Installation of a LVM-on-LUKS encrypted system (also on USB sticks!)
 * `yaourt` installation to install [AUR packages](https://aur.archlinux.org/) right away
 * X11 installation
 * Optionally install Ubuntu's font rendering (much smoother!)
