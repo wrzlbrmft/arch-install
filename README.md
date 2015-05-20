@@ -9,9 +9,9 @@ A highly configurable script installing
 
 * Fully automated installation of a ready-to-use [Arch Linux](https://www.archlinux.org/) system
 * Installation to any device, including USB sticks
-* Supports both BIOS (legacy) and EFI boot methods
+* Supports both BIOS (legacy) and [EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface) boot methods
   * for BIOS: `grub` boot loader
-  * for EFI: choose between `grub` or the `gummiboot` boot loader
+  * for [EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface): choose between `grub` or the `gummiboot` boot loader
 * Installation of an LVM-on-LUKS encrypted system (also on USB sticks!)
 * `yaourt` installation to install [AUR packages](https://aur.archlinux.org/) right away
 * X11 installation
@@ -129,8 +129,9 @@ Definitely the most important setting: where to install
 
 *Value:* `legacy` (default) or `efi`
 
-Boot method to be used: `legacy` for BIOS boot, `efi` for EFI/UEFI boot. This
-affects the boot loader configuration.
+Boot method to be used: `legacy` for BIOS boot, `efi` for
+[EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface)
+boot. This affects the boot loader configuration.
 
 #### LVM_ON_LUKS
 
