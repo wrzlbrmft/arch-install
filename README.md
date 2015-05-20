@@ -8,7 +8,7 @@ A highly configurable script installing
 ## Feature Highlights
 
 * Fully automated installation of a ready-to-use [Arch Linux](https://www.archlinux.org/) system
-* Installation to any device, including USB sticks
+* Installation to any device, including USB sticks or into a [VirtualBox](https://www.virtualbox.org/) VM
 * Supports both BIOS (legacy) and [EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface) boot methods
   * for BIOS: `grub` boot loader
   * for [EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface): choose between `grub` or the `gummiboot` boot loader
@@ -82,6 +82,10 @@ You may want to change the default configuration:
 ```
 nano -w arch-install/arch-install.conf
 ```
+
+**NOTE:** If you are installing into a [VirtualBox](https://www.virtualbox.org/)
+VM, make sure to set both `INSTALL_VIRTUALBOX_GUEST_ADDITIONS` and
+`ENABLE_MODULES_VIRTUALBOX_GUEST_ADDITIONS` to `yes`.
 
 see also: *Configuration/Most Important Settings*
 

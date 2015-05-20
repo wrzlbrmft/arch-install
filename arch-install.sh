@@ -673,6 +673,20 @@ blacklist pcspkr
 __END__
 }
 
+doInstallVirtualboxGuestAdditions() {
+	pacman -S --noconfirm --needed \
+		virtualbox-guest-modules \
+		virtualbox-guest-utils
+}
+
+doEnableModulesVirtualboxGuestAdditions() {
+	cat > /etc/modules-load.d/virtualbox.conf << __END__
+vboxguest
+vboxsf
+vboxvideo
+__END__
+}
+
 doInstallPackageSets() {
 	for i in $INSTALL_PACKAGE_SETS; do
 		j="$i":pacman
@@ -909,6 +923,14 @@ case "$INSTALL_TARGET" in
 
 		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
 			doDisablePcSpeaker
+		fi
+
+		if [ "$INSTALL_VIRTUALBOX_GUEST_ADDITIONS" == "yes" ]; then
+			doInstallVirtualboxGuestAdditions
+
+			if [ "$ENABLE_MODULES_VIRTUALBOX_GUEST_ADDITIONS" == "yes" ]; then
+				doEnableModulesVirtualboxGuestAdditions
+			fi
 		fi
 
 		if [ ! -z "$INSTALL_PACKAGE_SETS" ]; then
