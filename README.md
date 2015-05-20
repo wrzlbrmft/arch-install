@@ -12,7 +12,7 @@ A highly configurable script installing
 * Supports both BIOS (legacy) and EFI boot methods
   * for BIOS: `grub` boot loader
   * for EFI: choose between `grub` or the `gummiboot` boot loader
-* Installation of a LVM-on-LUKS encrypted system (also on USB sticks!)
+* Installation of an LVM-on-LUKS encrypted system (also on USB sticks!)
 * `yaourt` installation to install [AUR packages](https://aur.archlinux.org/) right away
 * X11 installation
 * Optionally install Ubuntu's font rendering (much smoother!)
