@@ -137,7 +137,9 @@ boot. This affects the boot loader configuration.
 
 *Value:* `yes` or `no` (default)
 
-Whether to install an LVM-on-LUKS encrypted system.
+Whether to install an LVM-on-LUKS encrypted system. For more information, start
+reading here about [LUKS](http://en.wikipedia.org/wiki/Linux_Unified_Key_Setup)
+and [dm-crypt](http://en.wikipedia.org/wiki/Dm-crypt).
 
 #### ADD_MAIN_USER
 
