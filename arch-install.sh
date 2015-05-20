@@ -722,7 +722,7 @@ case "$INSTALL_TARGET" in
 		doCopyToChroot
 		doChroot chroot
 
-		doPrint "Done."
+		doPrint "Wake up, Neo... The installation is done!"
 
 		exit 0
 		;;
