@@ -5,9 +5,27 @@ A highly configurable script installing
 
 *(work in progress)*
 
-## Features
+## Feature Highlights
 
-* ...
+* Fully automated installation of a ready-to-use [Arch Linux](https://www.archlinux.org/) system
+* Supports both BIOS (legacy) and EFI boot methods
+  * for BIOS: `grub` boot loader
+  * for EFI: choose between `grub` or the `gummiboot` boot loader
+* `yaourt` installation to install [AUR packages](https://aur.archlinux.org/) right away
+* X11 installation
+* Optionally install Ubuntu's font rendering (much smoother!)
+* [Xfce](http://www.xfce.org/) installation, including some nice themes and icons
+* Graphical user login using LightDM
+* Installation of individually configurable software package sets, already
+including
+  * [Chrome](https://www.google.de/chrome/browser/desktop/), [Firefox](https://www.mozilla.org/firefox/), [Thunderbird](https://www.mozilla.org/thunderbird/), [Skype](http://www.skype.com/), [TeamViewer](https://www.teamviewer.com/)
+  * [GIMP](http://www.gimp.org/), [gThumb](https://wiki.gnome.org/Apps/gthumb), [Shutter](http://shutter-project.org/), [Kazam](https://launchpad.net/kazam)
+  * [FileZilla](https://filezilla-project.org/), [Tor](https://www.torproject.org/)
+  * [Audacity](http://web.audacityteam.org/), [Banshee](http://banshee.fm/), [VLC](http://www.videolan.org/), [Spotify](https://www.spotify.com/)
+  * ...
+
+It's best you look into the configuration file `arch-install.conf` -- almost
+everything is configurable...
 
 ## Quick Start
 
