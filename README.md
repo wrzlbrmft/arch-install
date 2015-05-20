@@ -152,10 +152,14 @@ and [dm-crypt](http://en.wikipedia.org/wiki/Dm-crypt).
 Whether to add a main user. If set to `yes`, have a look at the
 `MAIN_USER_USERNAME` and `MAIN_USER_REALNAME` settings.
 
+**CAUTION:** The installation process highly depends on the creation of a main
+user (basically everything being installed using `yaourt`). **Disable at your
+own risk!**
+
 #### MAIN_USER_USERNAME, MAIN_USER_REALNAME
 
 If `ADD_MAIN_USER` is set to `yes`, a main user will be created. Use these two
-settings to configure the user name and the user's real name.
+settings to configure its user name and the user's real name.
 
 ### Using an Alternative Configuration File
 
