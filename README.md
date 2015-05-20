@@ -118,21 +118,20 @@ That's it!
 
 ### Most Important Settings
 
-**INSTALL_DEVICE**
-*Default:* `/dev/sda`
+#### INSTALL_DEVICE
+
 ...
 
-**BOOT_METHOD**
-*Values:* `legacy` or `efi`
-*Default:* `legacy`
+#### BOOT_METHOD
+
 ...
 
-**LVM_ON_LUKS**
-*Values:* `on` or `off`
-*Default:* `off`
+#### LVM_ON_LUKS
+
 ...
 
-**MAIN_USER_USERNAME** and **MAIN_USER_REALNAME**
+#### MAIN_USER_USERNAME, MAIN_USER_REALNAME
+
 ...
 
 ### Using an Alternative Configuration File
