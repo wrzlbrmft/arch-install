@@ -120,19 +120,35 @@ That's it!
 
 #### INSTALL_DEVICE
 
-...
+*Default:* `/dev/sda`
+
+Definitely the most important setting: where to install
+[Arch Linux](https://www.archlinux.org/).
 
 #### BOOT_METHOD
 
-...
+*Value:* `legacy` (default) or `efi`
+
+Boot method to be used: `legacy` for BIOS boot, `efi` for EFI/UEFI boot. This
+affects the boot loader configuration.
 
 #### LVM_ON_LUKS
 
-...
+*Value:* `yes` or `no` (default)
+
+Whether to install an LVM-on-LUKS encrypted system.
+
+#### ADD_MAIN_USER
+
+*Value:* `yes` (default) or `no`
+
+Whether to add a main user. If set to `yes`, have a look at the
+`MAIN_USER_USERNAME` and `MAIN_USER_REALNAME` settings.
 
 #### MAIN_USER_USERNAME, MAIN_USER_REALNAME
 
-...
+If `ADD_MAIN_USER` is set to `yes`, a main user will be created. Use these two
+settings to configure user name and real name.
 
 ### Using an Alternative Configuration File
 
