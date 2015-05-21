@@ -989,12 +989,12 @@ case "$INSTALL_TARGET" in
 		;;
 
 	suInstallYaourt)
-		doInstallYaourt $INSTALL_OPTIONS
+		doInstallYaourt
 		exit 0
 		;;
 
 	suYaourt)
-		doYaourt
+		doYaourt $INSTALL_OPTIONS
 		exit 0
 		;;
 
