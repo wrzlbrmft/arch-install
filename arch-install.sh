@@ -493,8 +493,6 @@ doSetUserLocaleLang() {
 	cat > ~/.config/locale.conf << __END__
 LANG=$1
 __END__
-
-	ln -s .config/locale.conf ~/.pam_environment
 }
 
 doSuSetUserLocaleLang() {
