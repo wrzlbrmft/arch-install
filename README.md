@@ -100,7 +100,7 @@ LVM-on-LUKS encryption, you will have to type in some passwords during the
 installation process.
 
 Depending on your computer and internet connection speed, the installation takes
-45-60 minutes (downloading approx. 1.2 GB).
+45 minutes (downloading approx. 1.2 GB).
 
 The installation is done, once you see
 
