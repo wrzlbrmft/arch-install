@@ -77,6 +77,8 @@ doChroot() {
 }
 
 doCopyToSu() {
+	local SU_USER="$1"
+
 	local SU_USER_HOME="`eval printf "~$SU_USER"`"
 	local SU_INSTALL_HOME="$SU_USER_HOME/`basename "$INSTALL_HOME"`"
 	mkdir -p "$SU_INSTALL_HOME"
@@ -89,6 +91,9 @@ doCopyToSu() {
 }
 
 doSu() {
+	local SU_USER="$1"
+	shift
+
 	local SU_USER_HOME="`eval printf "~$SU_USER"`"
 	local IN_SU_INSTALL_HOME="$SU_USER_HOME/`basename "$INSTALL_HOME"`"
 	local IN_SU_INSTALL_CONFIG="$IN_SU_INSTALL_HOME/`basename "$INSTALL_CONFIG"`"
@@ -97,6 +102,8 @@ doSu() {
 }
 
 doSuSudo() {
+	local SU_USER="$1"
+
 	local SU_USER_SUDO_NOPASSWD="/etc/sudoers.d/$SU_USER"
 
 	cat > "$SU_USER_SUDO_NOPASSWD" << __END__
@@ -529,6 +536,10 @@ doYaourt() {
 	yaourt -S --noconfirm --needed $INSTALL_OPTIONS
 }
 
+doSuYaourt() {
+	doSuSudo "$YAOURT_USER" suYaourt $*
+}
+
 doEnableMultilib() {
 	cat /etc/pacman.conf | sed -e '/^#\[multilib\]$/ {
 			N; /\n#Include/ {
@@ -577,7 +588,7 @@ doX11InstallFonts() {
 		ttf-liberation \
 		ttf-symbola
 
-	doSuSudo suYaourt ttf-ms-fonts
+	doSuYaourt ttf-ms-fonts
 }
 
 doX11InstallXfce() {
@@ -588,16 +599,16 @@ doX11InstallXfce() {
 
 doX11InstallUbuntuFontRendering() {
 	pacman -Rdd --noconfirm cairo
-	doSuSudo suYaourt cairo-ubuntu
+	doSuYaourt cairo-ubuntu
 
 	pacman -Rdd --noconfirm cairo
-	doSuSudo suYaourt cairo-ubuntu
+	doSuYaourt cairo-ubuntu
 
 	pacman -Rdd --noconfirm freetype2
-	doSuSudo suYaourt freetype2-ubuntu
+	doSuYaourt freetype2-ubuntu
 
 	pacman -Rdd --noconfirm fontconfig
-	doSuSudo suYaourt fontconfig-ubuntu
+	doSuYaourt fontconfig-ubuntu
 }
 
 doUpdateIconCache() {
@@ -609,7 +620,7 @@ doUpdateIconCache() {
 doX11InstallThemes() {
 	pacman -S --noconfirm --needed numix-themes
 
-	doSuSudo suYaourt \
+	doSuYaourt \
 		xfce-theme-numix-extra-colors \
 		gtk-theme-config \
 		elementary-xfce-icons-git \
@@ -629,7 +640,7 @@ doEnableServiceLightdm() {
 }
 
 doX11InstallTeamviewer() {
-	doSuSudo suYaourt teamviewer
+	doSuYaourt teamviewer
 }
 
 doEnableServiceTeamviewer() {
@@ -670,7 +681,7 @@ doInstallPulseaudio() {
 			paprefs \
 			pavucontrol
 
-		doSuSudo suYaourt pulseaudio-ctl
+		doSuYaourt pulseaudio-ctl
 	fi
 }
 
@@ -703,7 +714,7 @@ doInstallPackageSets() {
 
 		j="$i":yaourt
 		if [ ! -z "${PACKAGE_SET[$j]}" ]; then
-			doSuSudo suYaourt ${PACKAGE_SET[$j]}
+			doSuYaourt ${PACKAGE_SET[$j]}
 		fi
 	done
 }
@@ -859,8 +870,8 @@ case "$INSTALL_TARGET" in
 		fi
 
 		if [ "$INSTALL_YAOURT" == "yes" ]; then
-			doCopyToSu
-			doSuSudo suInstallYaourt
+			doCopyToSu "$YAOURT_USER"
+			doSuSudo "$YAOURT_USER" suInstallYaourt
 		fi
 
 		if [ "$ENABLE_MULTILIB" == "yes" ]; then
