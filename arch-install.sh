@@ -335,6 +335,12 @@ doEnableLocale() {
 	rm /tmp/locale.gen
 }
 
+doEnableLocales() {
+	for i in "$@"; do
+		doEnableLocale "$i"
+	done
+}
+
 doGenerateLocales() {
 	locale-gen
 }
@@ -745,8 +751,7 @@ case "$INSTALL_TARGET" in
 		doSetHostname "$HOSTNAME"
 		doSetTimezone "$TIMEZONE"
 
-		doEnableLocale "en_US.UTF-8 UTF-8"
-		doEnableLocale "$LOCALE"
+		doEnableLocales "${GENERATE_LOCALES[@]}"
 		doGenerateLocales
 		doSetLocale "$LOCALE_LANG"
 
