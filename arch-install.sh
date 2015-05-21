@@ -487,6 +487,20 @@ doAddMainUser() {
 	passwd "$MAIN_USER_USERNAME"
 }
 
+doSetUserLocaleLang() {
+	mkdir ~/.config
+
+	cat > ~/.config/locale.conf << __END__
+LANG=$1
+__END__
+
+	ln -s .config/locale.conf ~/.pam_environment
+}
+
+doSuSetUserLocaleLang() {
+	doSu "$1" suSetUserLocaleLang "$2"
+}
+
 doInstallSsh() {
 	pacman -S --noconfirm --needed openssh
 }
@@ -533,7 +547,7 @@ doInstallYaourt() {
 }
 
 doYaourt() {
-	yaourt -S --noconfirm --needed $INSTALL_OPTIONS
+	yaourt -S --noconfirm --needed $*
 }
 
 doSuYaourt() {
@@ -847,10 +861,22 @@ case "$INSTALL_TARGET" in
 
 		if [ "$ADD_HOST_USER" == "yes" ]; then
 			doAddHostUser
+
+			if [ ! -z "$HOST_USER_LOCALE" ]; then
+				if [ ! -z "$HOST_USER_LOCALE_LANG" ]; then
+					doSuSetUserLocaleLang "$HOST_USER_USERNAME" "$HOST_USER_LOCALE_LANG"
+				fi
+			fi
 		fi
 
 		if [ "$ADD_MAIN_USER" == "yes" ]; then
 			doAddMainUser
+
+			if [ ! -z "$MAIN_USER_LOCALE" ]; then
+				if [ ! -z "$MAIN_USER_LOCALE_LANG" ]; then
+					doSuSetUserLocaleLang "$MAIN_USER_USERNAME" "$MAIN_USER_LOCALE_LANG"
+				fi
+			fi
 		fi
 
 		if [ "$INSTALL_SSH" == "yes" ]; then
@@ -957,8 +983,13 @@ case "$INSTALL_TARGET" in
 		exit 0
 		;;
 
+	suSetUserLocaleLang)
+		doSetUserLocaleLang "$INSTALL_OPTIONS"
+		exit 0
+		;;
+
 	suInstallYaourt)
-		doInstallYaourt
+		doInstallYaourt $INSTALL_OPTIONS
 		exit 0
 		;;
 
