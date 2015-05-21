@@ -353,7 +353,7 @@ doGenerateLocales() {
 	locale-gen
 }
 
-doSetLocale() {
+doSetLocaleLang() {
 	cat > /etc/locale.conf << __END__
 LANG=$1
 __END__
@@ -765,7 +765,7 @@ case "$INSTALL_TARGET" in
 
 		doEnableLocales "${GENERATE_LOCALES[@]}"
 		doGenerateLocales
-		doSetLocale "$LOCALE_LANG"
+		doSetLocaleLang "$LOCALE_LANG"
 
 		doSetConsole "$CONSOLE_KEYMAP" "$CONSOLE_FONT"
 
