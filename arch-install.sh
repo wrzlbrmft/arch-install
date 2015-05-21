@@ -77,8 +77,8 @@ doChroot() {
 }
 
 doCopyToSu() {
-	SU_USER_HOME="`eval printf "~$SU_USER"`"
-	SU_INSTALL_HOME="$SU_USER_HOME/`basename "$INSTALL_HOME"`"
+	local SU_USER_HOME="`eval printf "~$SU_USER"`"
+	local SU_INSTALL_HOME="$SU_USER_HOME/`basename "$INSTALL_HOME"`"
 	mkdir -p "$SU_INSTALL_HOME"
 
 	cp -p "${BASH_SOURCE[0]}" "$SU_INSTALL_HOME"
@@ -89,7 +89,8 @@ doCopyToSu() {
 }
 
 doSu() {
-	local IN_SU_INSTALL_HOME="$SU_USER_HOME/`basename "$SU_INSTALL_HOME"`"
+	local SU_USER_HOME="`eval printf "~$SU_USER"`"
+	local IN_SU_INSTALL_HOME="$SU_USER_HOME/`basename "$INSTALL_HOME"`"
 	local IN_SU_INSTALL_CONFIG="$IN_SU_INSTALL_HOME/`basename "$INSTALL_CONFIG"`"
 
 	/bin/su "$SU_USER" -c "'$IN_SU_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_SU_INSTALL_CONFIG' $*"
