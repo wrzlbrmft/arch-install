@@ -335,7 +335,7 @@ doEnableLocale() {
 	rm /tmp/locale.gen
 }
 
-doGenerateLocale() {
+doGenerateLocales() {
 	locale-gen
 }
 
@@ -747,7 +747,7 @@ case "$INSTALL_TARGET" in
 
 		doEnableLocale "en_US.UTF-8 UTF-8"
 		doEnableLocale "$LOCALE"
-		doGenerateLocale
+		doGenerateLocales
 		doSetLocale "$LOCALE_LANG"
 
 		doSetConsole "$CONSOLE_KEYMAP" "$CONSOLE_FONT"
