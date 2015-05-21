@@ -864,6 +864,7 @@ case "$INSTALL_TARGET" in
 
 			if [ ! -z "$HOST_USER_LOCALE" ]; then
 				if [ ! -z "$HOST_USER_LOCALE_LANG" ]; then
+					doCopyToSu "$HOST_USER_USERNAME"
 					doSuSetUserLocaleLang "$HOST_USER_USERNAME" "$HOST_USER_LOCALE_LANG"
 				fi
 			fi
@@ -874,6 +875,7 @@ case "$INSTALL_TARGET" in
 
 			if [ ! -z "$MAIN_USER_LOCALE" ]; then
 				if [ ! -z "$MAIN_USER_LOCALE_LANG" ]; then
+					doCopyToSu "$MAIN_USER_USERNAME"
 					doSuSetUserLocaleLang "$MAIN_USER_USERNAME" "$MAIN_USER_LOCALE_LANG"
 				fi
 			fi
