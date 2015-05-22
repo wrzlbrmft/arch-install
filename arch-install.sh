@@ -674,6 +674,18 @@ doEnableServiceNetworkManager() {
 	systemctl enable NetworkManager.service
 }
 
+doInstallCups() {
+	pacman -S --noconfirm --needed \
+		cups \
+		libcups \
+		ghostscript \
+		gsfonts
+}
+
+doEnableServiceCups() {
+	systemctl enable org.cups.cupsd
+}
+
 doInstallTlp() {
 	pacman -S --noconfirm --needed tlp
 }
@@ -949,6 +961,14 @@ case "$INSTALL_TARGET" in
 
 			if [ "$ENABLE_SERVICE_NETWORK_MANAGER" == "yes" ]; then
 				doEnableServiceNetworkManager
+			fi
+		fi
+
+		if [ "$INSTALL_CUPS" == "yes" ]; then
+			doInstallCups
+
+			if [ "$ENABLE_SERVICE_CUPS" == "yes" ]; then
+				doEnableServiceCups
 			fi
 		fi
 
