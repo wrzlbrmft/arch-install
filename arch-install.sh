@@ -390,6 +390,11 @@ doSetRootPassword() {
 	passwd root
 }
 
+doRankmirrors() {
+	mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.dist
+	rankmirrors -n "$RANKMIRRORS_TOP" /etc/pacman.d/mirrorlist.dist > /etc/pacman.d/mirrorlist
+}
+
 doInstallGrub() {
 	pacman -S --noconfirm --needed grub
 
@@ -812,6 +817,10 @@ case "$INSTALL_TARGET" in
 		doMkinitcpio
 
 		doSetRootPassword
+
+		if [ "$RANKMIRRORS" == "yes" ]; then
+			doRankmirrors
+		fi
 
 		case "$BOOT_METHOD" in
 			legacy)
