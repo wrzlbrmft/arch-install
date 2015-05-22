@@ -396,12 +396,6 @@ doInstallGrub() {
 	grub-install --target=i386-pc --recheck "$INSTALL_DEVICE"
 }
 
-doInstallGrubEfi() {
-	pacman -S --noconfirm --needed dosfstools efibootmgr grub
-
-	grub-install --target=x86_64-efi --efi-directory=/boot --recheck
-}
-
 doDetectRootUuid() {
 	ROOT_UUID="`blkid -o value -s UUID "$ROOT_DEVICE"`"
 }
@@ -432,6 +426,12 @@ doGenerateGrubConfig() {
 	grub-mkconfig -o /boot/grub/grub.cfg
 }
 
+doInstallGrubEfi() {
+	pacman -S --noconfirm --needed dosfstools efibootmgr grub
+
+	grub-install --target=x86_64-efi --efi-directory=/boot --recheck
+}
+
 doInstallGummiboot() {
 	pacman -S --noconfirm --needed dosfstools efibootmgr gummiboot
 
@@ -447,19 +447,19 @@ options quiet root=UUID=$ROOT_UUID rw
 __END__
 }
 
+doCreateGummibootConfig() {
+	cat > /boot/loader/loader.conf << __END__
+default default
+timeout 5
+__END__
+}
+
 doCreateGummibootEntryLuks() {
 	cat > /boot/loader/entries/default.conf << __END__
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
 options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME root=UUID=$ROOT_UUID rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG
-__END__
-}
-
-doCreateGummibootConfig() {
-	cat > /boot/loader/loader.conf << __END__
-default default
-timeout 5
 __END__
 }
 
