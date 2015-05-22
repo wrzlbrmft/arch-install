@@ -92,12 +92,12 @@ doCopyToSu() {
 
 doSu() {
 	local SU_USER="$1"
-	shift
 
 	local SU_USER_HOME="`eval printf "~$SU_USER"`"
 	local IN_SU_INSTALL_HOME="$SU_USER_HOME/`basename "$INSTALL_HOME"`"
 	local IN_SU_INSTALL_CONFIG="$IN_SU_INSTALL_HOME/`basename "$INSTALL_CONFIG"`"
 
+	shift
 	/bin/su "$SU_USER" -c "'$IN_SU_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_SU_INSTALL_CONFIG' $*"
 }
 
@@ -488,7 +488,7 @@ doAddMainUser() {
 }
 
 doSetUserLocaleLang() {
-	mkdir ~/.config
+	mkdir -p ~/.config
 
 	cat > ~/.config/locale.conf << __END__
 LANG=$1
@@ -544,12 +544,16 @@ doInstallYaourt() {
 	cd ../..
 }
 
+doSuInstallYaourt() {
+	doSuSudo "$YAOURT_USER_USERNAME" suInstallYaourt
+}
+
 doYaourt() {
 	yaourt -S --noconfirm --needed $*
 }
 
 doSuYaourt() {
-	doSuSudo "$YAOURT_USER" suYaourt $*
+	doSuSudo "$YAOURT_USER_USERNAME" suYaourt $*
 }
 
 doEnableMultilib() {
@@ -912,8 +916,8 @@ case "$INSTALL_TARGET" in
 		fi
 
 		if [ "$INSTALL_YAOURT" == "yes" ]; then
-			doCopyToSu "$YAOURT_USER"
-			doSuSudo "$YAOURT_USER" suInstallYaourt
+			doCopyToSu "$YAOURT_USER_USERNAME"
+			doSuInstallYaourt
 		fi
 
 		if [ "$ENABLE_MULTILIB" == "yes" ]; then
@@ -1018,7 +1022,7 @@ case "$INSTALL_TARGET" in
 		;;
 
 	suYaourt)
-		doYaourt $INSTALL_OPTIONS
+		doYaourt "$INSTALL_OPTIONS"
 		exit 0
 		;;
 
