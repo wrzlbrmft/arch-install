@@ -680,6 +680,10 @@ doInstallCups() {
 		libcups \
 		ghostscript \
 		gsfonts
+
+	if [ "$INSTALL_X11" == "yes" ]; then
+		pacman -S --noconfirm --needed system-config-printer
+	fi
 }
 
 doEnableServiceCups() {
