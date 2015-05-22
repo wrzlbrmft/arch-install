@@ -650,10 +650,27 @@ doX11InstallThemes() {
 	doUpdateIconCache
 }
 
+doSetConf() {
+	cat "$1" | sed -e 's/^#\?\(\('"$2"'\)=\(.*\)\)$/#\1\n\2='"$3"'/' > "/tmp/`basename "$1"`"
+	cat "/tmp/`basename "$1"`" > "$1"
+	rm "/tmp/`basename "$1"`"
+}
+
 doX11InstallLightdm() {
 	pacman -S --noconfirm --needed \
 		lightdm \
 		lightdm-gtk-greeter
+
+	if [ "$X11_INSTALL_THEMES" == "yes" ]; then
+		doSetConf "/etc/lightdm/lightdm-gtk-greeter.conf" "theme-name" "Numix"
+		doSetConf "/etc/lightdm/lightdm-gtk-greeter.conf" "font-name" "Droid Sans 9"
+		doSetConf "/etc/lightdm/lightdm-gtk-greeter.conf" "xft-antialias" "true"
+		doSetConf "/etc/lightdm/lightdm-gtk-greeter.conf" "xft-dpi" "96"
+		doSetConf "/etc/lightdm/lightdm-gtk-greeter.conf" "xft-hintstyle" "slight"
+		doSetConf "/etc/lightdm/lightdm-gtk-greeter.conf" "xft-rgba" "rgb"
+		doSetConf "/etc/lightdm/lightdm-gtk-greeter.conf" "indicators" "~host;~spacer;~clock;~spacer;~language;~power"
+		doSetConf "/etc/lightdm/lightdm-gtk-greeter.conf" "clock-format" "%a, %d %b %H:%M:%S"
+	fi
 }
 
 doEnableServiceLightdm() {
