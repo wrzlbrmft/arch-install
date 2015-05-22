@@ -372,7 +372,7 @@ doEnableServiceDhcpcd() {
 
 doEditMkinitcpioLuks() {
 	cat /etc/mkinitcpio.conf | sed -e 's/^\(\(HOOKS\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/mkinitcpio.conf
-	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS="([^"]+)"$/ {
+	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS=/ {
 			gsub(/keyboard/, "", $0);
 			gsub(/filesystems/, "keyboard keymap encrypt lvm2 filesystems", $0);
 			gsub(/  /, " ", $0);
@@ -407,7 +407,7 @@ doDetectRootUuid() {
 
 doEditGrubConfig() {
 	cat /etc/default/grub | sed -e 's/^\(\(GRUB_CMDLINE_LINUX_DEFAULT\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/default-grub
-	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT="([^"]+)"$/ {
+	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
 			gsub(/quiet/, "quiet root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"'", $0);
 			print
 		} !m { print }' > /etc/default/grub
@@ -420,7 +420,7 @@ doDetectLuksUuid() {
 
 doEditGrubConfigLuks() {
 	cat /etc/default/grub | sed -e 's/^\(\(GRUB_CMDLINE_LINUX_DEFAULT\)="\([^"]\+\)"\)$/#\1\n\2="\3"/' > /tmp/default-grub
-	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT="([^"]+)"$/ {
+	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
 			gsub(/quiet/, "quiet cryptdevice=UUID='"$LUKS_UUID"':'"$LUKS_LVM_NAME"' root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"'", $0);
 			print
 		} !m { print }' > /etc/default/grub
