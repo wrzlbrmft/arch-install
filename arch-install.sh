@@ -392,7 +392,7 @@ doSetRootPassword() {
 
 doRankmirrors() {
 	mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.dist
-	rankmirrors -n "$RANKMIRRORS_TOP" /etc/pacman.d/mirrorlist.dist > /etc/pacman.d/mirrorlist
+	rankmirrors -n "$RANKMIRRORS_TOP" /etc/pacman.d/mirrorlist.dist | tee /etc/pacman.d/mirrorlist
 }
 
 doInstallGrub() {
