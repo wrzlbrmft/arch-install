@@ -23,7 +23,9 @@ including
   * [Chrome](https://www.google.de/chrome/browser/desktop/), [Firefox](https://www.mozilla.org/firefox/), [Thunderbird](https://www.mozilla.org/thunderbird/), [Skype](http://www.skype.com/), [TeamViewer](https://www.teamviewer.com/)
   * [GIMP](http://www.gimp.org/), [gThumb](https://wiki.gnome.org/Apps/gthumb), [Shutter](http://shutter-project.org/), [Kazam](https://launchpad.net/kazam)
   * [FileZilla](https://filezilla-project.org/), [Tor](https://www.torproject.org/)
+  * [OpenJDK 8](http://openjdk.java.net/), [LibreOffice](https://www.libreoffice.org)
   * [Audacity](http://web.audacityteam.org/), [Banshee](http://banshee.fm/), [VLC](http://www.videolan.org/), [Spotify](https://www.spotify.com/)
+  * [VirtualBox](https://www.virtualbox.org/)
   * ...
 
 It's best you look into the configuration file `arch-install.conf` -- almost
@@ -84,8 +86,8 @@ nano -w arch-install/arch-install.conf
 ```
 
 **NOTE:** If you are installing into a [VirtualBox](https://www.virtualbox.org/)
-VM, make sure to set both `INSTALL_VIRTUALBOX_GUEST_ADDITIONS` and
-`ENABLE_MODULES_VIRTUALBOX_GUEST_ADDITIONS` to `yes`.
+VM, make sure to set both `INSTALL_VIRTUALBOX_GUEST` and
+`ENABLE_MODULES_VIRTUALBOX_GUEST` to `yes`.
 
 see also: *Configuration/Most Important Settings*
 

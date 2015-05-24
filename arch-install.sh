@@ -745,14 +745,34 @@ blacklist pcspkr
 __END__
 }
 
-doInstallVirtualboxGuestAdditions() {
+doInstallVirtualboxHost() {
+	pacman -S --noconfirm --needed \
+		virtualbox \
+		virtualbox-host-modules \
+		virtualbox-guest-iso
+
+	if [ "$ADD_MAIN_USER" == "yes" ]; then
+		usermod -aG vboxusers "$MAIN_USER_USERNAME"
+	fi
+}
+
+doEnableModulesVirtualboxHost() {
+	cat > /etc/modules-load.d/virtualbox-host.conf << __END__
+vboxdrv
+vboxnetadp
+vboxnetflt
+vboxpci
+__END__
+}
+
+doInstallVirtualboxGuest() {
 	pacman -S --noconfirm --needed \
 		virtualbox-guest-modules \
 		virtualbox-guest-utils
 }
 
-doEnableModulesVirtualboxGuestAdditions() {
-	cat > /etc/modules-load.d/virtualbox.conf << __END__
+doEnableModulesVirtualboxGuest() {
+	cat > /etc/modules-load.d/virtualbox-guest.conf << __END__
 vboxguest
 vboxsf
 vboxvideo
@@ -1022,11 +1042,19 @@ case "$INSTALL_TARGET" in
 			doDisablePcSpeaker
 		fi
 
-		if [ "$INSTALL_VIRTUALBOX_GUEST_ADDITIONS" == "yes" ]; then
-			doInstallVirtualboxGuestAdditions
+		if [ "$INSTALL_VIRTUALBOX_GUEST" == "yes" ]; then
+			doInstallVirtualboxGuest
 
-			if [ "$ENABLE_MODULES_VIRTUALBOX_GUEST_ADDITIONS" == "yes" ]; then
-				doEnableModulesVirtualboxGuestAdditions
+			if [ "$ENABLE_MODULES_VIRTUALBOX_GUEST" == "yes" ]; then
+				doEnableModulesVirtualboxGuest
+			fi
+		fi
+
+		if [ "$INSTALL_VIRTUALBOX_HOST" == "yes" ]; then
+			doInstallVirtualboxHost
+
+			if [ "$ENABLE_MODULES_VIRTUALBOX_HOST" == "yes" ]; then
+				doEnableModulesVirtualboxHost
 			fi
 		fi
 
