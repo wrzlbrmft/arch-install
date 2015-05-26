@@ -739,6 +739,20 @@ doInstallPulseaudio() {
 	fi
 }
 
+doInstallScreen() {
+	pacman -S --noconfirm --needed screen
+}
+
+doCreateScreenrc() {
+cat > ~/.screenrc << __END__
+caption always " %-Lw%{= dd}%n%f* %t%{-}%+Lw"
+__END__
+}
+
+doSuCreateScreenrc() {
+	doSu "$1" suCreateScreenrc
+}
+
 doDisablePcSpeaker() {
 	cat >> /etc/modprobe.d/blacklist.conf << __END__
 blacklist pcspkr
@@ -1038,6 +1052,18 @@ case "$INSTALL_TARGET" in
 			doInstallPulseaudio
 		fi
 
+		if [ "$INSTALL_SCREEN" == "yes" ]; then
+			doInstallScreen
+
+			if [ "$HOST_USER_CREATE_SCREENRC" == "yes" ]; then
+				doSuCreateScreenrc "$HOST_USER_USERNAME"
+			fi
+
+			if [ "$MAIN_USER_CREATE_SCREENRC" == "yes" ]; then
+				doSuCreateScreenrc "$MAIN_USER_USERNAME"
+			fi
+		fi
+
 		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
 			doDisablePcSpeaker
 		fi
@@ -1077,6 +1103,11 @@ case "$INSTALL_TARGET" in
 
 	suYaourt)
 		doYaourt "$INSTALL_OPTIONS"
+		exit 0
+		;;
+
+	suCreateScreenrc)
+		doCreateScreenrc
 		exit 0
 		;;
 
