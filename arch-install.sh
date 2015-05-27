@@ -520,6 +520,19 @@ doInstallSudo() {
 	rm /tmp/sudoers
 }
 
+doEnableMultilib() {
+	cat /etc/pacman.conf | sed -e '/^#\[multilib\]$/ {
+			N; /\n#Include/ {
+				s/^#//
+				s/\n#/\n/
+			}
+		}' > /tmp/pacman.conf
+	cat /tmp/pacman.conf > /etc/pacman.conf
+	rm /tmp/pacman.conf
+
+	pacman -Sy
+}
+
 doInstallDevel() {
 	pacman -S --noconfirm --needed base-devel
 }
@@ -559,19 +572,6 @@ doYaourt() {
 
 doSuYaourt() {
 	doSuSudo "$YAOURT_USER_USERNAME" suYaourt $*
-}
-
-doEnableMultilib() {
-	cat /etc/pacman.conf | sed -e '/^#\[multilib\]$/ {
-			N; /\n#Include/ {
-				s/^#//
-				s/\n#/\n/
-			}
-		}' > /tmp/pacman.conf
-	cat /tmp/pacman.conf > /etc/pacman.conf
-	rm /tmp/pacman.conf
-
-	pacman -Sy
 }
 
 doInstallX11() {
@@ -974,6 +974,10 @@ case "$INSTALL_TARGET" in
 			doInstallSudo
 		fi
 
+		if [ "$ENABLE_MULTILIB" == "yes" ]; then
+			doEnableMultilib
+		fi
+
 		if [ "$INSTALL_DEVEL" == "yes" ]; then
 			doInstallDevel
 		fi
@@ -981,10 +985,6 @@ case "$INSTALL_TARGET" in
 		if [ "$INSTALL_YAOURT" == "yes" ]; then
 			doCopyToSu "$YAOURT_USER_USERNAME"
 			doSuInstallYaourt
-		fi
-
-		if [ "$ENABLE_MULTILIB" == "yes" ]; then
-			doEnableMultilib
 		fi
 
 		if [ "$INSTALL_X11" == "yes" ]; then
