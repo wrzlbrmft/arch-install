@@ -508,6 +508,22 @@ doSuUserSetLocaleLang() {
 	doSu "$1" suUserSetLocaleLang "$2"
 }
 
+doInstallScreen() {
+	pacman -S --noconfirm --needed screen
+
+	doSetConf "/etc/screenrc" "startup_message " "off"
+}
+
+doCreateScreenrc() {
+cat > ~/.screenrc << __END__
+caption always " %-Lw%{= dd}%n%f* %t%{-}%+Lw"
+__END__
+}
+
+doSuCreateScreenrc() {
+	doSu "$1" suCreateScreenrc
+}
+
 doInstallSsh() {
 	pacman -S --noconfirm --needed openssh
 }
@@ -743,22 +759,6 @@ doInstallPulseaudio() {
 	fi
 }
 
-doInstallScreen() {
-	pacman -S --noconfirm --needed screen
-
-	doSetConf "/etc/screenrc" "startup_message " "off"
-}
-
-doCreateScreenrc() {
-cat > ~/.screenrc << __END__
-caption always " %-Lw%{= dd}%n%f* %t%{-}%+Lw"
-__END__
-}
-
-doSuCreateScreenrc() {
-	doSu "$1" suCreateScreenrc
-}
-
 doDisablePcSpeaker() {
 	cat >> /etc/modprobe.d/blacklist.conf << __END__
 blacklist pcspkr
@@ -969,6 +969,20 @@ case "$INSTALL_TARGET" in
 			fi
 		fi
 
+		if [ "$INSTALL_SCREEN" == "yes" ]; then
+			doInstallScreen
+
+			if [ "$HOST_USER_CREATE_SCREENRC" == "yes" ]; then
+				doCopyToSu "$HOST_USER_USERNAME"
+				doSuCreateScreenrc "$HOST_USER_USERNAME"
+			fi
+
+			if [ "$MAIN_USER_CREATE_SCREENRC" == "yes" ]; then
+				doCopyToSu "$MAIN_USER_USERNAME"
+				doSuCreateScreenrc "$MAIN_USER_USERNAME"
+			fi
+		fi
+
 		if [ "$INSTALL_SSH" == "yes" ]; then
 			doInstallSsh
 
@@ -1062,18 +1076,6 @@ case "$INSTALL_TARGET" in
 			doInstallPulseaudio
 		fi
 
-		if [ "$INSTALL_SCREEN" == "yes" ]; then
-			doInstallScreen
-
-			if [ "$HOST_USER_CREATE_SCREENRC" == "yes" ]; then
-				doSuCreateScreenrc "$HOST_USER_USERNAME"
-			fi
-
-			if [ "$MAIN_USER_CREATE_SCREENRC" == "yes" ]; then
-				doSuCreateScreenrc "$MAIN_USER_USERNAME"
-			fi
-		fi
-
 		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
 			doDisablePcSpeaker
 		fi
@@ -1106,6 +1108,11 @@ case "$INSTALL_TARGET" in
 		exit 0
 		;;
 
+	suCreateScreenrc)
+		doCreateScreenrc
+		exit 0
+		;;
+
 	suInstallYaourt)
 		doInstallYaourt
 		exit 0
@@ -1113,11 +1120,6 @@ case "$INSTALL_TARGET" in
 
 	suYaourt)
 		doYaourt "$INSTALL_OPTIONS"
-		exit 0
-		;;
-
-	suCreateScreenrc)
-		doCreateScreenrc
 		exit 0
 		;;
 
