@@ -514,14 +514,14 @@ doInstallScreen() {
 	doSetConf "/etc/screenrc" "startup_message " "off"
 }
 
-doCreateScreenrc() {
+doUserCreateScreenrc() {
 cat > ~/.screenrc << __END__
 caption always " %-Lw%{= dd}%n%f* %t%{-}%+Lw"
 __END__
 }
 
-doSuCreateScreenrc() {
-	doSu "$1" suCreateScreenrc
+doSuUserCreateScreenrc() {
+	doSu "$1" suUserCreateScreenrc
 }
 
 doInstallSsh() {
@@ -974,12 +974,12 @@ case "$INSTALL_TARGET" in
 
 			if [ "$HOST_USER_CREATE_SCREENRC" == "yes" ]; then
 				doCopyToSu "$HOST_USER_USERNAME"
-				doSuCreateScreenrc "$HOST_USER_USERNAME"
+				doSuUserCreateScreenrc "$HOST_USER_USERNAME"
 			fi
 
 			if [ "$MAIN_USER_CREATE_SCREENRC" == "yes" ]; then
 				doCopyToSu "$MAIN_USER_USERNAME"
-				doSuCreateScreenrc "$MAIN_USER_USERNAME"
+				doSuUserCreateScreenrc "$MAIN_USER_USERNAME"
 			fi
 		fi
 
@@ -1108,8 +1108,8 @@ case "$INSTALL_TARGET" in
 		exit 0
 		;;
 
-	suCreateScreenrc)
-		doCreateScreenrc
+	suUserCreateScreenrc)
+		doUserCreateScreenrc
 		exit 0
 		;;
 
