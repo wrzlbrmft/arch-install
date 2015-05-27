@@ -741,6 +741,8 @@ doInstallPulseaudio() {
 
 doInstallScreen() {
 	pacman -S --noconfirm --needed screen
+
+	doSetConf "/etc/screenrc" "startup_message " "off"
 }
 
 doCreateScreenrc() {
