@@ -496,7 +496,7 @@ doAddMainUser() {
 	passwd "$MAIN_USER_USERNAME"
 }
 
-doSetUserLocaleLang() {
+doUserSetLocaleLang() {
 	mkdir -p ~/.config
 
 	cat > ~/.config/locale.conf << __END__
@@ -504,8 +504,8 @@ LANG=$1
 __END__
 }
 
-doSuSetUserLocaleLang() {
-	doSu "$1" suSetUserLocaleLang "$2"
+doSuUserSetLocaleLang() {
+	doSu "$1" suUserSetLocaleLang "$2"
 }
 
 doInstallSsh() {
@@ -953,7 +953,7 @@ case "$INSTALL_TARGET" in
 			if [ ! -z "$HOST_USER_LOCALE" ]; then
 				if [ ! -z "$HOST_USER_LOCALE_LANG" ]; then
 					doCopyToSu "$HOST_USER_USERNAME"
-					doSuSetUserLocaleLang "$HOST_USER_USERNAME" "$HOST_USER_LOCALE_LANG"
+					doSuUserSetLocaleLang "$HOST_USER_USERNAME" "$HOST_USER_LOCALE_LANG"
 				fi
 			fi
 		fi
@@ -964,7 +964,7 @@ case "$INSTALL_TARGET" in
 			if [ ! -z "$MAIN_USER_LOCALE" ]; then
 				if [ ! -z "$MAIN_USER_LOCALE_LANG" ]; then
 					doCopyToSu "$MAIN_USER_USERNAME"
-					doSuSetUserLocaleLang "$MAIN_USER_USERNAME" "$MAIN_USER_LOCALE_LANG"
+					doSuUserSetLocaleLang "$MAIN_USER_USERNAME" "$MAIN_USER_LOCALE_LANG"
 				fi
 			fi
 		fi
@@ -1101,8 +1101,8 @@ case "$INSTALL_TARGET" in
 		exit 0
 		;;
 
-	suSetUserLocaleLang)
-		doSetUserLocaleLang "$INSTALL_OPTIONS"
+	suUserSetLocaleLang)
+		doUserSetLocaleLang "$INSTALL_OPTIONS"
 		exit 0
 		;;
 
