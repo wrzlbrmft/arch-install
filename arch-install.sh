@@ -135,7 +135,7 @@ doDeactivateAllSwaps() {
 }
 
 getAllPartitions() {
-	lsblk -l -n -o NAME "$INSTALL_DEVICE" | grep -v "^`basename "$INSTALL_DEVICE"`$"
+	lsblk -l -n -o NAME "$INSTALL_DEVICE" | grep -v "^$INSTALL_DEVICE_NAME$"
 }
 
 doFlush() {
