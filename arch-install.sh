@@ -739,12 +739,6 @@ doInstallPulseaudio() {
 	fi
 }
 
-doDisablePcSpeaker() {
-	cat >> /etc/modprobe.d/blacklist.conf << __END__
-blacklist pcspkr
-__END__
-}
-
 doInstallVirtualboxHost() {
 	pacman -S --noconfirm --needed \
 		virtualbox \
@@ -776,6 +770,12 @@ doEnableModulesVirtualboxGuest() {
 vboxguest
 vboxsf
 vboxvideo
+__END__
+}
+
+doDisablePcSpeaker() {
+	cat >> /etc/modprobe.d/blacklist.conf << __END__
+blacklist pcspkr
 __END__
 }
 
@@ -1055,10 +1055,6 @@ case "$INSTALL_TARGET" in
 			doInstallPulseaudio
 		fi
 
-		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
-			doDisablePcSpeaker
-		fi
-
 		if [ "$INSTALL_VIRTUALBOX_GUEST" == "yes" ]; then
 			doInstallVirtualboxGuest
 
@@ -1073,6 +1069,10 @@ case "$INSTALL_TARGET" in
 			if [ "$ENABLE_MODULES_VIRTUALBOX_HOST" == "yes" ]; then
 				doEnableModulesVirtualboxHost
 			fi
+		fi
+
+		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
+			doDisablePcSpeaker
 		fi
 
 		if [ ! -z "$INSTALL_PACKAGE_SETS" ]; then
