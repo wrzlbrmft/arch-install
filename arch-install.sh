@@ -785,6 +785,12 @@ blacklist pcspkr
 __END__
 }
 
+doOptimizeSwappiness() {
+	cat > /etc/sysctl.d/99-sysctl.conf << __END__
+vm.swappiness=$OPTIMIZE_SWAPPINESS_VALUE
+__END__
+}
+
 doInstallPackageSets() {
 	for i in $INSTALL_PACKAGE_SETS; do
 		j="$i":pacman
@@ -1083,6 +1089,10 @@ case "$INSTALL_TARGET" in
 
 		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
 			doDisablePcSpeaker
+		fi
+
+		if [ "$OPTIMIZE_SWAPPINESS" == "yes" ]; then
+			doOptimizeSwappiness
 		fi
 
 		if [ ! -z "$INSTALL_PACKAGE_SETS" ]; then
