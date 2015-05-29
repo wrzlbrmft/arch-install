@@ -791,6 +791,12 @@ vm.swappiness=$OPTIMIZE_SWAPPINESS_VALUE
 __END__
 }
 
+doOptimizeIoSchedulerUdev() {
+	cat > /etc/udev/rules.d/60-schedulers.rules << __END__
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="$OPTIMIZE_IO_SCHEDULER_UDEV_ROTATIONAL", ATTR{queue/scheduler}="$OPTIMIZE_IO_SCHEDULER_UDEV_VALUE"
+__END__
+}
+
 doInstallPackageSets() {
 	for i in $INSTALL_PACKAGE_SETS; do
 		j="$i":pacman
@@ -1093,6 +1099,10 @@ case "$INSTALL_TARGET" in
 
 		if [ "$OPTIMIZE_SWAPPINESS" == "yes" ]; then
 			doOptimizeSwappiness
+		fi
+
+		if [ "$OPTIMIZE_IO_SCHEDULER_UDEV" == "yes" ]; then
+			doOptimizeIoSchedulerUdev
 		fi
 
 		if [ ! -z "$INSTALL_PACKAGE_SETS" ]; then
