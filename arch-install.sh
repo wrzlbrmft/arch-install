@@ -385,6 +385,13 @@ doRankmirrors() {
 	rankmirrors -n "$RANKMIRRORS_TOP" /etc/pacman.d/mirrorlist.dist | tee /etc/pacman.d/mirrorlist
 }
 
+doSetOptimizeIoSchedulerKernel() {
+	IO_SCHEDULER_KERNEL=""
+	if [ "$OPTIMIZE_IO_SCHEDULER_KERNEL" == "yes" ]; then
+		IO_SCHEDULER_KERNEL=" elevator=$OPTIMIZE_IO_SCHEDULER_KERNEL_VALUE"
+	fi
+}
+
 doInstallGrub() {
 	pacman -S --noconfirm --needed grub
 
@@ -398,7 +405,7 @@ doDetectRootUuid() {
 doEditGrubConfig() {
 	cat /etc/default/grub | sed -e 's/^#\?\(\(GRUB_CMDLINE_LINUX_DEFAULT=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/default-grub
 	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
-			gsub(/quiet/, "quiet root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"'", $0);
+			gsub(/quiet/, "quiet root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"''"$IO_SCHEDULER_KERNEL"'", $0);
 			print
 		} !m { print }' > /etc/default/grub
 	rm /tmp/default-grub
@@ -411,7 +418,7 @@ doDetectLuksUuid() {
 doEditGrubConfigLuks() {
 	cat /etc/default/grub | sed -e 's/^#\?\(\(GRUB_CMDLINE_LINUX_DEFAULT=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/default-grub
 	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
-			gsub(/quiet/, "quiet cryptdevice=UUID='"$LUKS_UUID"':'"$LUKS_LVM_NAME"' root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"'", $0);
+			gsub(/quiet/, "quiet cryptdevice=UUID='"$LUKS_UUID"':'"$LUKS_LVM_NAME"' root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"''"$IO_SCHEDULER_KERNEL"'", $0);
 			print
 		} !m { print }' > /etc/default/grub
 	rm /tmp/default-grub
@@ -438,7 +445,7 @@ doCreateGummibootEntry() {
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options quiet root=UUID=$ROOT_UUID rw
+options quiet root=UUID=$ROOT_UUID rw$IO_SCHEDULER_KERNEL
 __END__
 }
 
@@ -454,7 +461,7 @@ doCreateGummibootEntryLuks() {
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME root=UUID=$ROOT_UUID rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG
+options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME root=UUID=$ROOT_UUID rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG$IO_SCHEDULER_KERNEL
 __END__
 }
 
@@ -883,6 +890,8 @@ case "$INSTALL_TARGET" in
 		if [ "$RANKMIRRORS" == "yes" ]; then
 			doRankmirrors
 		fi
+
+		doSetOptimizeIoSchedulerKernel
 
 		case "$BOOT_METHOD" in
 			legacy)
