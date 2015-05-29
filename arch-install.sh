@@ -311,6 +311,12 @@ doGenerateFstab() {
 	genfstab -p -U /mnt >> /mnt/etc/fstab
 }
 
+doOptimizeFstabNoatime() {
+	cat /mnt/etc/fstab | sed -e 's/relatime/noatime/' > /tmp/fstab
+	cat /tmp/fstab > /mnt/etc/fstab
+	rm /tmp/fstab
+}
+
 doSetHostname() {
 	cat > /etc/hostname << __END__
 $1
@@ -827,6 +833,10 @@ case "$INSTALL_TARGET" in
 		doPacstrap
 
 		doGenerateFstab
+
+		if [ "$OPTIMIZE_FSTAB_NOATIME" == "yes" ]; then
+			doOptimizeFstabNoatime
+		fi
 
 		doCopyToChroot
 		doChroot chroot
