@@ -466,8 +466,13 @@ __END__
 }
 
 doCreateCrypttabLuks() {
+	local SSD_DISCARD
+	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
+		SSD_DISCARD=",discard"
+	fi
+
 	cat > /etc/crypttab << __END__
-$LUKS_LVM_NAME UUID=$LUKS_UUID none luks
+$LUKS_LVM_NAME UUID=$LUKS_UUID none luks$SSD_DISCARD
 __END__
 }
 
