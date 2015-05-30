@@ -9,10 +9,11 @@ A highly configurable script installing
 
 * Fully automated installation of a ready-to-use [Arch Linux](https://www.archlinux.org/) system
 * Installation to any device, including USB sticks or into a [VirtualBox](https://www.virtualbox.org/) VM
+* Auto-detecting SSDs to configure [TRIM](http://en.wikipedia.org/wiki/Trim_(computing))
 * Supports both BIOS (legacy) and [EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface) boot methods
   * for BIOS: `grub` boot loader
   * for [EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface): choose between `grub` or the `gummiboot` boot loader
-* Installation of an LVM-on-LUKS encrypted system (also on USB sticks!)
+* "One-switch" installation of a fully LVM-on-LUKS encrypted system (also on USB sticks!)
 * `yaourt` installation to install [AUR packages](https://aur.archlinux.org/) right away
 * X11 installation
 * Optionally install Ubuntu's font rendering (much smoother!)
@@ -22,11 +23,12 @@ A highly configurable script installing
 including
   * [Chrome](https://www.google.de/chrome/browser/desktop/), [Firefox](https://www.mozilla.org/firefox/), [Thunderbird](https://www.mozilla.org/thunderbird/), [Skype](http://www.skype.com/), [TeamViewer](https://www.teamviewer.com/)
   * [GIMP](http://www.gimp.org/), [gThumb](https://wiki.gnome.org/Apps/gthumb), [Shutter](http://shutter-project.org/), [Kazam](https://launchpad.net/kazam)
-  * [FileZilla](https://filezilla-project.org/), [Tor](https://www.torproject.org/)
+  * [Dropbox](https://www.dropbox.com/), [FileZilla](https://filezilla-project.org/), [Tor](https://www.torproject.org/)
   * [OpenJDK 8](http://openjdk.java.net/), [LibreOffice](https://www.libreoffice.org)
   * [Audacity](http://web.audacityteam.org/), [Banshee](http://banshee.fm/), [VLC](http://www.videolan.org/), [Spotify](https://www.spotify.com/)
   * [VirtualBox](https://www.virtualbox.org/)
   * ...
+* Optimization settings like `noatime`, swappiness and IO scheduler for SSDs 
 
 It's best you look into the configuration file `arch-install.conf` -- almost
 everything is configurable...
