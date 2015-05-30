@@ -300,10 +300,20 @@ doFormat() {
 }
 
 doMount() {
-	mount "$ROOT_DEVICE" /mnt
+	local SSD_DISCARD
+	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
+		SSD_DISCARD=" -o discard"
+	fi
+
+	mount$SSD_DISCARD "$ROOT_DEVICE" /mnt
 	mkdir /mnt/boot
-	mount "$BOOT_DEVICE" /mnt/boot
-	swapon "$SWAP_DEVICE"
+	mount$SSD_DISCARD "$BOOT_DEVICE" /mnt/boot
+
+	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
+		SSD_DISCARD=" --discard"
+	fi
+
+	swapon$SSD_DISCARD "$SWAP_DEVICE"
 }
 
 doPacstrap() {
@@ -314,6 +324,16 @@ doPacstrap() {
 
 doGenerateFstab() {
 	genfstab -p -U /mnt >> /mnt/etc/fstab
+
+	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
+		cat /mnt/etc/fstab | sed -e 's/\(data=ordered\)/\1,discard/' > /tmp/fstab
+		cat /tmp/fstab > /mnt/etc/fstab
+		rm /tmp/fstab
+
+		cat /mnt/etc/fstab | sed -e 's/\(swap\s*defaults\)/\1,discard/' > /tmp/fstab
+		cat /tmp/fstab > /mnt/etc/fstab
+		rm /tmp/fstab
+	fi
 }
 
 doOptimizeFstabNoatime() {
@@ -421,9 +441,14 @@ doDetectLuksUuid() {
 }
 
 doEditGrubConfigLuks() {
+	local SSD_DISCARD
+	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
+		SSD_DISCARD=":allow-discards"
+	fi
+
 	cat /etc/default/grub | sed -e 's/^#\?\(\(GRUB_CMDLINE_LINUX_DEFAULT=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/default-grub
 	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
-			gsub(/quiet/, "quiet cryptdevice=UUID='"$LUKS_UUID"':'"$LUKS_LVM_NAME"' root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"''"$IO_SCHEDULER_KERNEL"'", $0);
+			gsub(/quiet/, "quiet cryptdevice=UUID='"$LUKS_UUID"':'"$LUKS_LVM_NAME"''"$SSD_DISCARD"' root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"''"$IO_SCHEDULER_KERNEL"'", $0);
 			print
 		} !m { print }' > /etc/default/grub
 	rm /tmp/default-grub
@@ -462,11 +487,16 @@ __END__
 }
 
 doCreateGummibootEntryLuks() {
+	local SSD_DISCARD
+	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
+		SSD_DISCARD=":allow-discards"
+	fi
+
 	cat > /boot/loader/entries/default.conf << __END__
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME root=UUID=$ROOT_UUID rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG$IO_SCHEDULER_KERNEL
+options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME$SSD_DISCARD root=UUID=$ROOT_UUID rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG$IO_SCHEDULER_KERNEL
 __END__
 }
 
