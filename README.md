@@ -28,7 +28,7 @@ including
   * [Audacity](http://web.audacityteam.org/), [Banshee](http://banshee.fm/), [VLC](http://www.videolan.org/), [Spotify](https://www.spotify.com/)
   * [VirtualBox](https://www.virtualbox.org/)
   * [Ant](http://ant.apache.org/), [Maven](https://maven.apache.org/), [Google Protocol Buffers](https://developers.google.com/protocol-buffers/)
-  * [Apache](http://httpd.apache.org/), [MariaDB](https://mariadb.org/), [PHP](http://php.net/)...
+  * [Apache](http://httpd.apache.org/), [MariaDB](https://mariadb.org/), [PHP](http://php.net/)
   * ...
 * Optimization settings like `noatime`, swappiness and a better IO scheduler for SSDs
 
