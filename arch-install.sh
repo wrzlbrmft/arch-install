@@ -697,8 +697,7 @@ doX11InstallThemes() {
 	doSuYaourt \
 		xfce-theme-numix-extra-colors \
 		gtk-theme-config \
-		elementary-xfce-icons-git \
-		xcursor-human
+		elementary-xfce-icons-git
 
 	doUpdateIconCache
 }
