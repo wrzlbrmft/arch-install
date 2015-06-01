@@ -13,7 +13,7 @@ A highly configurable script installing
 * Supports both BIOS (legacy) and [EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface) boot methods
   * for BIOS: `grub` boot loader
   * for [EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface): choose between `grub` or the `gummiboot` boot loader
-* "One-switch" installation of a fully LVM-on-LUKS encrypted system (also on USB sticks!)
+* "One-switch" installation of a fully LVM-on-LUKS encrypted system (also to USB sticks!)
 * `yaourt` installation to install [AUR packages](https://aur.archlinux.org/) right away
 * X11 installation
 * Optionally install Ubuntu's font rendering (much smoother!)
@@ -28,9 +28,9 @@ including
   * [Audacity](http://web.audacityteam.org/), [Banshee](http://banshee.fm/), [VLC](http://www.videolan.org/), [Spotify](https://www.spotify.com/)
   * [VirtualBox](https://www.virtualbox.org/)
   * ...
-* Optimization settings like `noatime`, swappiness and IO scheduler for SSDs 
+* Optimization settings like `noatime`, swappiness and a better IO scheduler for SSDs
 
-It's best you look into the configuration file `arch-install.conf` -- almost
+You should look into the configuration file `arch-install.conf` -- almost
 everything is configurable...
 
 ## Quick Start
@@ -45,6 +45,9 @@ pacman -Sy --noconfirm --needed git
 git clone https://github.com/wrzlbrmft/arch-install.git
 arch-install/arch-install.sh
 ```
+
+**CAUTION:** The installation will delete *all* existing data on the
+installation device including all other partitions and operating systems on it.
 
 After a while, `reboot` and enjoy!
 
@@ -89,7 +92,8 @@ nano -w arch-install/arch-install.conf
 
 **NOTE:** If you are installing into a [VirtualBox](https://www.virtualbox.org/)
 VM, make sure to set both `INSTALL_VIRTUALBOX_GUEST` and
-`ENABLE_MODULES_VIRTUALBOX_GUEST` to `yes`.
+`ENABLE_MODULES_VIRTUALBOX_GUEST` to `yes` and maybe
+`ENABLE_MODULES_VIRTUALBOX_HOST` to `no`.
 
 see also: *Configuration/Most Important Settings*
 
@@ -99,12 +103,16 @@ Finally, start the installation process:
 arch-install/arch-install.sh
 ```
 
+**CAUTION:** The installation will delete *all* existing data on the
+installation device including all other partitions and operating systems on it.
+
 **NOTE:** For both the `root` and main user, and also if you enabled the
 LVM-on-LUKS encryption, you will have to type in some passwords during the
 installation process.
 
-Depending on your computer and internet connection speed, the installation takes
-45 minutes (downloading approx. 1.2 GB).
+Depending on your computer and internet connection speed, installing the
+defaults takes about 45 minutes (downloading 1.4 GB) and uses 10 GB of the
+installation device.
 
 The installation is done, once you see
 
@@ -122,7 +130,7 @@ That's it!
 
 ## Configuration
 
-*I will add comments to arch-install.conf soon...* :-)
+*I will add more comments to arch-install.conf soon...* :-)
 
 ### Most Important Settings
 
@@ -132,6 +140,9 @@ That's it!
 
 Definitely the most important setting: where to install
 [Arch Linux](https://www.archlinux.org/).
+
+**CAUTION:** The installation will delete *all* existing data on the
+installation device including all other partitions and operating systems on it.
 
 #### BOOT_METHOD
 
@@ -146,8 +157,9 @@ boot. This affects the boot loader configuration.
 *Value:* `yes` or `no` (default)
 
 Whether to install an LVM-on-LUKS encrypted system. For more information, start
-reading here about [LUKS](http://en.wikipedia.org/wiki/Linux_Unified_Key_Setup)
-and [dm-crypt](http://en.wikipedia.org/wiki/Dm-crypt).
+reading on Wikipedia about
+[LUKS](http://en.wikipedia.org/wiki/Linux_Unified_Key_Setup) and
+[dm-crypt](http://en.wikipedia.org/wiki/Dm-crypt).
 
 #### ADD_MAIN_USER
 
