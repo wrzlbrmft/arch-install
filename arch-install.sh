@@ -843,6 +843,10 @@ ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="$OPTIMIZE_IO_S
 __END__
 }
 
+doPackageSetWebPacmanAfter() {
+	mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+}
+
 doInstallPackageSets() {
 	for i in $INSTALL_PACKAGE_SETS; do
 		j="$i":pacmanBefore
