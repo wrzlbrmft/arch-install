@@ -845,14 +845,34 @@ __END__
 
 doInstallPackageSets() {
 	for i in $INSTALL_PACKAGE_SETS; do
-		j="$i":pacman
+		j="$i":pacmanBefore
 		if [ ! -z "${PACKAGE_SET[$j]}" ]; then
-			pacman -S --noconfirm --needed ${PACKAGE_SET[$j]}
+			${PACKAGE_SET[$j]}
 		fi
 
-		j="$i":yaourt
+			j="$i":pacman
+			if [ ! -z "${PACKAGE_SET[$j]}" ]; then
+				pacman -S --noconfirm --needed ${PACKAGE_SET[$j]}
+			fi
+
+		j="$i":pacmanAfter
 		if [ ! -z "${PACKAGE_SET[$j]}" ]; then
-			doSuYaourt ${PACKAGE_SET[$j]}
+			${PACKAGE_SET[$j]}
+		fi
+
+		j="$i":yaourtBefore
+		if [ ! -z "${PACKAGE_SET[$j]}" ]; then
+			${PACKAGE_SET[$j]}
+		fi
+
+			j="$i":yaourt
+			if [ ! -z "${PACKAGE_SET[$j]}" ]; then
+				doSuYaourt ${PACKAGE_SET[$j]}
+			fi
+
+		j="$i":yaourtAfter
+		if [ ! -z "${PACKAGE_SET[$j]}" ]; then
+			${PACKAGE_SET[$j]}
 		fi
 	done
 }
