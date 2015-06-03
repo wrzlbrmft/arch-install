@@ -831,6 +831,11 @@ blacklist pcspkr
 __END__
 }
 
+doSymlinkHashCommands() {
+	ln -s /usr/bin/md5sum /usr/local/bin/md5
+	ln -s /usr/bin/sha1sum /usr/local/bin/sha1
+}
+
 doOptimizeSwappiness() {
 	cat > /etc/sysctl.d/99-sysctl.conf << __END__
 vm.swappiness=$OPTIMIZE_SWAPPINESS_VALUE
@@ -1163,6 +1168,10 @@ case "$INSTALL_TARGET" in
 
 		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
 			doDisablePcSpeaker
+		fi
+
+		if [ "$SYMLINK_HASH_COMMANDS" == "yes" ]; then
+			doSymlinkHashCommands
 		fi
 
 		if [ "$OPTIMIZE_SWAPPINESS" == "yes" ]; then
