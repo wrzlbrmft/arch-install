@@ -113,7 +113,7 @@ LVM-on-LUKS encryption, you will have to type in some passwords during the
 installation process.
 
 Depending on your computer and internet connection speed, installing the
-defaults takes about 45 minutes (downloading 1.5 GB) and uses 7 GB of the
+defaults takes about 45 minutes (downloading 1.5 GB) and uses 7.1 GB of the
 installation device.
 
 The installation is done, once you see
