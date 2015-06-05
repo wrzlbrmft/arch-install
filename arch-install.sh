@@ -80,6 +80,11 @@ doChroot() {
 	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_INSTALL_HOME/$INSTALL_SCRIPT' -c '$IN_CHROOT_INSTALL_CONFIG' $*"
 }
 
+doRemoveFromChroot() {
+	local CHROOT_INSTALL_HOME="/mnt/root/`basename "$INSTALL_HOME"`"
+	rm -r "$CHROOT_INSTALL_HOME"
+}
+
 doCopyToSu() {
 	local SU_USER="$1"
 
@@ -117,6 +122,14 @@ __END__
 	doSu $*
 
 	rm "$SU_USER_SUDO_NOPASSWD"
+}
+
+doRemoveFromSu() {
+	local SU_USER="$1"
+
+	local SU_USER_HOME="`eval printf "~$SU_USER"`"
+	local SU_INSTALL_HOME="$SU_USER_HOME/`basename "$INSTALL_HOME"`"
+	rm -r "$SU_INSTALL_HOME"
 }
 
 doConfirmInstall() {
