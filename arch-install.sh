@@ -67,10 +67,12 @@ fi
 
 doCopyToChroot() {
 	local CHROOT_INSTALL_HOME="/mnt/root/`basename "$INSTALL_HOME"`"
-	mkdir -p "$CHROOT_INSTALL_HOME"
+	if [ ! -d "$CHROOT_INSTALL_HOME" ]; then
+		mkdir -p "$CHROOT_INSTALL_HOME"
 
-	cp -p "${BASH_SOURCE[0]}" "$CHROOT_INSTALL_HOME"
-	cp -p "$INSTALL_CONFIG" "$CHROOT_INSTALL_HOME"
+		cp -p "${BASH_SOURCE[0]}" "$CHROOT_INSTALL_HOME"
+		cp -p "$INSTALL_CONFIG" "$CHROOT_INSTALL_HOME"
+	fi
 }
 
 doChroot() {
@@ -90,13 +92,15 @@ doCopyToSu() {
 
 	local SU_USER_HOME="`eval printf "~$SU_USER"`"
 	local SU_INSTALL_HOME="$SU_USER_HOME/`basename "$INSTALL_HOME"`"
-	mkdir -p "$SU_INSTALL_HOME"
+	if [ ! -d "$SU_INSTALL_HOME" ]; then
+		mkdir -p "$SU_INSTALL_HOME"
 
-	cp -p "${BASH_SOURCE[0]}" "$SU_INSTALL_HOME"
-	cp -p "$INSTALL_CONFIG" "$SU_INSTALL_HOME"
+		cp -p "${BASH_SOURCE[0]}" "$SU_INSTALL_HOME"
+		cp -p "$INSTALL_CONFIG" "$SU_INSTALL_HOME"
 
-	local SU_USER_GROUP="`id -gn "$SU_USER"`"
-	chown -R "$SU_USER:$SU_USER_GROUP" "$SU_INSTALL_HOME"
+		local SU_USER_GROUP="`id -gn "$SU_USER"`"
+		chown -R "$SU_USER:$SU_USER_GROUP" "$SU_INSTALL_HOME"
+	fi
 }
 
 doSu() {
