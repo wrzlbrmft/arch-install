@@ -1216,6 +1216,12 @@ case "$INSTALL_TARGET" in
 			doInstallPackageSets
 		fi
 
+		if [ "$INSTALL_REMOVE_FROM_SU" == "yes" ]; then
+			doRemoveFromSu "$HOST_USER_USERNAME"
+			doRemoveFromSu "$MAIN_USER_USERNAME"
+			doRemoveFromSu "$YAOURT_USER_USERNAME"
+		fi
+
 		exit 0
 		;;
 
