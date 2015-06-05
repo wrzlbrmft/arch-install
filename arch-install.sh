@@ -1225,9 +1225,17 @@ case "$INSTALL_TARGET" in
 		fi
 
 		if [ "$INSTALL_REMOVE_FROM_SU" == "yes" ]; then
-			doRemoveFromSu "$HOST_USER_USERNAME"
-			doRemoveFromSu "$MAIN_USER_USERNAME"
-			doRemoveFromSu "$YAOURT_USER_USERNAME"
+			if [ "$ADD_HOST_USER" == "yes" ]; then
+				doRemoveFromSu "$HOST_USER_USERNAME"
+			fi
+
+			if [ "$ADD_MAIN_USER" == "yes" ]; then
+				doRemoveFromSu "$MAIN_USER_USERNAME"
+			fi
+
+			if [ "$INSTALL_YAOURT" == "yes" ]; then
+				doRemoveFromSu "$YAOURT_USER_USERNAME"
+			fi
 		fi
 
 		exit 0
