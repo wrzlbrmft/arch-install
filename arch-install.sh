@@ -84,7 +84,9 @@ doChroot() {
 
 doRemoveFromChroot() {
 	local CHROOT_INSTALL_HOME="/mnt/root/`basename "$INSTALL_HOME"`"
-	rm -r "$CHROOT_INSTALL_HOME"
+	if [ -d "$CHROOT_INSTALL_HOME" ]; then
+		rm -r "$CHROOT_INSTALL_HOME"
+	fi
 }
 
 doCopyToSu() {
@@ -133,7 +135,9 @@ doRemoveFromSu() {
 
 	local SU_USER_HOME="`eval printf "~$SU_USER"`"
 	local SU_INSTALL_HOME="$SU_USER_HOME/`basename "$INSTALL_HOME"`"
-	rm -r "$SU_INSTALL_HOME"
+	if [ -d "$SU_INSTALL_HOME" ]; then
+		rm -r "$SU_INSTALL_HOME"
+	fi
 }
 
 doConfirmInstall() {
