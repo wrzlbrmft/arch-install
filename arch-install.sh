@@ -950,6 +950,9 @@ case "$INSTALL_TARGET" in
 
 		doCopyToChroot
 		doChroot chroot
+		if [ "$INSTALL_REMOVE_FROM_CHROOT" == "yes" ]; then
+			doRemoveFromChroot
+		fi
 
 		doPrint "Wake up, Neo... The installation is done!"
 
