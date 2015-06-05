@@ -517,16 +517,26 @@ doAddHostUser() {
 	useradd -g "$HOST_USER_GROUP" -G "$HOST_USER_GROUPS_EXTRA" -d "/$HOST_USER_USERNAME" -s /bin/bash -c "$HOST_USER_REALNAME" -m "$HOST_USER_USERNAME"
 	HOST_USER_HOME="`eval printf "~$HOST_USER_USERNAME"`"
 	chmod 0751 "$HOST_USER_HOME"
+
 	doPrint "Setting password for host user '$HOST_USER_USERNAME'"
-	passwd -l "$HOST_USER_USERNAME"
+	if [ "$HOST_USER_SET_PASSWORD" == "yes" ]; then
+		passwd "$HOST_USER_USERNAME"
+	else
+		passwd -l "$HOST_USER_USERNAME"
+	fi
 }
 
 doAddMainUser() {
 	useradd -g "$MAIN_USER_GROUP" -G "$MAIN_USER_GROUPS_EXTRA" -s /bin/bash -c "$MAIN_USER_REALNAME" -m "$MAIN_USER_USERNAME"
 	MAIN_USER_HOME="`eval printf "~$MAIN_USER_USERNAME"`"
 	chmod 0751 "$MAIN_USER_HOME"
+
 	doPrint "Setting password for main user '$MAIN_USER_USERNAME'"
-	passwd "$MAIN_USER_USERNAME"
+	if [ "$MAIN_USER_SET_PASSWORD" == "yes" ]; then
+		passwd "$MAIN_USER_USERNAME"
+	else
+		passwd -l "$MAIN_USER_USERNAME"
+	fi
 }
 
 doUserSetLocaleLang() {
