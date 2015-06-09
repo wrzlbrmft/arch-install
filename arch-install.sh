@@ -484,13 +484,19 @@ doGenerateGrubConfig() {
 }
 
 doInstallGrubEfi() {
-	pacman -S --noconfirm --needed dosfstools efibootmgr grub
+	pacman -S --noconfirm --needed \
+		dosfstools \
+		efibootmgr \
+		grub
 
 	grub-install --target=x86_64-efi --efi-directory=/boot --recheck
 }
 
 doInstallGummiboot() {
-	pacman -S --noconfirm --needed dosfstools efibootmgr gummiboot
+	pacman -S --noconfirm --needed \
+		dosfstools \
+		efibootmgr \
+		gummiboot
 
 	gummiboot --path=/boot install
 }
