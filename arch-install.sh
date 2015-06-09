@@ -557,6 +557,18 @@ doAddHostUser() {
 	fi
 }
 
+doUserSetLocaleLang() {
+	mkdir -p ~/.config
+
+	cat > ~/.config/locale.conf << __END__
+LANG=$1
+__END__
+}
+
+doSuUserSetLocaleLang() {
+	doSu "$1" suUserSetLocaleLang "$2"
+}
+
 doAddMainUser() {
 	useradd -g "$MAIN_USER_GROUP" -G "$MAIN_USER_GROUPS_EXTRA" -s /bin/bash -c "$MAIN_USER_REALNAME" -m "$MAIN_USER_USERNAME"
 	MAIN_USER_HOME="`eval printf "~$MAIN_USER_USERNAME"`"
@@ -568,18 +580,6 @@ doAddMainUser() {
 	else
 		passwd -l "$MAIN_USER_USERNAME"
 	fi
-}
-
-doUserSetLocaleLang() {
-	mkdir -p ~/.config
-
-	cat > ~/.config/locale.conf << __END__
-LANG=$1
-__END__
-}
-
-doSuUserSetLocaleLang() {
-	doSu "$1" suUserSetLocaleLang "$2"
 }
 
 doInstallScreen() {
