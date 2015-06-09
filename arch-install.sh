@@ -832,6 +832,20 @@ doInstallPulseaudio() {
 	fi
 }
 
+doInstallVirtualboxGuest() {
+	pacman -S --noconfirm --needed \
+		virtualbox-guest-modules \
+		virtualbox-guest-utils
+}
+
+doEnableModulesVirtualboxGuest() {
+	cat > /etc/modules-load.d/virtualbox-guest.conf << __END__
+vboxguest
+vboxsf
+vboxvideo
+__END__
+}
+
 doInstallVirtualboxHost() {
 	pacman -S --noconfirm --needed \
 		virtualbox \
@@ -853,20 +867,6 @@ vboxdrv
 vboxnetadp
 vboxnetflt
 vboxpci
-__END__
-}
-
-doInstallVirtualboxGuest() {
-	pacman -S --noconfirm --needed \
-		virtualbox-guest-modules \
-		virtualbox-guest-utils
-}
-
-doEnableModulesVirtualboxGuest() {
-	cat > /etc/modules-load.d/virtualbox-guest.conf << __END__
-vboxguest
-vboxsf
-vboxvideo
 __END__
 }
 
