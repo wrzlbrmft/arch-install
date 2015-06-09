@@ -179,8 +179,6 @@ doWipeAllPartitions() {
 
 doPartProbe() {
 	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
-	partprobe "$INSTALL_DEVICE"
 }
 
 doDeleteAllPartitions() {
