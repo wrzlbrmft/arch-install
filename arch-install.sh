@@ -187,12 +187,14 @@ o
 w
 __END__
 
+	doFlush
 	doPartProbe
 }
 
 doWipeDevice() {
 	dd if=/dev/zero of="$INSTALL_DEVICE" bs=1M count=1
 
+	doFlush
 	doPartProbe
 }
 
@@ -212,6 +214,7 @@ doCreateNewPartitions() {
 
 	parted -s -a optimal "$INSTALL_DEVICE" toggle 1 boot
 
+	doFlush
 	doPartProbe
 }
 
@@ -229,6 +232,7 @@ $ROOT_PARTITION_TYPE
 w
 __END__
 
+	doFlush
 	doPartProbe
 }
 
@@ -249,6 +253,7 @@ doCreateNewPartitionsLuks() {
 
 	parted -s -a optimal "$INSTALL_DEVICE" toggle 1 boot
 
+	doFlush
 	doPartProbe
 }
 
@@ -263,6 +268,7 @@ $LUKS_PARTITION_TYPE
 w
 __END__
 
+	doFlush
 	doPartProbe
 }
 
