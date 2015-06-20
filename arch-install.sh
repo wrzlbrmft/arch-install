@@ -711,6 +711,8 @@ doX11InstallXfce() {
 	pacman -S --noconfirm --needed \
 		xfce4 \
 		xfce4-goodies
+
+	doSuYaourt xfce4-places-plugin
 }
 
 doX11InstallUbuntuFontRendering() {
