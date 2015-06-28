@@ -411,6 +411,12 @@ doEnableServiceDhcpcd() {
 	systemctl enable dhcpcd.service
 }
 
+doDisableIpv6() {
+	cat > /etc/sysctl.d/40-ipv6.conf << __END__
+ipv6.disable_ipv6=1
+__END__
+}
+
 doEditMkinitcpioLuks() {
 	cat /etc/mkinitcpio.conf | sed -e 's/^#\?\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
 	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS=/ {
@@ -992,6 +998,10 @@ case "$INSTALL_TARGET" in
 
 		if [ "$ENABLE_SERVICE_DHCPCD" == "yes" ]; then
 			doEnableServiceDhcpcd
+		fi
+
+		if [ "$DISABLE_IPV6" == "yes" ]; then
+			doDisableIpv6
 		fi
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
