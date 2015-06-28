@@ -27,7 +27,7 @@ including
   * [OpenJDK 8](http://openjdk.java.net/), [LibreOffice](https://www.libreoffice.org)
   * [Audacity](http://web.audacityteam.org/), [Banshee](http://banshee.fm/), [VLC](http://www.videolan.org/), [Spotify](https://www.spotify.com/)
   * [VirtualBox](https://www.virtualbox.org/)
-  * [Ant](http://ant.apache.org/), [Maven](https://maven.apache.org/), [Google Protocol Buffers](https://developers.google.com/protocol-buffers/)
+  * [Ant](http://ant.apache.org/), [Maven](https://maven.apache.org/), [Node.js](https://nodejs.org/), [npm](https://www.npmjs.com/), [Google Protocol Buffers](https://developers.google.com/protocol-buffers/)
   * [Apache](http://httpd.apache.org/), [MariaDB](https://mariadb.org/), [PHP](http://php.net/)
   * ...
 * Optimization settings like `noatime`, swappiness and a better IO scheduler for SSDs
