@@ -437,6 +437,12 @@ doSetRootPassword() {
 	passwd root
 }
 
+doBashLogoutClear() {
+	cat >> ~/.bash_logout << __END__
+clear
+__END__
+}
+
 doRankmirrors() {
 	mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.dist
 	rankmirrors -n "$RANKMIRRORS_TOP" /etc/pacman.d/mirrorlist.dist | tee /etc/pacman.d/mirrorlist
@@ -562,6 +568,10 @@ doAddHostUser() {
 	else
 		passwd -l "$HOST_USER_USERNAME"
 	fi
+}
+
+doSuBashLogoutClear() {
+	doSu "$1" suBashLogoutClear
 }
 
 doUserSetLocaleLang() {
@@ -1012,6 +1022,10 @@ case "$INSTALL_TARGET" in
 
 		doSetRootPassword
 
+		if [ "$ROOT_USER_BASH_LOGOUT_CLEAR" == "yes" ]; then
+			doBashLogoutClear
+		fi
+
 		if [ "$RANKMIRRORS" == "yes" ]; then
 			doRankmirrors
 		fi
@@ -1085,6 +1099,11 @@ case "$INSTALL_TARGET" in
 		if [ "$ADD_HOST_USER" == "yes" ]; then
 			doAddHostUser
 
+			if [ "$HOST_USER_BASH_LOGOUT_CLEAR" == "yes" ]; then
+				doCopyToSu "$HOST_USER_USERNAME"
+				doSuBashLogoutClear "$HOST_USER_USERNAME"
+			fi
+
 			if [ ! -z "$HOST_USER_LOCALE" ]; then
 				if [ ! -z "$HOST_USER_LOCALE_LANG" ]; then
 					doCopyToSu "$HOST_USER_USERNAME"
@@ -1095,6 +1114,11 @@ case "$INSTALL_TARGET" in
 
 		if [ "$ADD_MAIN_USER" == "yes" ]; then
 			doAddMainUser
+
+			if [ "$MAIN_USER_BASH_LOGOUT_CLEAR" == "yes" ]; then
+				doCopyToSu "$MAIN_USER_USERNAME"
+				doSuBashLogoutClear "$MAIN_USER_USERNAME"
+			fi
 
 			if [ ! -z "$MAIN_USER_LOCALE" ]; then
 				if [ ! -z "$MAIN_USER_LOCALE_LANG" ]; then
@@ -1261,6 +1285,11 @@ case "$INSTALL_TARGET" in
 			fi
 		fi
 
+		exit 0
+		;;
+
+	suBashLogoutClear)
+		doBashLogoutClear
 		exit 0
 		;;
 
