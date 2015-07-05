@@ -812,6 +812,22 @@ doEnableServiceNetworkManager() {
 	systemctl enable NetworkManager.service
 }
 
+doInstallCron() {
+	pacman -S --noconfirm --needed cronie
+}
+
+doEnableServiceCron() {
+	systemctl enable cronie
+}
+
+doInstallAt() {
+	pacman -S --noconfirm --needed at
+}
+
+doEnableServiceAt() {
+	systemctl enable atd.service
+}
+
 doInstallCups() {
 	pacman -S --noconfirm --needed \
 		cups \
@@ -1212,6 +1228,22 @@ case "$INSTALL_TARGET" in
 
 			if [ "$ENABLE_SERVICE_NETWORK_MANAGER" == "yes" ]; then
 				doEnableServiceNetworkManager
+			fi
+		fi
+
+		if [ "$INSTALL_CRON" == "yes" ]; then
+			doInstallCron
+
+			if [ "$ENABLE_SERVICE_CRON" == "yes" ]; then
+				doEnableServiceCron
+			fi
+		fi
+
+		if [ "$INSTALL_AT" == "yes" ]; then
+			doInstallAt
+
+			if [ "$ENABLE_SERVICE_AT" == "yes" ]; then
+				doEnableServiceAt
 			fi
 		fi
 
