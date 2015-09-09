@@ -623,6 +623,17 @@ doEnableServiceSsh() {
 	systemctl enable sshd.service
 }
 
+doSshAcceptKeyTypeSshDss() {
+	cat >> /etc/ssh/ssh_config << __END__
+Host *
+  PubkeyAcceptedKeyTypes=+ssh-dss
+__END__
+
+	cat >> /etc/ssh/sshd_config << __END__
+PubkeyAcceptedKeyTypes=+ssh-dss
+__END__
+}
+
 doInstallSudo() {
 	pacman -S --noconfirm --needed sudo
 
@@ -1163,6 +1174,10 @@ case "$INSTALL_TARGET" in
 
 			if [ "$ENABLE_SERVICE_SSH" == "yes" ]; then
 				doEnableServiceSsh
+			fi
+
+			if [ "$SSH_ACCEPT_KEY_TYPE_SSH_DSS" == "yes" ]; then
+				doSshAcceptKeyTypeSshDss
 			fi
 		fi
 
