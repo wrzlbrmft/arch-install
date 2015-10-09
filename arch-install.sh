@@ -763,10 +763,8 @@ doUpdateIconCache() {
 }
 
 doX11InstallThemes() {
-	pacman -S --noconfirm --needed numix-themes
-
 	doSuYaourt \
-		xfce-theme-numix-extra-colors \
+		numix-themes-git \
 		gtk-theme-config \
 		elementary-xfce-icons-git
 
