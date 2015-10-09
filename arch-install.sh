@@ -763,6 +763,8 @@ doUpdateIconCache() {
 }
 
 doX11InstallThemes() {
+	pacman -S --noconfirm --needed gtk-engine-murrine
+
 	doSuYaourt \
 		numix-themes-git \
 		gtk-theme-config \
