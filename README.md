@@ -43,9 +43,8 @@ Boot the [Arch Linux ISO image](https://www.archlinux.org/download/) and type
 in:
 
 ```
-pacman -Sy --noconfirm --needed git
-git clone https://github.com/wrzlbrmft/arch-install.git
-arch-install/arch-install.sh
+wget -O - https://github.com/wrzlbrmft/arch-install/archive/master.tar.gz | tar zxvf -
+arch-install-master/arch-install.sh
 ```
 
 **CAUTION:** The installation will delete *all* existing data on the
@@ -79,17 +78,17 @@ To connect to a wireless network use:
 wifi-menu
 ```
 
-Next, install `git` and checkout the `arch-install` repository:
+Next, download and unpack the `arch-install` repository:
 
 ```
-pacman -Sy --noconfirm --needed git
-git clone https://github.com/wrzlbrmft/arch-install.git
+wget -O - https://github.com/wrzlbrmft/arch-install/archive/master.tar.gz | tar zxvf -
+arch-install-master/arch-install.sh
 ```
 
 You may want to change the default configuration:
 
 ```
-nano -w arch-install/arch-install.conf
+nano -w arch-install-master/arch-install.conf
 ```
 
 **NOTE:** If you are installing into a [VirtualBox](https://www.virtualbox.org/)
@@ -102,7 +101,7 @@ see also: *Configuration/Most Important Settings*
 Finally, start the installation process:
 
 ```
-arch-install/arch-install.sh
+arch-install-master/arch-install.sh
 ```
 
 **CAUTION:** The installation will delete *all* existing data on the
@@ -185,7 +184,7 @@ You can use an alternative configuration file by passing it to the installation
 script:
 
 ```
-arch-install/arch-install.sh -c my.conf
+arch-install-master/arch-install.sh -c my.conf
 ```
 
 ## License

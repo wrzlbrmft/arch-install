@@ -652,7 +652,7 @@ doEnableMultilib() {
 	cat /tmp/pacman.conf > /etc/pacman.conf
 	rm /tmp/pacman.conf
 
-	pacman -Sy
+	pacman -Syu --noconfirm --needed
 }
 
 doInstallDevel() {
