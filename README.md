@@ -3,8 +3,6 @@
 A highly configurable script installing
 [Arch Linux](https://www.archlinux.org/).
 
-*(work in progress)*
-
 ## Feature Highlights
 
 * Fully automated installation of a ready-to-use [Arch Linux](https://www.archlinux.org/) system
@@ -15,9 +13,9 @@ A highly configurable script installing
   * for [EFI/UEFI](http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface): choose between `grub` or the `gummiboot` boot loader
 * "One-switch" installation of a fully LVM-on-LUKS encrypted system (also to USB sticks!)
 * `yaourt` installation to install [AUR packages](https://aur.archlinux.org/) right away
-* X11 installation
+* Xorg installation
 * Optionally install Ubuntu's font rendering (much smoother!)
-* [Xfce](http://www.xfce.org/) installation, including some nice themes and icons
+* [Xfce](http://www.xfce.org/) installation, including the Numix theme and icons
 * Graphical user login using LightDM
 * Installation of individually configurable software package sets, already
 including
@@ -131,7 +129,7 @@ That's it!
 
 ## Configuration
 
-*I will add more comments to arch-install.conf soon...* :-)
+*Eventually, I will add more comments to arch-install.conf soon...* :-)
 
 ### Most Important Settings
 
@@ -176,7 +174,7 @@ own risk!**
 #### MAIN_USER_USERNAME, MAIN_USER_REALNAME
 
 If `ADD_MAIN_USER` is set to `yes`, a main user will be created. Use these two
-settings to configure its user name and the user's real name.
+settings to configure its username and the user's realname.
 
 ### Using an Alternative Configuration File
 
