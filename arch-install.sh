@@ -727,13 +727,9 @@ __END__
 doX11InstallFonts() {
 	pacman -S --noconfirm --needed \
 		noto-fonts \
-		noto-fonts-emoji \
-		ttf-bitstream-vera \
 		ttf-dejavu \
 		ttf-droid \
-		ttf-freefont \
 		ttf-liberation \
-		ttf-oxygen \
 		ttf-symbola
 
 	doSuYaourt ttf-ms-fonts
