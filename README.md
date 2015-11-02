@@ -41,7 +41,7 @@ Boot the [Arch Linux ISO image](https://www.archlinux.org/download/) and type
 in:
 
 ```
-wget -O - https://github.com/wrzlbrmft/arch-install/archive/master.tar.gz | tar zxvf -
+curl -L https://github.com/wrzlbrmft/arch-install/archive/master.tar.gz | tar zxvf -
 arch-install-master/arch-install.sh
 ```
 
@@ -79,7 +79,7 @@ wifi-menu
 Next, download and unpack the `arch-install` repository:
 
 ```
-wget -O - https://github.com/wrzlbrmft/arch-install/archive/master.tar.gz | tar zxvf -
+curl -L https://github.com/wrzlbrmft/arch-install/archive/master.tar.gz | tar zxvf -
 arch-install-master/arch-install.sh
 ```
 
