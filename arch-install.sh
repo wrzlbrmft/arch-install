@@ -508,10 +508,9 @@ doInstallGrubEfi() {
 doInstallGummiboot() {
 	pacman -S --noconfirm --needed \
 		dosfstools \
-		efibootmgr \
-		gummiboot
+		efibootmgr
 
-	gummiboot --path=/boot install
+	bootctl --path=/boot install
 }
 
 doCreateGummibootEntry() {
