@@ -455,6 +455,13 @@ doSetOptimizeIoSchedulerKernel() {
 	fi
 }
 
+doSetOptimizeFsckMode() {
+	FSCK_MODE=""
+	if [ "$OPTIMIZE_FSCK_MODE" == "yes" ]; then
+		FSCK_MODE=" fsck.mode=$OPTIMIZE_FSCK_MODE_VALUE"
+	fi
+}
+
 doInstallGrub() {
 	pacman -S --noconfirm --needed grub
 
@@ -468,7 +475,7 @@ doDetectRootUuid() {
 doEditGrubConfig() {
 	cat /etc/default/grub | sed -e 's/^#\?\(\(GRUB_CMDLINE_LINUX_DEFAULT=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/default-grub
 	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
-			gsub(/quiet/, "quiet root=UUID='"$ROOT_UUID"''"$IO_SCHEDULER_KERNEL"'", $0);
+			gsub(/quiet/, "quiet root=UUID='"$ROOT_UUID"''"$IO_SCHEDULER_KERNEL"''"$FSCK_MODE"'", $0);
 			print
 		} !m { print }' > /etc/default/grub
 	rm /tmp/default-grub
@@ -486,7 +493,7 @@ doEditGrubConfigLuks() {
 
 	cat /etc/default/grub | sed -e 's/^#\?\(\(GRUB_CMDLINE_LINUX_DEFAULT=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/default-grub
 	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
-			gsub(/quiet/, "quiet cryptdevice=UUID='"$LUKS_UUID"':'"$LUKS_LVM_NAME"''"$SSD_DISCARD"' root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"''"$IO_SCHEDULER_KERNEL"'", $0);
+			gsub(/quiet/, "quiet cryptdevice=UUID='"$LUKS_UUID"':'"$LUKS_LVM_NAME"''"$SSD_DISCARD"' root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"''"$IO_SCHEDULER_KERNEL"''"$FSCK_MODE"'", $0);
 			print
 		} !m { print }' > /etc/default/grub
 	rm /tmp/default-grub
@@ -518,7 +525,7 @@ doCreateGummibootEntry() {
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options quiet root=UUID=$ROOT_UUID rw$IO_SCHEDULER_KERNEL
+options quiet root=UUID=$ROOT_UUID rw$IO_SCHEDULER_KERNEL$FSCK_MODE
 __END__
 }
 
@@ -539,7 +546,7 @@ doCreateGummibootEntryLuks() {
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME$SSD_DISCARD root=UUID=$ROOT_UUID rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG$IO_SCHEDULER_KERNEL
+options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME$SSD_DISCARD root=UUID=$ROOT_UUID rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG$IO_SCHEDULER_KERNEL$FSCK_MODE
 __END__
 }
 
@@ -1058,6 +1065,7 @@ case "$INSTALL_TARGET" in
 		fi
 
 		doSetOptimizeIoSchedulerKernel
+		doSetOptimizeFsckMode
 
 		case "$BOOT_METHOD" in
 			legacy)
