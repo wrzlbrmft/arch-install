@@ -429,6 +429,30 @@ doEditMkinitcpioLuks() {
 	rm /tmp/mkinitcpio.conf
 }
 
+doOptimizeMkinitcpioHooksKeyboardBeforeAutodetect() {
+    # default: HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
+	cat /etc/mkinitcpio.conf | sed -e 's/^#\?\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
+	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS=/ {
+			gsub(/keyboard/, "", $0);
+			gsub(/autodetect/, "keyboard autodetect", $0);
+			gsub(/  /, " ", $0);
+			print
+		} !m { print }' > /etc/mkinitcpio.conf
+	rm /tmp/mkinitcpio.conf
+}
+
+doOptimizeMkinitcpioHooksBlockBeforeAutodetect() {
+    # default: HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
+	cat /etc/mkinitcpio.conf | sed -e 's/^#\?\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
+	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS=/ {
+			gsub(/block/, "", $0);
+			gsub(/autodetect/, "block autodetect", $0);
+			gsub(/  /, " ", $0);
+			print
+		} !m { print }' > /etc/mkinitcpio.conf
+	rm /tmp/mkinitcpio.conf
+}
+
 doMkinitcpio() {
 	mkinitcpio -p linux
 }
@@ -1051,6 +1075,14 @@ case "$INSTALL_TARGET" in
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doEditMkinitcpioLuks
+		fi
+
+		if [ "$OPTIMIZE_MKINITCPIO_HOOKS_KEYBOARD_BEFORE_AUTODETECT" == "yes" ]; then
+			doOptimizeMkinitcpioHooksKeyboardBeforeAutodetect
+		fi
+
+		if [ "$OPTIMIZE_MKINITCPIO_HOOKS_BLOCK_BEFORE_AUTODETECT" == "yes" ]; then
+			doOptimizeMkinitcpioHooksBlockBeforeAutodetect
 		fi
 
 		doMkinitcpio
