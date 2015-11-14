@@ -205,33 +205,15 @@ doCreateNewPartitionTable() {
 
 doCreateNewPartitions() {
 	local START="1"; local END="$BOOT_SIZE"
-	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
+	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary "${START}MiB" "${END}MiB"
 
 	START="$END"; let END+=SWAP_SIZE
 	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
 
 	START="$END"; END="100%"
-	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
+	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary "${START}MiB" "${END}MiB"
 
 	parted -s -a optimal "$INSTALL_DEVICE" toggle 1 boot
-
-	doFlush
-	doPartProbe
-}
-
-doSetNewPartitionTypes() {
-	fdisk "$INSTALL_DEVICE" << __END__
-t
-1
-$BOOT_PARTITION_TYPE
-t
-2
-$SWAP_PARTITION_TYPE
-t
-3
-$ROOT_PARTITION_TYPE
-w
-__END__
 
 	doFlush
 	doPartProbe
@@ -247,27 +229,13 @@ doDetectDevices() {
 
 doCreateNewPartitionsLuks() {
 	local START="1"; local END="$BOOT_SIZE"
-	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
+	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary "${START}MiB" "${END}MiB"
 
 	START="$END"; END="100%"
-	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary linux-swap "${START}MiB" "${END}MiB"
+	parted -s -a optimal "$INSTALL_DEVICE" mkpart primary "${START}MiB" "${END}MiB"
 
 	parted -s -a optimal "$INSTALL_DEVICE" toggle 1 boot
-
-	doFlush
-	doPartProbe
-}
-
-doSetNewPartitionTypesLuks() {
-	fdisk "$INSTALL_DEVICE" << __END__
-t
-1
-$BOOT_PARTITION_TYPE
-t
-2
-$LUKS_PARTITION_TYPE
-w
-__END__
+	parted -s -a optimal "$INSTALL_DEVICE" toggle 2 lvm
 
 	doFlush
 	doPartProbe
@@ -1010,14 +978,12 @@ case "$INSTALL_TARGET" in
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
 			doCreateNewPartitionsLuks
-			doSetNewPartitionTypesLuks
 			doDetectDevicesLuks
 			doCreateLuks
 			doCreateLuksLvm
 			doDetectDevicesLuksLvm
 		else
 			doCreateNewPartitions
-			doSetNewPartitionTypes
 			doDetectDevices
 		fi
 
