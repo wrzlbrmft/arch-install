@@ -392,7 +392,7 @@ __END__
 }
 
 doEditMkinitcpioLuks() {
-    # default: HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
+	# default: HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
 	cat /etc/mkinitcpio.conf | sed -e 's/^#\?\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
 	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS=/ {
 			gsub(/keyboard/, "", $0);
@@ -404,7 +404,7 @@ doEditMkinitcpioLuks() {
 }
 
 doOptimizeMkinitcpioHookBefore() {
-    # default: HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
+	# default: HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
 	cat /etc/mkinitcpio.conf | sed -e 's/^#\?\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
 	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS=/ {
 			gsub(/'"$1"'/, "", $0);
@@ -1095,7 +1095,7 @@ case "$INSTALL_TARGET" in
 						grub)
 							doInstallGrubEfi
 							if [ ! -z "$EFI_STARTUP_NSH" ]; then
-							    doCreateEfiStartupNsh
+								doCreateEfiStartupNsh
 							fi
 							doEditGrubConfigLuks
 							doGenerateGrubConfig
@@ -1115,7 +1115,7 @@ case "$INSTALL_TARGET" in
 						grub)
 							doInstallGrubEfi
 							if [ ! -z "$EFI_STARTUP_NSH" ]; then
-							    doCreateEfiStartupNsh
+								doCreateEfiStartupNsh
 							fi
 							doEditGrubConfig
 							doGenerateGrubConfig
