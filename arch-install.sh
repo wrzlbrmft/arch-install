@@ -483,6 +483,12 @@ doInstallGrubEfi() {
 	grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id="Arch" --recheck
 }
 
+doCreateEfiStartupNsh() {
+	cat > /boot/startup.nsh << __END__
+$EFI_STARTUP_NSH
+__END__
+}
+
 doInstallGummiboot() {
 	pacman -S --noconfirm --needed \
 		dosfstools \
@@ -1072,6 +1078,9 @@ case "$INSTALL_TARGET" in
 					case "$EFI_BOOT_LOADER" in
 						grub)
 							doInstallGrubEfi
+							if [ ! -z "$EFI_STARTUP_NSH" ]; then
+							    doCreateEfiStartupNsh
+							fi
 							doEditGrubConfigLuks
 							doGenerateGrubConfig
 							;;
@@ -1089,6 +1098,9 @@ case "$INSTALL_TARGET" in
 					case "$EFI_BOOT_LOADER" in
 						grub)
 							doInstallGrubEfi
+							if [ ! -z "$EFI_STARTUP_NSH" ]; then
+							    doCreateEfiStartupNsh
+							fi
 							doEditGrubConfig
 							doGenerateGrubConfig
 							;;
