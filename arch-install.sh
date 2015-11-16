@@ -480,7 +480,7 @@ doInstallGrubEfi() {
 		efibootmgr \
 		grub
 
-	grub-install --target=x86_64-efi --efi-directory=/boot --recheck
+	grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id="Arch" --recheck
 }
 
 doInstallGummiboot() {
@@ -493,7 +493,7 @@ doInstallGummiboot() {
 
 doCreateGummibootEntry() {
 	cat > /boot/loader/entries/default.conf << __END__
-title Arch Linux
+title Arch
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
 options quiet root=UUID=$ROOT_UUID rw$IO_SCHEDULER_KERNEL$FSCK_MODE
@@ -514,7 +514,7 @@ doCreateGummibootEntryLuks() {
 	fi
 
 	cat > /boot/loader/entries/default.conf << __END__
-title Arch Linux
+title Arch
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
 options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME$SSD_DISCARD root=UUID=$ROOT_UUID rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG$IO_SCHEDULER_KERNEL$FSCK_MODE
