@@ -1021,6 +1021,9 @@ case "$INSTALL_TARGET" in
 			doRemoveFromChroot
 		fi
 
+		doPrint "Flushing - this might take a while..."
+		doFlush
+
 		doPrint "Wake up, Neo... The installation is done!"
 
 		exit 0
