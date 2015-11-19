@@ -391,6 +391,12 @@ ipv6.disable_ipv6=1
 __END__
 }
 
+doInstallWifiTools() {
+	pacman -S --noconfirm --needed \
+		dialog \
+		wpa_supplicant
+}
+
 doEditMkinitcpioLuks() {
 	# default: HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
 	cat /etc/mkinitcpio.conf | sed -e 's/^#\?\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
@@ -1036,6 +1042,10 @@ case "$INSTALL_TARGET" in
 
 		if [ "$DISABLE_IPV6" == "yes" ]; then
 			doDisableIpv6
+		fi
+
+		if [ "$INSTALL_WIFI_TOOLS" == "yes" ]; then
+			doInstallWifiTools
 		fi
 
 		if [ "$LVM_ON_LUKS" == "yes" ]; then
