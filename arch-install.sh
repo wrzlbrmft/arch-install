@@ -813,7 +813,7 @@ doEnableServiceLightdm() {
 }
 
 doX11InstallTeamviewer() {
-	doSuYaourt teamviewer
+	doSuYaourt teamviewer10
 }
 
 doEnableServiceTeamviewer() {
