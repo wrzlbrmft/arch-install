@@ -19,7 +19,7 @@ A highly configurable script installing
 * Graphical user login using LightDM
 * Installation of individually configurable software package sets, already
 including
-  * [Chrome](https://www.google.de/chrome/browser/desktop/), [Firefox](https://www.mozilla.org/firefox/), [Thunderbird](https://www.mozilla.org/thunderbird/), [Skype](http://www.skype.com/), [TeamViewer](https://www.teamviewer.com/) 10
+  * [Chrome](https://www.google.de/chrome/browser/desktop/), [Firefox](https://www.mozilla.org/firefox/), [Thunderbird](https://www.mozilla.org/thunderbird/), [Skype](http://www.skype.com/), [TeamViewer](https://www.teamviewer.com/)
   * [GIMP](http://www.gimp.org/), [gThumb](https://wiki.gnome.org/Apps/gthumb), [Shutter](http://shutter-project.org/), [Kazam](https://launchpad.net/kazam)
   * [Dropbox](https://www.dropbox.com/), [FileZilla](https://filezilla-project.org/), [gSTM](http://sourceforge.net/projects/gstm/), [Tor](https://www.torproject.org/)
   * [OpenJDK 8](http://openjdk.java.net/), [LibreOffice](https://www.libreoffice.org)
