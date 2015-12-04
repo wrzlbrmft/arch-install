@@ -668,6 +668,10 @@ doEnableMultilib() {
 
 doInstallDevel() {
 	pacman -S --noconfirm --needed base-devel
+
+	if [ "$ENABLE_MULTILIB" == "yes" ]; then
+		yes | pacman -S --needed $(pacman -Sqg multilib-devel)
+	fi
 }
 
 doCreateSoftwareDirectory() {
