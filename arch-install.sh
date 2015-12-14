@@ -405,7 +405,7 @@ doInstallWifiTools() {
 
 doEditMkinitcpioLuks() {
 	# default: HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
-	cat /etc/mkinitcpio.conf | sed -e 's/^#\?\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
+	cat /etc/mkinitcpio.conf | sed -e 's/^\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
 	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS=/ {
 			gsub(/keyboard/, "", $0);
 			gsub(/filesystems/, "keyboard keymap encrypt lvm2 filesystems", $0);
@@ -417,7 +417,7 @@ doEditMkinitcpioLuks() {
 
 doOptimizeMkinitcpioHookBefore() {
 	# default: HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
-	cat /etc/mkinitcpio.conf | sed -e 's/^#\?\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
+	cat /etc/mkinitcpio.conf | sed -e 's/^\(\(HOOKS=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/mkinitcpio.conf
 	cat /tmp/mkinitcpio.conf | awk 'm = $0 ~ /^HOOKS=/ {
 			gsub(/'"$1"'/, "", $0);
 			gsub(/'"$2"'/, "'"$1"' '"$2"'", $0);
@@ -472,7 +472,7 @@ doDetectRootUuid() {
 }
 
 doEditGrubConfig() {
-	cat /etc/default/grub | sed -e 's/^#\?\(\(GRUB_CMDLINE_LINUX_DEFAULT=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/default-grub
+	cat /etc/default/grub | sed -e 's/^\(\(GRUB_CMDLINE_LINUX_DEFAULT=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/default-grub
 	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
 			gsub(/quiet/, "quiet root=UUID='"$ROOT_UUID"''"$IO_SCHEDULER_KERNEL"''"$FSCK_MODE"'", $0);
 			print
@@ -490,7 +490,7 @@ doEditGrubConfigLuks() {
 		SSD_DISCARD=":allow-discards"
 	fi
 
-	cat /etc/default/grub | sed -e 's/^#\?\(\(GRUB_CMDLINE_LINUX_DEFAULT=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/default-grub
+	cat /etc/default/grub | sed -e 's/^\(\(GRUB_CMDLINE_LINUX_DEFAULT=\)\(.*\)\)$/#\1\n\2\3/' > /tmp/default-grub
 	cat /tmp/default-grub | awk 'm = $0 ~ /^GRUB_CMDLINE_LINUX_DEFAULT=/ {
 			gsub(/quiet/, "quiet cryptdevice=UUID='"$LUKS_UUID"':'"$LUKS_LVM_NAME"''"$SSD_DISCARD"' root=UUID='"$ROOT_UUID"' lang='"$CONSOLE_KEYMAP"' locale='"$LOCALE_LANG"''"$IO_SCHEDULER_KERNEL"''"$FSCK_MODE"'", $0);
 			print
