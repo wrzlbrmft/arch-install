@@ -1021,15 +1021,11 @@ case "$INSTALL_TARGET" in
 
 		doGenerateFstab
 
-		if [ "$OPTIMIZE_FSTAB_NOATIME" == "yes" ]; then
-			doOptimizeFstabNoatime
-		fi
+		[ "$OPTIMIZE_FSTAB_NOATIME" == "yes" ] && doOptimizeFstabNoatime
 
 		doCopyToChroot
 		doChroot chroot
-		if [ "$INSTALL_REMOVE_FROM_CHROOT" == "yes" ]; then
-			doRemoveFromChroot
-		fi
+		[ "$INSTALL_REMOVE_FROM_CHROOT" == "yes" ] && doRemoveFromChroot
 
 		doPrint "Flushing - this might take a while..."
 		doFlush
@@ -1049,41 +1045,27 @@ case "$INSTALL_TARGET" in
 
 		doSetConsole "$CONSOLE_KEYMAP" "$CONSOLE_FONT"
 
-		if [ "$ENABLE_SERVICE_DHCPCD" == "yes" ]; then
-			doEnableServiceDhcpcd
-		fi
+		[ "$ENABLE_SERVICE_DHCPCD" == "yes" ] && doEnableServiceDhcpcd
 
-		if [ "$DISABLE_IPV6" == "yes" ]; then
-			doDisableIpv6
-		fi
+		[ "$DISABLE_IPV6" == "yes" ] && doDisableIpv6
 
-		if [ "$INSTALL_WIFI_TOOLS" == "yes" ]; then
-			doInstallWifiTools
-		fi
+		[ "$INSTALL_WIFI_TOOLS" == "yes" ] && doInstallWifiTools
 
-		if [ "$LVM_ON_LUKS" == "yes" ]; then
-			doEditMkinitcpioLuks
-		fi
+		[ "$LVM_ON_LUKS" == "yes" ] && doEditMkinitcpioLuks
 
-		if [ "$OPTIMIZE_MKINITCPIO_HOOK_KEYBOARD_BEFORE_AUTODETECT" == "yes" ]; then
+		[ "$OPTIMIZE_MKINITCPIO_HOOK_KEYBOARD_BEFORE_AUTODETECT" == "yes" ] && \
 			doOptimizeMkinitcpioHookBefore "keyboard" "autodetect"
-		fi
 
-		if [ "$OPTIMIZE_MKINITCPIO_HOOK_BLOCK_BEFORE_AUTODETECT" == "yes" ]; then
+		[ "$OPTIMIZE_MKINITCPIO_HOOK_BLOCK_BEFORE_AUTODETECT" == "yes" ] && \
 			doOptimizeMkinitcpioHookBefore "block" "autodetect"
-		fi
 
 		doMkinitcpio
 
 		doSetRootPassword
 
-		if [ "$ROOT_USER_BASH_LOGOUT_CLEAR" == "yes" ]; then
-			doBashLogoutClear
-		fi
+		[ "$ROOT_USER_BASH_LOGOUT_CLEAR" == "yes" ] && doBashLogoutClear
 
-		if [ "$RANKMIRRORS" == "yes" ]; then
-			doRankmirrors
-		fi
+		[ "$RANKMIRRORS" == "yes" ] && doRankmirrors
 
 		doSetOptimizeIoSchedulerKernel
 		doSetOptimizeFsckMode
@@ -1117,9 +1099,7 @@ case "$INSTALL_TARGET" in
 					case "$EFI_BOOT_LOADER" in
 						grub)
 							doInstallGrubEfi
-							if [ ! -z "$EFI_STARTUP_NSH" ]; then
-								doCreateEfiStartupNsh
-							fi
+							[ ! -z "$EFI_STARTUP_NSH" ] && doCreateEfiStartupNsh
 							doEditGrubConfigLuks
 							doGenerateGrubConfig
 							;;
@@ -1137,9 +1117,7 @@ case "$INSTALL_TARGET" in
 					case "$EFI_BOOT_LOADER" in
 						grub)
 							doInstallGrubEfi
-							if [ ! -z "$EFI_STARTUP_NSH" ]; then
-								doCreateEfiStartupNsh
-							fi
+							[ ! -z "$EFI_STARTUP_NSH" ] && doCreateEfiStartupNsh
 							doEditGrubConfig
 							doGenerateGrubConfig
 							;;
@@ -1154,9 +1132,7 @@ case "$INSTALL_TARGET" in
 				;;
 		esac
 
-		if [ "$LVM_ON_LUKS" == "yes" ]; then
-			doCreateCrypttabLuks
-		fi
+		[ "$LVM_ON_LUKS" == "yes" ] && doCreateCrypttabLuks
 
 		if [ "$ADD_HOST_USER" == "yes" ]; then
 			doAddHostUser
@@ -1207,26 +1183,16 @@ case "$INSTALL_TARGET" in
 		if [ "$INSTALL_SSH" == "yes" ]; then
 			doInstallSsh
 
-			if [ "$ENABLE_SERVICE_SSH" == "yes" ]; then
-				doEnableServiceSsh
-			fi
+			[ "$ENABLE_SERVICE_SSH" == "yes" ] && doEnableServiceSsh
 
-			if [ "$SSH_ACCEPT_KEY_TYPE_SSH_DSS" == "yes" ]; then
-				doSshAcceptKeyTypeSshDss
-			fi
+			[ "$SSH_ACCEPT_KEY_TYPE_SSH_DSS" == "yes" ] && doSshAcceptKeyTypeSshDss
 		fi
 
-		if [ "$INSTALL_SUDO" == "yes" ]; then
-			doInstallSudo
-		fi
+		[ "$INSTALL_SUDO" == "yes" ] && doInstallSudo
 
-		if [ "$ENABLE_MULTILIB" == "yes" ]; then
-			doEnableMultilib
-		fi
+		[ "$ENABLE_MULTILIB" == "yes" ] && doEnableMultilib
 
-		if [ "$INSTALL_DEVEL" == "yes" ]; then
-			doInstallDevel
-		fi
+		[ "$INSTALL_DEVEL" == "yes" ] && doInstallDevel
 
 		if [ "$INSTALL_YAOURT" == "yes" ]; then
 			doCopyToSu "$YAOURT_USER_USERNAME"
@@ -1236,135 +1202,89 @@ case "$INSTALL_TARGET" in
 		if [ "$INSTALL_X11" == "yes" ]; then
 			doInstallX11
 
-			if [ "$X11_KEYBOARD_CONF" == "yes" ]; then
+			[ "$X11_KEYBOARD_CONF" == "yes" ] && \
 				doX11KeyboardConf "$X11_KEYBOARD_LAYOUT" "$X11_KEYBOARD_MODEL" "$X11_KEYBOARD_VARIANT" "$X11_KEYBOARD_OPTIONS"
-			fi
 
-			if [ "$X11_INSTALL_FONTS" == "yes" ]; then
-				doX11InstallFonts
-			fi
+			[ "$X11_INSTALL_FONTS" == "yes" ] && doX11InstallFonts
 
-			if [ "$X11_INSTALL_XFCE" == "yes" ]; then
-				doX11InstallXfce
-			fi
+			[ "$X11_INSTALL_XFCE" == "yes" ] && doX11InstallXfce
 
-			if [ "$X11_INSTALL_UBUNTU_FONT_RENDERING" == "yes" ]; then
-				doX11InstallUbuntuFontRendering
-			fi
+			[ "$X11_INSTALL_UBUNTU_FONT_RENDERING" == "yes" ] && doX11InstallUbuntuFontRendering
 
-			if [ "$X11_INSTALL_THEMES" == "yes" ]; then
-				doX11InstallThemes
-			fi
+			[ "$X11_INSTALL_THEMES" == "yes" ] && doX11InstallThemes
 
 			if [ "$X11_INSTALL_LIGHTDM" == "yes" ]; then
 				doX11InstallLightdm
 
-				if [ "$ENABLE_SERVICE_LIGHTDM" == "yes" ]; then
-					doEnableServiceLightdm
-				fi
+				[ "$ENABLE_SERVICE_LIGHTDM" == "yes" ] && doEnableServiceLightdm
 			fi
 
 			if [ "$X11_INSTALL_TEAMVIEWER" == "yes" ]; then
 				doX11InstallTeamviewer
 
-				if [ "$ENABLE_SERVICE_TEAMVIEWER" == "yes" ]; then
-					doEnableServiceTeamviewer
-				fi
+				[ "$ENABLE_SERVICE_TEAMVIEWER" == "yes" ] && doEnableServiceTeamviewer
 			fi
 		fi
 
 		if [ "$INSTALL_NETWORK_MANAGER" == "yes" ]; then
 			doInstallNetworkManager
 
-			if [ "$ENABLE_SERVICE_NETWORK_MANAGER" == "yes" ]; then
-				doEnableServiceNetworkManager
-			fi
+			[ "$ENABLE_SERVICE_NETWORK_MANAGER" == "yes" ] && doEnableServiceNetworkManager
 		fi
 
 		if [ "$INSTALL_CRON" == "yes" ]; then
 			doInstallCron
 
-			if [ "$ENABLE_SERVICE_CRON" == "yes" ]; then
-				doEnableServiceCron
-			fi
+			[ "$ENABLE_SERVICE_CRON" == "yes" ] && doEnableServiceCron
 		fi
 
 		if [ "$INSTALL_AT" == "yes" ]; then
 			doInstallAt
 
-			if [ "$ENABLE_SERVICE_AT" == "yes" ]; then
-				doEnableServiceAt
-			fi
+			[ "$ENABLE_SERVICE_AT" == "yes" ] && doEnableServiceAt
 		fi
 
 		if [ "$INSTALL_CUPS" == "yes" ]; then
 			doInstallCups
 
-			if [ "$ENABLE_SERVICE_CUPS" == "yes" ]; then
-				doEnableServiceCups
-			fi
+			[ "$ENABLE_SERVICE_CUPS" == "yes" ] && doEnableServiceCups
 		fi
 
 		if [ "$INSTALL_TLP" == "yes" ]; then
 			doInstallTlp
 
-			if [ "$ENABLE_SERVICE_TLP" == "yes" ]; then
-				doEnableServiceTlp
-			fi
+			[ "$ENABLE_SERVICE_TLP" == "yes" ] && doEnableServiceTlp
 		fi
 
-		if [ "$INSTALL_PULSEAUDIO" == "yes" ]; then
-			doInstallPulseaudio
-		fi
+		[ "$INSTALL_PULSEAUDIO" == "yes" ] && doInstallPulseaudio
 
 		if [ "$INSTALL_VIRTUALBOX_GUEST" == "yes" ]; then
 			doInstallVirtualboxGuest
 
-			if [ "$ENABLE_MODULES_VIRTUALBOX_GUEST" == "yes" ]; then
-				doEnableModulesVirtualboxGuest
-			fi
+			[ "$ENABLE_MODULES_VIRTUALBOX_GUEST" == "yes" ] && doEnableModulesVirtualboxGuest
 		fi
 
 		if [ "$INSTALL_VIRTUALBOX_HOST" == "yes" ]; then
 			doInstallVirtualboxHost
 
-			if [ "$ENABLE_MODULES_VIRTUALBOX_HOST" == "yes" ]; then
-				doEnableModulesVirtualboxHost
-			fi
+			[ "$ENABLE_MODULES_VIRTUALBOX_HOST" == "yes" ] && doEnableModulesVirtualboxHost
 		fi
 
-		if [ "$DISABLE_PC_SPEAKER" == "yes" ]; then
-			doDisablePcSpeaker
-		fi
+		[ "$DISABLE_PC_SPEAKER" == "yes" ] && doDisablePcSpeaker
 
-		if [ "$SYMLINK_HASH_COMMANDS" == "yes" ]; then
-			doSymlinkHashCommands
-		fi
+		[ "$SYMLINK_HASH_COMMANDS" == "yes" ] && doSymlinkHashCommands
 
-		if [ "$OPTIMIZE_SWAPPINESS" == "yes" ]; then
-			doOptimizeSwappiness
-		fi
+		[ "$OPTIMIZE_SWAPPINESS" == "yes" ] && doOptimizeSwappiness
 
-		if [ "$OPTIMIZE_IO_SCHEDULER_UDEV" == "yes" ]; then
-			doOptimizeIoSchedulerUdev
-		fi
+		[ "$OPTIMIZE_IO_SCHEDULER_UDEV" == "yes" ] && doOptimizeIoSchedulerUdev
 
-		if [ ! -z "$INSTALL_PACKAGE_SETS" ]; then
-			doInstallPackageSets
-		fi
+		[ ! -z "$INSTALL_PACKAGE_SETS" ] && doInstallPackageSets
 
 		if [ "$INSTALL_REMOVE_FROM_SU" == "yes" ]; then
-			if [ "$ADD_HOST_USER" == "yes" ]; then
-				doRemoveFromSu "$HOST_USER_USERNAME"
-			fi
+			[ "$ADD_HOST_USER" == "yes" ] && doRemoveFromSu "$HOST_USER_USERNAME"
+			[ "$ADD_MAIN_USER" == "yes" ] && doRemoveFromSu "$MAIN_USER_USERNAME"
 
-			if [ "$ADD_MAIN_USER" == "yes" ]; then
-				doRemoveFromSu "$MAIN_USER_USERNAME"
-			fi
-
-			if [ "$INSTALL_YAOURT" == "yes" ]; then
-				doRemoveFromSu "$YAOURT_USER_USERNAME"
-			fi
+			[ "$INSTALL_YAOURT" == "yes" ] && doRemoveFromSu "$YAOURT_USER_USERNAME"
 		fi
 
 		exit 0
