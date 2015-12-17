@@ -264,7 +264,7 @@ doCreateLuks() {
 	doPrint "Formatting LUKS device"
 	cryptsetup -q -y -c aes-xts-plain64 -s 512 -h sha512 luksFormat "$LUKS_DEVICE"
 
-	local SSD_DISCARD
+	local SSD_DISCARD=""
 	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
 		SSD_DISCARD=" --allow-discards"
 	fi
@@ -306,7 +306,7 @@ doFormat() {
 }
 
 doMount() {
-	local SSD_DISCARD
+	local SSD_DISCARD=""
 	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
 		SSD_DISCARD=" -o discard"
 	fi
@@ -315,6 +315,7 @@ doMount() {
 	mkdir /mnt/boot
 	mount$SSD_DISCARD "$BOOT_DEVICE" /mnt/boot
 
+	SSD_DISCARD=""
 	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
 		SSD_DISCARD=" --discard"
 	fi
@@ -542,7 +543,7 @@ __END__
 }
 
 doCreateGummibootEntryLuks() {
-	local SSD_DISCARD
+	local SSD_DISCARD=""
 	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
 		SSD_DISCARD=":allow-discards"
 	fi
@@ -556,7 +557,7 @@ __END__
 }
 
 doCreateCrypttabLuks() {
-	local SSD_DISCARD
+	local SSD_DISCARD=""
 	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
 		SSD_DISCARD=",discard"
 	fi
@@ -759,9 +760,9 @@ doX11InstallXfce() {
 }
 
 doX11InstallUbuntuFontRendering() {
+	# 2x
 	pacman -Rdd --noconfirm cairo
 	doSuYaourt cairo-ubuntu
-
 	pacman -Rdd --noconfirm cairo
 	doSuYaourt cairo-ubuntu
 
@@ -989,6 +990,12 @@ doInstallPackageSets() {
 	done
 }
 
+doUnmount() {
+	umount "$BOOT_DEVICE"
+	umount "$ROOT_DEVICE"
+	swapoff "$SWAP_DEVICE"
+}
+
 # =================================================================================
 #    M A I N
 # =================================================================================
@@ -1029,6 +1036,8 @@ case "$INSTALL_TARGET" in
 
 		doPrint "Flushing - this might take a while..."
 		doFlush
+
+		doUnmount
 
 		doPrint "Wake up, Neo... The installation is done!"
 
