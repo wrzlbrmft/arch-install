@@ -398,9 +398,13 @@ ipv6.disable_ipv6=1
 __END__
 }
 
-doInstallWifiTools() {
+doInstallWirelessUtils() {
 	pacman -S --noconfirm --needed \
+		crda \
 		dialog \
+		iw \
+		libnl \
+		wireless-regdb \
 		wpa_supplicant
 }
 
@@ -1058,7 +1062,7 @@ case "$INSTALL_TARGET" in
 
 		[ "$DISABLE_IPV6" == "yes" ] && doDisableIpv6
 
-		[ "$INSTALL_WIFI_TOOLS" == "yes" ] && doInstallWifiTools
+		[ "$INSTALL_WIRELESS_UTILS" == "yes" ] && doInstallWirelessUtils
 
 		[ "$LVM_ON_LUKS" == "yes" ] && doEditMkinitcpioLuks
 
