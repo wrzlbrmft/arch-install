@@ -689,13 +689,15 @@ doInstallYaourt() {
 	doCreateSoftwareDirectory
 	cd ~/software/aaa.dist
 
-	curl -LO https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz
+	curl --retry 999 --retry-delay 0 --retry-max-time 300 --speed-time 10 --speed-limit 0 \
+		-LO https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz
 	tar xvf package-query.tar.gz
 	cd package-query
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
-	curl -LO https://aur.archlinux.org/cgit/aur.git/snapshot/yaourt.tar.gz
+	curl --retry 999 --retry-delay 0 --retry-max-time 300 --speed-time 10 --speed-limit 0 \
+		-LO https://aur.archlinux.org/cgit/aur.git/snapshot/yaourt.tar.gz
 	tar xvf yaourt.tar.gz
 	cd yaourt
 	makepkg -i -s --noconfirm --needed
