@@ -25,7 +25,7 @@ including
   * [OpenJDK 8](http://openjdk.java.net/), [LibreOffice](https://www.libreoffice.org)
   * [VLC](http://www.videolan.org/), [Spotify](https://www.spotify.com/), [Banshee](http://banshee.fm/), [Audacity](http://web.audacityteam.org/), [MuseScore](https://musescore.org/)
   * [VirtualBox](https://www.virtualbox.org/)
-  * [Ant](http://ant.apache.org/), [Maven](https://maven.apache.org/), [GCC](https://gcc.gnu.org/), [Code::Blocks](http://www.codeblocks.org/), [GCC](https://gcc.gnu.org/) for [AVR](http://www.atmel.com/products/microcontrollers/avr/), [Arduino](https://www.arduino.cc/en/Main/Software)
+  * [Ant](http://ant.apache.org/), [Maven](https://maven.apache.org/), [GCC](https://gcc.gnu.org/), [Code::Blocks](http://www.codeblocks.org/), [GCC](https://gcc.gnu.org/) for [AVR](http://www.atmel.com/products/microcontrollers/avr/), [Arduino](https://www.arduino.cc/en/Main/Software), [Fritzing](http://fritzing.org/)
   * [Apache](http://httpd.apache.org/), [MariaDB](https://mariadb.org/), [PHP](http://php.net/), [Composer](https://getcomposer.org/), [Node.js](https://nodejs.org/), [npm](https://www.npmjs.com/), [Google Protocol Buffers](https://developers.google.com/protocol-buffers/)
   * ...
 * Optimization settings like `noatime`, swappiness and a better IO scheduler for SSDs
