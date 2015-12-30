@@ -922,11 +922,11 @@ doInstallVirtualboxHost() {
 		virtualbox-guest-iso
 
 	if [ "$ADD_HOST_USER" == "yes" ] && [ "$VIRTUALBOX_VBOXUSERS_ADD_HOST_USER" == "yes" ]; then
-		usermod -aG vboxusers "$HOST_USER_USERNAME"
+		gpasswd -a "$HOST_USER_USERNAME" vboxusers
 	fi
 
 	if [ "$ADD_MAIN_USER" == "yes" ] && [ "$VIRTUALBOX_VBOXUSERS_ADD_MAIN_USER" == "yes" ]; then
-		usermod -aG vboxusers "$MAIN_USER_USERNAME"
+		gpasswd -a "$MAIN_USER_USERNAME" vboxusers
 	fi
 }
 
