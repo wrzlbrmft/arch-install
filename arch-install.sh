@@ -680,16 +680,32 @@ doInstallDevel() {
 }
 
 doCreateSoftwareDirectory() {
-	mkdir -p ~/software/aaa.dist
-	chmod 0700 ~/software
-	chmod 0700 ~/software/aaa.dist
+	local DIR="`eval printf "$SOFTWARE_PATH"`"
+	mkdir -p "$DIR"
+}
+
+doChxxxSoftwareDirectory() {
+	if [ ! -z "$SOFTWARE_CHXXX_PATH" ]; then
+		local DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
+
+		if [ ! -z "$SOFTWARE_CHMOD" ]; then
+			chmod -R "$SOFTWARE_CHMOD" "$DIR"
+		fi
+
+		if [ ! -z "$SOFTWARE_CHOWN" ]; then
+			chown -R "$SOFTWARE_CHOWN" "$DIR"
+		fi
+	fi
 }
 
 doInstallYaourt() {
 	doCreateSoftwareDirectory
+	doChxxxSoftwareDirectory
 
 	local _PWD="$PWD"
-	cd ~/software/aaa.dist
+
+	local DIR="`eval printf "$SOFTWARE_PATH"`"
+	cd "$DIR"
 
 	local URL="$YAOURT_PACKAGE_QUERY_URL"
 	curl --retry 999 --retry-delay 0 --retry-max-time 300 --speed-time 10 --speed-limit 0 \
