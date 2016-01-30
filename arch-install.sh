@@ -687,6 +687,8 @@ doCreateSoftwareDirectory() {
 
 doInstallYaourt() {
 	doCreateSoftwareDirectory
+
+	local _PWD="$PWD"
 	cd ~/software/aaa.dist
 
 	curl --retry 999 --retry-delay 0 --retry-max-time 300 --speed-time 10 --speed-limit 0 \
@@ -703,7 +705,7 @@ doInstallYaourt() {
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
-	cd ../..
+	cd "$_PWD"
 }
 
 doSuInstallYaourt() {
