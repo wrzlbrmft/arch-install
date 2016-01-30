@@ -682,14 +682,20 @@ doInstallDevel() {
 doCreateSoftwareDirectory() {
 	local DIR="`eval printf "$SOFTWARE_PATH"`"
 	mkdir -p "$DIR"
+}
 
+doChmodSoftwareDirectory() {
 	if [ ! -z "$SOFTWARE_CHXXX_PATH" ]; then
-		DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
-
+		local DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
 		if [ ! -z "$SOFTWARE_CHMOD" ]; then
 			chmod -R "$SOFTWARE_CHMOD" "$DIR"
 		fi
+	fi
+}
 
+doChownSoftwareDirectory() {
+	if [ ! -z "$SOFTWARE_CHXXX_PATH" ]; then
+		local DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
 		if [ ! -z "$SOFTWARE_CHOWN" ]; then
 			chown -R "$SOFTWARE_CHOWN" "$DIR"
 		fi
@@ -698,6 +704,7 @@ doCreateSoftwareDirectory() {
 
 doInstallYaourt() {
 	doCreateSoftwareDirectory
+	doChmodSoftwareDirectory
 
 	local _PWD="$PWD"
 
@@ -721,6 +728,8 @@ doInstallYaourt() {
 	cd ..
 
 	cd "$_PWD"
+
+	doChownSoftwareDirectory
 }
 
 doSuInstallYaourt() {
