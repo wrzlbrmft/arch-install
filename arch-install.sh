@@ -684,14 +684,18 @@ doCreateSoftwareDirectory() {
 	mkdir -p "$DIR"
 }
 
-doChxxxSoftwareDirectory() {
+doChmodSoftwareDirectory() {
 	if [ ! -z "$SOFTWARE_CHXXX_PATH" ]; then
 		local DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
-
 		if [ ! -z "$SOFTWARE_CHMOD" ]; then
 			chmod -R "$SOFTWARE_CHMOD" "$DIR"
 		fi
+	fi
+}
 
+doChownSoftwareDirectory() {
+	if [ ! -z "$SOFTWARE_CHXXX_PATH" ]; then
+		local DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
 		if [ ! -z "$SOFTWARE_CHOWN" ]; then
 			chown -R "$SOFTWARE_CHOWN" "$DIR"
 		fi
@@ -700,7 +704,8 @@ doChxxxSoftwareDirectory() {
 
 doInstallYaourt() {
 	doCreateSoftwareDirectory
-	doChxxxSoftwareDirectory
+	doChmodSoftwareDirectory
+	doChownSoftwareDirectory
 
 	local _PWD="$PWD"
 
