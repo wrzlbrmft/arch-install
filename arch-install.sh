@@ -691,17 +691,19 @@ doInstallYaourt() {
 	local _PWD="$PWD"
 	cd ~/software/aaa.dist
 
+	local URL="https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz"
 	curl --retry 999 --retry-delay 0 --retry-max-time 300 --speed-time 10 --speed-limit 0 \
-		-LO https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz
-	tar xvf package-query.tar.gz
-	cd package-query
+		-LO "$URL"
+	tar xvf "`basename "$URL"`"
+	cd "`basename "$URL" | awk -F '.' '{ print $1 }'`"
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
+	URL="https://aur.archlinux.org/cgit/aur.git/snapshot/yaourt.tar.gz"
 	curl --retry 999 --retry-delay 0 --retry-max-time 300 --speed-time 10 --speed-limit 0 \
-		-LO https://aur.archlinux.org/cgit/aur.git/snapshot/yaourt.tar.gz
-	tar xvf yaourt.tar.gz
-	cd yaourt
+		-LO "$URL"
+	tar xvf "`basename "$URL"`"
+	cd "`basename "$URL" | awk -F '.' '{ print $1 }'`"
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
