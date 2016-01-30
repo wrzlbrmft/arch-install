@@ -166,7 +166,7 @@ doDeactivateAllSwaps() {
 }
 
 doGetAllPartitions() {
-	lsblk -l -n -o NAME "$INSTALL_DEVICE" | grep -v "^$INSTALL_DEVICE_NAME$"
+	lsblk -l -n -o NAME "$INSTALL_DEVICE" | grep -v "^$INSTALL_DEVICE_FILE$"
 }
 
 doFlush() {
@@ -177,8 +177,8 @@ doFlush() {
 
 doWipeAllPartitions() {
 	for i in $( doGetAllPartitions | sort -r ); do
-		umount "$INSTALL_DEVICE_HOME/$i"
-		dd if=/dev/zero of="$INSTALL_DEVICE_HOME/$i" bs=1M count=1
+		umount "$INSTALL_DEVICE_PATH/$i"
+		dd if=/dev/zero of="$INSTALL_DEVICE_PATH/$i" bs=1M count=1
 	done
 
 	doFlush
@@ -226,9 +226,9 @@ doCreateNewPartitions() {
 doDetectDevices() {
 	local ALL_PARTITIONS=($( doGetAllPartitions ))
 
-	BOOT_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[0]}"
-	SWAP_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[1]}"
-	ROOT_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[2]}"
+	BOOT_DEVICE="$INSTALL_DEVICE_PATH/${ALL_PARTITIONS[0]}"
+	SWAP_DEVICE="$INSTALL_DEVICE_PATH/${ALL_PARTITIONS[1]}"
+	ROOT_DEVICE="$INSTALL_DEVICE_PATH/${ALL_PARTITIONS[2]}"
 }
 
 doCreateNewPartitionsLuks() {
@@ -256,8 +256,8 @@ doCreateNewPartitionsLuks() {
 doDetectDevicesLuks() {
 	local ALL_PARTITIONS=($( doGetAllPartitions ))
 
-	BOOT_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[0]}"
-	LUKS_DEVICE="$INSTALL_DEVICE_HOME/${ALL_PARTITIONS[1]}"
+	BOOT_DEVICE="$INSTALL_DEVICE_PATH/${ALL_PARTITIONS[0]}"
+	LUKS_DEVICE="$INSTALL_DEVICE_PATH/${ALL_PARTITIONS[1]}"
 }
 
 doCreateLuks() {
@@ -274,7 +274,7 @@ doCreateLuks() {
 }
 
 doCreateLuksLvm() {
-	local LUKS_LVM_DEVICE="$LVM_DEVICE_HOME/$LUKS_NAME"
+	local LUKS_LVM_DEVICE="$LVM_DEVICE_PATH/$LUKS_NAME"
 
 	pvcreate "$LUKS_LVM_DEVICE"
 	vgcreate "$LUKS_LVM_NAME" "$LUKS_LVM_DEVICE"
@@ -283,8 +283,8 @@ doCreateLuksLvm() {
 }
 
 doDetectDevicesLuksLvm() {
-	SWAP_DEVICE="$LVM_DEVICE_HOME/$LUKS_LVM_NAME-$SWAP_LABEL"
-	ROOT_DEVICE="$LVM_DEVICE_HOME/$LUKS_LVM_NAME-$ROOT_LABEL"
+	SWAP_DEVICE="$LVM_DEVICE_PATH/$LUKS_LVM_NAME-$SWAP_LABEL"
+	ROOT_DEVICE="$LVM_DEVICE_PATH/$LUKS_LVM_NAME-$ROOT_LABEL"
 }
 
 doMkfs() {
