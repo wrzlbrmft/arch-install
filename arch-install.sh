@@ -684,7 +684,7 @@ doCreateSoftwareDirectory() {
 	mkdir -p "$DIR"
 
 	if [ ! -z "$SOFTWARE_CHXXX_PATH" ]; then
-		local DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
+		DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
 
 		if [ ! -z "$SOFTWARE_CHMOD" ]; then
 			chmod -R "$SOFTWARE_CHMOD" "$DIR"
