@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-SCRIPT_HOME=$( cd "`dirname "${BASH_SOURCE[0]}"`" && pwd )
-SCRIPT_FILENAME="`basename "${BASH_SOURCE[0]}"`"
-SCRIPT_NAME="`printf "$SCRIPT_FILENAME" | awk -F '.' '{ print $1 }'`"
+SCRIPT_PATH=$( cd "`dirname "${BASH_SOURCE[0]}"`" && pwd )
+SCRIPT_FILE="`basename "${BASH_SOURCE[0]}"`"
+SCRIPT_NAME="`printf "$SCRIPT_FILE" | awk -F '.' '{ print $1 }'`"
 
 doPrintPrompt() {
 	printf "[$SCRIPT_NAME] $*"
@@ -13,7 +13,7 @@ doPrint() {
 }
 
 doPrintHelpMessage() {
-	printf "Usage: ./$SCRIPT_FILENAME [-h] [-c config] [target [options...]]\n"
+	printf "Usage: ./$SCRIPT_FILE [-h] [-c config] [target [options...]]\n"
 }
 
 while getopts :hc: opt; do
@@ -24,7 +24,7 @@ while getopts :hc: opt; do
 			;;
 
 		c)
-			SCRIPT_CONFIG="$OPTARG"
+			SCRIPT_CONF="$OPTARG"
 			;;
 
 		:)
@@ -50,12 +50,12 @@ INSTALL_TARGET="$1"
 shift
 INSTALL_OPTIONS="$*"
 
-if [ -z "$SCRIPT_CONFIG" ]; then
-	SCRIPT_CONFIG="$SCRIPT_HOME/$SCRIPT_NAME.conf"
+if [ -z "$SCRIPT_CONF" ]; then
+	SCRIPT_CONF="$SCRIPT_PATH/$SCRIPT_NAME.conf"
 fi
 
-if [ ! -f "$SCRIPT_CONFIG" ]; then
-	printf "ERROR: Config file not found ('$SCRIPT_CONFIG')\n"
+if [ ! -f "$SCRIPT_CONF" ]; then
+	printf "ERROR: Config file not found ('$SCRIPT_CONF')\n"
 	exit 1
 fi
 
@@ -63,33 +63,33 @@ if [ -z "$INSTALL_TARGET" ]; then
 	INSTALL_TARGET="base"
 fi
 
-source "$SCRIPT_CONFIG"
+source "$SCRIPT_CONF"
 
 # =================================================================================
 #    F U N C T I O N S
 # =================================================================================
 
 doCopyToChroot() {
-	local CHROOT_SCRIPT_HOME="/mnt/root/`basename "$SCRIPT_HOME"`"
-	if [ ! -d "$CHROOT_SCRIPT_HOME" ]; then
-		mkdir -p "$CHROOT_SCRIPT_HOME"
+	local CHROOT_SCRIPT_PATH="/mnt/root/`basename "$SCRIPT_PATH"`"
+	if [ ! -d "$CHROOT_SCRIPT_PATH" ]; then
+		mkdir -p "$CHROOT_SCRIPT_PATH"
 
-		cp -p "${BASH_SOURCE[0]}" "$CHROOT_SCRIPT_HOME"
-		cp -p "$SCRIPT_CONFIG" "$CHROOT_SCRIPT_HOME"
+		cp -p "${BASH_SOURCE[0]}" "$CHROOT_SCRIPT_PATH"
+		cp -p "$SCRIPT_CONF" "$CHROOT_SCRIPT_PATH"
 	fi
 }
 
 doChroot() {
-	local IN_CHROOT_SCRIPT_HOME="/root/`basename "$SCRIPT_HOME"`"
-	local IN_CHROOT_SCRIPT_CONFIG="$IN_CHROOT_SCRIPT_HOME/`basename "$SCRIPT_CONFIG"`"
+	local IN_CHROOT_SCRIPT_PATH="/root/`basename "$SCRIPT_PATH"`"
+	local IN_CHROOT_SCRIPT_CONF="$IN_CHROOT_SCRIPT_PATH/`basename "$SCRIPT_CONF"`"
 
-	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_SCRIPT_HOME/$SCRIPT_FILENAME' -c '$IN_CHROOT_SCRIPT_CONFIG' $*"
+	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_SCRIPT_PATH/$SCRIPT_FILE' -c '$IN_CHROOT_SCRIPT_CONF' $*"
 }
 
 doRemoveFromChroot() {
-	local CHROOT_SCRIPT_HOME="/mnt/root/`basename "$SCRIPT_HOME"`"
-	if [ -d "$CHROOT_SCRIPT_HOME" ]; then
-		rm -r "$CHROOT_SCRIPT_HOME"
+	local CHROOT_SCRIPT_PATH="/mnt/root/`basename "$SCRIPT_PATH"`"
+	if [ -d "$CHROOT_SCRIPT_PATH" ]; then
+		rm -r "$CHROOT_SCRIPT_PATH"
 	fi
 }
 
@@ -97,15 +97,15 @@ doCopyToSu() {
 	local SU_USER="$1"
 
 	local SU_USER_HOME="`eval printf "~$SU_USER"`"
-	local SU_SCRIPT_HOME="$SU_USER_HOME/`basename "$SCRIPT_HOME"`"
-	if [ ! -d "$SU_SCRIPT_HOME" ]; then
-		mkdir -p "$SU_SCRIPT_HOME"
+	local SU_SCRIPT_PATH="$SU_USER_HOME/`basename "$SCRIPT_PATH"`"
+	if [ ! -d "$SU_SCRIPT_PATH" ]; then
+		mkdir -p "$SU_SCRIPT_PATH"
 
-		cp -p "${BASH_SOURCE[0]}" "$SU_SCRIPT_HOME"
-		cp -p "$SCRIPT_CONFIG" "$SU_SCRIPT_HOME"
+		cp -p "${BASH_SOURCE[0]}" "$SU_SCRIPT_PATH"
+		cp -p "$SCRIPT_CONF" "$SU_SCRIPT_PATH"
 
 		local SU_USER_GROUP="`id -gn "$SU_USER"`"
-		chown -R "$SU_USER:$SU_USER_GROUP" "$SU_SCRIPT_HOME"
+		chown -R "$SU_USER:$SU_USER_GROUP" "$SU_SCRIPT_PATH"
 	fi
 }
 
@@ -113,11 +113,11 @@ doSu() {
 	local SU_USER="$1"
 
 	local SU_USER_HOME="`eval printf "~$SU_USER"`"
-	local IN_SU_SCRIPT_HOME="$SU_USER_HOME/`basename "$SCRIPT_HOME"`"
-	local IN_SU_SCRIPT_CONFIG="$IN_SU_SCRIPT_HOME/`basename "$SCRIPT_CONFIG"`"
+	local IN_SU_SCRIPT_PATH="$SU_USER_HOME/`basename "$SCRIPT_PATH"`"
+	local IN_SU_SCRIPT_CONF="$IN_SU_SCRIPT_PATH/`basename "$SCRIPT_CONF"`"
 
 	shift
-	/bin/su "$SU_USER" -c "'$IN_SU_SCRIPT_HOME/$SCRIPT_FILENAME' -c '$IN_SU_SCRIPT_CONFIG' $*"
+	/bin/su "$SU_USER" -c "'$IN_SU_SCRIPT_PATH/$SCRIPT_FILE' -c '$IN_SU_SCRIPT_CONF' $*"
 }
 
 doSuSudo() {
@@ -138,9 +138,9 @@ doRemoveFromSu() {
 	local SU_USER="$1"
 
 	local SU_USER_HOME="`eval printf "~$SU_USER"`"
-	local SU_SCRIPT_HOME="$SU_USER_HOME/`basename "$SCRIPT_HOME"`"
-	if [ -d "$SU_SCRIPT_HOME" ]; then
-		rm -r "$SU_SCRIPT_HOME"
+	local SU_SCRIPT_PATH="$SU_USER_HOME/`basename "$SCRIPT_PATH"`"
+	if [ -d "$SU_SCRIPT_PATH" ]; then
+		rm -r "$SU_SCRIPT_PATH"
 	fi
 }
 
