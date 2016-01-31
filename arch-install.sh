@@ -538,6 +538,9 @@ doCreateGummibootEntry() {
 	cat > /boot/loader/entries/default.conf << __END__
 title Arch Linux
 linux /vmlinuz-linux
+__END__
+
+	cat >> /boot/loader/entries/default.conf << __END__
 initrd /initramfs-linux.img
 options quiet root=UUID=$ROOT_UUID rw$IO_SCHEDULER_KERNEL$FSCK_MODE
 __END__
@@ -559,6 +562,9 @@ doCreateGummibootEntryLuks() {
 	cat > /boot/loader/entries/default.conf << __END__
 title Arch Linux
 linux /vmlinuz-linux
+__END__
+
+	cat >> /boot/loader/entries/default.conf << __END__
 initrd /initramfs-linux.img
 options quiet cryptdevice=UUID=$LUKS_UUID:$LUKS_LVM_NAME$SSD_DISCARD root=UUID=$ROOT_UUID rw lang=$CONSOLE_KEYMAP locale=$LOCALE_LANG$IO_SCHEDULER_KERNEL$FSCK_MODE
 __END__
