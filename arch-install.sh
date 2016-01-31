@@ -466,6 +466,10 @@ doSetOptimizeFsckMode() {
 	fi
 }
 
+doInstallIntelUcode() {
+	pacman -S --noconfirm --needed intel-ucode
+}
+
 doInstallGrub() {
 	pacman -S --noconfirm --needed grub
 
@@ -1110,6 +1114,8 @@ case "$INSTALL_TARGET" in
 
 		doSetOptimizeIoSchedulerKernel
 		doSetOptimizeFsckMode
+
+		[ "$INSTALL_INTEL_UCODE" == "yes" ] && doInstallIntelUcode
 
 		case "$BOOT_METHOD" in
 			legacy)
