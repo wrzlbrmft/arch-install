@@ -540,6 +540,12 @@ title Arch Linux
 linux /vmlinuz-linux
 __END__
 
+	if [ "$INSTALL_INTEL_UCODE" == "yes" ]; then
+		cat >> /boot/loader/entries/default.conf << __END__
+initrd /intel-ucode.img
+__END__
+	fi
+
 	cat >> /boot/loader/entries/default.conf << __END__
 initrd /initramfs-linux.img
 options quiet root=UUID=$ROOT_UUID rw$IO_SCHEDULER_KERNEL$FSCK_MODE
@@ -563,6 +569,12 @@ doCreateGummibootEntryLuks() {
 title Arch Linux
 linux /vmlinuz-linux
 __END__
+
+	if [ "$INSTALL_INTEL_UCODE" == "yes" ]; then
+		cat >> /boot/loader/entries/default.conf << __END__
+initrd /intel-ucode.img
+__END__
+	fi
 
 	cat >> /boot/loader/entries/default.conf << __END__
 initrd /initramfs-linux.img
