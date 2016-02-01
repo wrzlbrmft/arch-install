@@ -602,7 +602,11 @@ doAddHostUser() {
 
 	doPrint "Setting password for host user '$HOST_USER_USERNAME'"
 	if [ "$HOST_USER_SET_PASSWORD" == "yes" ]; then
-		passwd "$HOST_USER_USERNAME"
+		local EXIT="1"
+		while [ "$EXIT" != "0" ]; do
+			passwd "$HOST_USER_USERNAME"
+			EXIT="$?"
+		done
 	else
 		passwd -l "$HOST_USER_USERNAME"
 	fi
@@ -631,7 +635,11 @@ doAddMainUser() {
 
 	doPrint "Setting password for main user '$MAIN_USER_USERNAME'"
 	if [ "$MAIN_USER_SET_PASSWORD" == "yes" ]; then
-		passwd "$MAIN_USER_USERNAME"
+		local EXIT="1"
+		while [ "$EXIT" != "0" ]; do
+			passwd "$MAIN_USER_USERNAME"
+			EXIT="$?"
+		done
 	else
 		passwd -l "$MAIN_USER_USERNAME"
 	fi
