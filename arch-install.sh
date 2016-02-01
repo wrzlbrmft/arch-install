@@ -724,7 +724,7 @@ doChownSoftwareDirectory() {
 	fi
 }
 
-doInstallYaourt() {
+doDownloadYaourt() {
 	doCreateSoftwareDirectory
 	doChmodSoftwareDirectory
 
@@ -736,22 +736,39 @@ doInstallYaourt() {
 	local URL="$YAOURT_PACKAGE_QUERY_URL"
 	curl --retry 999 --retry-delay 0 --retry-max-time 300 --speed-time 10 --speed-limit 0 \
 		-LO "$URL"
+
+	URL="$YAOURT_YAOURT_URL"
+	curl --retry 999 --retry-delay 0 --retry-max-time 300 --speed-time 10 --speed-limit 0 \
+		-LO "$URL"
+
+	cd "$_PWD"
+
+	doChownSoftwareDirectory
+}
+
+doSuDownloadYaourt() {
+	doSuSudo "$YAOURT_USER_USERNAME" suDownloadYaourt
+}
+
+doInstallYaourt() {
+	local _PWD="$PWD"
+
+	local DIR="`eval printf "$SOFTWARE_PATH"`"
+	cd "$DIR"
+
+	local URL="$YAOURT_PACKAGE_QUERY_URL"
 	tar xvf "`basename "$URL"`"
 	cd "`basename "$URL" | awk -F '.' '{ print $1 }'`"
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
 	URL="$YAOURT_YAOURT_URL"
-	curl --retry 999 --retry-delay 0 --retry-max-time 300 --speed-time 10 --speed-limit 0 \
-		-LO "$URL"
 	tar xvf "`basename "$URL"`"
 	cd "`basename "$URL" | awk -F '.' '{ print $1 }'`"
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
 	cd "$_PWD"
-
-	doChownSoftwareDirectory
 }
 
 doSuInstallYaourt() {
@@ -1259,9 +1276,11 @@ case "$INSTALL_TARGET" in
 
 		[ "$INSTALL_DEVEL" == "yes" ] && doInstallDevel
 
-		if [ "$INSTALL_YAOURT" == "yes" ]; then
+		if [ "$DOWNLOAD_YAOURT" == "yes" ]; then
 			doCopyToSu "$YAOURT_USER_USERNAME"
-			doSuInstallYaourt
+			doSuDownloadYaourt
+
+			[ "$INSTALL_YAOURT" == "yes" ] && doSuInstallYaourt
 		fi
 
 		if [ "$INSTALL_X11" == "yes" ]; then
@@ -1367,6 +1386,11 @@ case "$INSTALL_TARGET" in
 
 	suUserCreateScreenrc)
 		doUserCreateScreenrc
+		exit 0
+		;;
+
+	suDownloadYaourt)
+		doDownloadYaourt
 		exit 0
 		;;
 
