@@ -262,7 +262,11 @@ doDetectDevicesLuks() {
 
 doCreateLuks() {
 	doPrint "Formatting LUKS device"
-	cryptsetup -q -y -c aes-xts-plain64 -s 512 -h sha512 luksFormat "$LUKS_DEVICE"
+	local EXIT="1"
+	while [ "$EXIT" != "0" ]; do
+		cryptsetup -q -y -c aes-xts-plain64 -s 512 -h sha512 luksFormat "$LUKS_DEVICE"
+		EXIT="$?"
+	done
 
 	local SSD_DISCARD=""
 	if [ "$INSTALL_DEVICE_IS_SSD" == "yes" ] && [ "$INSTALL_DEVICE_SSD_DISCARD" == "yes" ]; then
@@ -270,7 +274,11 @@ doCreateLuks() {
 	fi
 
 	doPrint "Opening LUKS device"
-	cryptsetup$SSD_DISCARD luksOpen "$LUKS_DEVICE" "$LUKS_NAME"
+	EXIT="1"
+	while [ "$EXIT" != "0" ]; do
+		cryptsetup$SSD_DISCARD luksOpen "$LUKS_DEVICE" "$LUKS_NAME"
+		EXIT="$?"
+	done
 }
 
 doCreateLuksLvm() {
