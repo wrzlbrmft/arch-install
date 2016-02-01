@@ -446,7 +446,11 @@ doMkinitcpio() {
 
 doSetRootPassword() {
 	doPrint "Setting password for user 'root'"
-	passwd root
+	local EXIT="1"
+	while [ "$EXIT" != "0" ]; do
+		passwd root
+		EXIT="$?"
+	done
 }
 
 doBashLogoutClear() {
