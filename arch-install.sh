@@ -839,7 +839,9 @@ doX11InstallFonts() {
 		ttf-liberation \
 		ttf-symbola
 
-	doSuYaourt ttf-ms-fonts
+	doSuYaourt \
+		ttf-mac-fonts \
+		ttf-ms-fonts
 }
 
 doX11InstallXfce() {
