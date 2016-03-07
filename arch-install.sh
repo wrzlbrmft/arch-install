@@ -990,6 +990,7 @@ doInstallPulseaudio() {
 
 doInstallVirtualboxGuest() {
 	pacman -S --noconfirm --needed \
+		linux-headers \
 		virtualbox-guest-dkms \
 		virtualbox-guest-utils
 }
@@ -1004,6 +1005,7 @@ __END__
 
 doInstallVirtualboxHost() {
 	pacman -S --noconfirm --needed \
+		linux-headers \
 		virtualbox \
 		virtualbox-host-dkms \
 		virtualbox-guest-iso
