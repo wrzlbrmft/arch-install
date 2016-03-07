@@ -990,7 +990,7 @@ doInstallPulseaudio() {
 
 doInstallVirtualboxGuest() {
 	pacman -S --noconfirm --needed \
-		virtualbox-guest-modules \
+		virtualbox-guest-dkms \
 		virtualbox-guest-utils
 }
 
@@ -1005,7 +1005,7 @@ __END__
 doInstallVirtualboxHost() {
 	pacman -S --noconfirm --needed \
 		virtualbox \
-		virtualbox-host-modules \
+		virtualbox-host-dkms \
 		virtualbox-guest-iso
 
 	if [ "$ADD_HOST_USER" == "yes" ] && [ "$VIRTUALBOX_VBOXUSERS_ADD_HOST_USER" == "yes" ]; then
