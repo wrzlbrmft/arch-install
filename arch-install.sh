@@ -974,6 +974,20 @@ doEnableServiceTlp() {
 	systemctl enable tlp-sleep.service
 }
 
+doInstallBluetooth() {
+	pacman -S --noconfirm --needed \
+		bluez \
+		bluez-utils
+
+	if [ "$INSTALL_X11" == "yes" ]; then
+		pacman -S --noconfirm --needed blueman
+	fi
+}
+
+doEnableServiceBluetooth() {
+	systemctl enable bluetooth.service
+}
+
 doInstallPulseaudio() {
 	pacman -S --noconfirm --needed \
 		pulseaudio \
@@ -1362,6 +1376,12 @@ case "$INSTALL_TARGET" in
 			doInstallTlp
 
 			[ "$ENABLE_SERVICE_TLP" == "yes" ] && doEnableServiceTlp
+		fi
+
+		if [ "$INSTALL_BLUETOOTH" == "yes" ]; then
+			doInstallBluetooth
+
+			[ "$ENABLE_SERVICE_BLUETOOTH" == "yes" ] && doEnableServiceBluetooth
 		fi
 
 		[ "$INSTALL_PULSEAUDIO" == "yes" ] && doInstallPulseaudio
