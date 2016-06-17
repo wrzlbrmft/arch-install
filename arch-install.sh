@@ -144,6 +144,13 @@ doRemoveFromSu() {
 	fi
 }
 
+doCheckInstallDevice() {
+	if [ ! -b "$INSTALL_DEVICE" ]; then
+		printf "ERROR: INSTALL_DEVICE is not a block device ('$INSTALL_DEVICE')\n"
+		exit 1
+	fi
+}
+
 doConfirmInstall() {
 	doPrint "Installing to '$INSTALL_DEVICE' - ALL DATA ON IT WILL BE LOST!"
 	doPrint "Enter 'YES' (in capitals) to confirm and start the installation."
@@ -1111,6 +1118,8 @@ doUnmount() {
 
 case "$INSTALL_TARGET" in
 	base)
+		doCheckInstallDevice
+
 		doConfirmInstall
 
 		doDeactivateAllSwaps
