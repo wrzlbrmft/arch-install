@@ -5,7 +5,7 @@ SCRIPT_FILE="`basename "${BASH_SOURCE[0]}"`"
 SCRIPT_NAME="`printf "$SCRIPT_FILE" | awk -F '.' '{ print $1 }'`"
 
 doPrintPrompt() {
-	printf "[$SCRIPT_NAME] $*"
+	printf "[%s] %s" "$SCRIPT_NAME" "$*"
 }
 
 doPrint() {
@@ -13,7 +13,7 @@ doPrint() {
 }
 
 doPrintHelpMessage() {
-	printf "Usage: ./$SCRIPT_FILE [-h] [-c config] [target [options...]]\n"
+	printf "Usage: ./%s [-h] [-c config] [target [options...]]\n" "$SCRIPT_FILE"
 }
 
 while getopts :hc: opt; do
@@ -39,7 +39,7 @@ while getopts :hc: opt; do
 			;;
 
 		\?)
-			printf "ERROR: Invalid option ('-$OPTARG')\n"
+			printf "ERROR: Invalid option ('-%s')\n" "$OPTARG"
 			exit 1
 			;;
 	esac
@@ -55,7 +55,7 @@ if [ -z "$SCRIPT_CONF" ]; then
 fi
 
 if [ ! -f "$SCRIPT_CONF" ]; then
-	printf "ERROR: Config file not found ('$SCRIPT_CONF')\n"
+	printf "ERROR: Config file not found ('%s')\n" "$SCRIPT_CONF"
 	exit 1
 fi
 
@@ -70,7 +70,7 @@ source "$SCRIPT_CONF"
 # =================================================================================
 
 doCopyToChroot() {
-	local CHROOT_SCRIPT_PATH="/mnt/root/`basename "$SCRIPT_PATH"`"
+	local CHROOT_SCRIPT_PATH="/mnt/root/$(basename "$SCRIPT_PATH")"
 	if [ ! -d "$CHROOT_SCRIPT_PATH" ]; then
 		mkdir -p "$CHROOT_SCRIPT_PATH"
 
@@ -80,14 +80,14 @@ doCopyToChroot() {
 }
 
 doChroot() {
-	local IN_CHROOT_SCRIPT_PATH="/root/`basename "$SCRIPT_PATH"`"
-	local IN_CHROOT_SCRIPT_CONF="$IN_CHROOT_SCRIPT_PATH/`basename "$SCRIPT_CONF"`"
+	local IN_CHROOT_SCRIPT_PATH="/root/$(basename "$SCRIPT_PATH")"
+	local IN_CHROOT_SCRIPT_CONF="$IN_CHROOT_SCRIPT_PATH/$(basename "$SCRIPT_CONF")"
 
 	arch-chroot /mnt /usr/bin/bash -c "'$IN_CHROOT_SCRIPT_PATH/$SCRIPT_FILE' -c '$IN_CHROOT_SCRIPT_CONF' $*"
 }
 
 doRemoveFromChroot() {
-	local CHROOT_SCRIPT_PATH="/mnt/root/`basename "$SCRIPT_PATH"`"
+	local CHROOT_SCRIPT_PATH="/mnt/root/$(basename "$SCRIPT_PATH")"
 	if [ -d "$CHROOT_SCRIPT_PATH" ]; then
 		rm -r "$CHROOT_SCRIPT_PATH"
 	fi
@@ -96,15 +96,15 @@ doRemoveFromChroot() {
 doCopyToSu() {
 	local SU_USER="$1"
 
-	local SU_USER_HOME="`eval printf "~$SU_USER"`"
-	local SU_SCRIPT_PATH="$SU_USER_HOME/`basename "$SCRIPT_PATH"`"
+	local SU_USER_HOME="$(eval printf "~$SU_USER")"
+	local SU_SCRIPT_PATH="$SU_USER_HOME/$(basename "$SCRIPT_PATH")"
 	if [ ! -d "$SU_SCRIPT_PATH" ]; then
 		mkdir -p "$SU_SCRIPT_PATH"
 
 		cp -p "${BASH_SOURCE[0]}" "$SU_SCRIPT_PATH"
 		cp -p "$SCRIPT_CONF" "$SU_SCRIPT_PATH"
 
-		local SU_USER_GROUP="`id -gn "$SU_USER"`"
+		local SU_USER_GROUP="$(id -gn "$SU_USER")"
 		chown -R "$SU_USER:$SU_USER_GROUP" "$SU_SCRIPT_PATH"
 	fi
 }
@@ -112,9 +112,9 @@ doCopyToSu() {
 doSu() {
 	local SU_USER="$1"
 
-	local SU_USER_HOME="`eval printf "~$SU_USER"`"
-	local IN_SU_SCRIPT_PATH="$SU_USER_HOME/`basename "$SCRIPT_PATH"`"
-	local IN_SU_SCRIPT_CONF="$IN_SU_SCRIPT_PATH/`basename "$SCRIPT_CONF"`"
+	local SU_USER_HOME="$(eval printf "~$SU_USER")"
+	local IN_SU_SCRIPT_PATH="$SU_USER_HOME/$(basename "$SCRIPT_PATH")"
+	local IN_SU_SCRIPT_CONF="$IN_SU_SCRIPT_PATH/$(basename "$SCRIPT_CONF")"
 
 	shift
 	/bin/su "$SU_USER" -c "'$IN_SU_SCRIPT_PATH/$SCRIPT_FILE' -c '$IN_SU_SCRIPT_CONF' $*"
@@ -137,8 +137,8 @@ __END__
 doRemoveFromSu() {
 	local SU_USER="$1"
 
-	local SU_USER_HOME="`eval printf "~$SU_USER"`"
-	local SU_SCRIPT_PATH="$SU_USER_HOME/`basename "$SCRIPT_PATH"`"
+	local SU_USER_HOME="$(eval printf "~$SU_USER")"
+	local SU_SCRIPT_PATH="$SU_USER_HOME/$(basename "$SCRIPT_PATH")"
 	if [ -d "$SU_SCRIPT_PATH" ]; then
 		rm -r "$SU_SCRIPT_PATH"
 	fi
@@ -146,7 +146,7 @@ doRemoveFromSu() {
 
 doCheckInstallDevice() {
 	if [ ! -b "$INSTALL_DEVICE" ]; then
-		printf "ERROR: INSTALL_DEVICE is not a block device ('$INSTALL_DEVICE')\n"
+		printf "ERROR: INSTALL_DEVICE is not a block device ('%s')\n" "$INSTALL_DEVICE"
 		exit 1
 	fi
 }
@@ -156,7 +156,7 @@ doConfirmInstall() {
 	doPrint "Enter 'YES' (in capitals) to confirm and start the installation."
 
 	doPrintPrompt "> "
-	read i
+	read -r i
 	if [ "$i" != "YES" ]; then
 		doPrint "Aborted."
 		exit 0
@@ -496,7 +496,7 @@ doInstallGrub() {
 }
 
 doDetectRootUuid() {
-	ROOT_UUID="`blkid -o value -s UUID "$ROOT_DEVICE"`"
+	ROOT_UUID="$(blkid -o value -s UUID "$ROOT_DEVICE")"
 }
 
 doEditGrubConfig() {
@@ -509,7 +509,7 @@ doEditGrubConfig() {
 }
 
 doDetectLuksUuid() {
-	LUKS_UUID="`cryptsetup luksUUID "$LUKS_DEVICE"`"
+	LUKS_UUID="$(cryptsetup luksUUID "$LUKS_DEVICE")"
 }
 
 doEditGrubConfigLuks() {
@@ -616,7 +616,7 @@ doAddHostUser() {
 	groupadd "$HOST_USER_GROUP"
 
 	useradd -g "$HOST_USER_GROUP" -G "$HOST_USER_GROUPS_EXTRA" -d "/$HOST_USER_USERNAME" -s /bin/bash -c "$HOST_USER_REALNAME" -m "$HOST_USER_USERNAME"
-	HOST_USER_HOME="`eval printf "~$HOST_USER_USERNAME"`"
+	HOST_USER_HOME="$(eval printf "~$HOST_USER_USERNAME")"
 	chmod 0751 "$HOST_USER_HOME"
 
 	doPrint "Setting password for host user '$HOST_USER_USERNAME'"
@@ -649,7 +649,7 @@ doSuUserSetLocaleLang() {
 
 doAddMainUser() {
 	useradd -g "$MAIN_USER_GROUP" -G "$MAIN_USER_GROUPS_EXTRA" -s /bin/bash -c "$MAIN_USER_REALNAME" -m "$MAIN_USER_USERNAME"
-	MAIN_USER_HOME="`eval printf "~$MAIN_USER_USERNAME"`"
+	MAIN_USER_HOME="$(eval printf "~$MAIN_USER_USERNAME")"
 	chmod 0751 "$MAIN_USER_HOME"
 
 	doPrint "Setting password for main user '$MAIN_USER_USERNAME'"
@@ -729,13 +729,13 @@ doInstallDevel() {
 }
 
 doCreateSoftwareDirectory() {
-	local DIR="`eval printf "$SOFTWARE_PATH"`"
+	local DIR="$(eval printf "$SOFTWARE_PATH")"
 	mkdir -p "$DIR"
 }
 
 doChmodSoftwareDirectory() {
 	if [ ! -z "$SOFTWARE_CHXXX_PATH" ]; then
-		local DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
+		local DIR="$(eval printf "$SOFTWARE_CHXXX_PATH")"
 		if [ ! -z "$SOFTWARE_CHMOD" ]; then
 			chmod -R "$SOFTWARE_CHMOD" "$DIR"
 		fi
@@ -744,7 +744,7 @@ doChmodSoftwareDirectory() {
 
 doChownSoftwareDirectory() {
 	if [ ! -z "$SOFTWARE_CHXXX_PATH" ]; then
-		local DIR="`eval printf "$SOFTWARE_CHXXX_PATH"`"
+		local DIR="$(eval printf "$SOFTWARE_CHXXX_PATH")"
 		if [ ! -z "$SOFTWARE_CHOWN" ]; then
 			chown -R "$SOFTWARE_CHOWN" "$DIR"
 		fi
@@ -757,7 +757,7 @@ doDownloadYaourt() {
 
 	local _PWD="$PWD"
 
-	local DIR="`eval printf "$SOFTWARE_PATH"`"
+	local DIR="$(eval printf "$SOFTWARE_PATH")"
 	cd "$DIR"
 
 	local URL="$YAOURT_PACKAGE_QUERY_URL"
@@ -780,18 +780,18 @@ doSuDownloadYaourt() {
 doInstallYaourt() {
 	local _PWD="$PWD"
 
-	local DIR="`eval printf "$SOFTWARE_PATH"`"
+	local DIR="$(eval printf "$SOFTWARE_PATH")"
 	cd "$DIR"
 
 	local URL="$YAOURT_PACKAGE_QUERY_URL"
-	tar xvf "`basename "$URL"`"
-	cd "`basename "$URL" | awk -F '.' '{ print $1 }'`"
+	tar xvf "$(basename "$URL")"
+	cd "$(basename "$URL" | awk -F '.' '{ print $1 }')"
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
 	URL="$YAOURT_YAOURT_URL"
-	tar xvf "`basename "$URL"`"
-	cd "`basename "$URL" | awk -F '.' '{ print $1 }'`"
+	tar xvf "$(basename "$URL")"
+	cd "$(basename "$URL" | awk -F '.' '{ print $1 }')"
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
@@ -891,9 +891,9 @@ doX11InstallThemes() {
 }
 
 doSetConf() {
-	cat "$1" | sed -e 's/^#\?\(\('"$2"'\)\(.*\)\)$/#\1\n\2'"$3"'/' > "/tmp/`basename "$1"`"
-	cat "/tmp/`basename "$1"`" > "$1"
-	rm "/tmp/`basename "$1"`"
+	cat "$1" | sed -e 's/^#\?\(\('"$2"'\)\(.*\)\)$/#\1\n\2'"$3"'/' > "/tmp/$(basename "$1")"
+	cat "/tmp/$(basename "$1")" > "$1"
+	rm "/tmp/$(basename "$1")"
 }
 
 doX11InstallLightdm() {
@@ -1458,7 +1458,7 @@ case "$INSTALL_TARGET" in
 		;;
 
 	*)
-		printf "ERROR: Unknown target ('$INSTALL_TARGET')\n"
+		printf "ERROR: Unknown target ('%s')\n" "$INSTALL_TARGET"
 		exit 1
 		;;
 esac
