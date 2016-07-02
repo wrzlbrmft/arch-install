@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-SCRIPT_PATH=$( cd "`dirname "${BASH_SOURCE[0]}"`" && pwd )
-SCRIPT_FILE="`basename "${BASH_SOURCE[0]}"`"
-SCRIPT_NAME="`printf "$SCRIPT_FILE" | awk -F '.' '{ print $1 }'`"
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_FILE="$(basename "${BASH_SOURCE[0]}")"
+SCRIPT_NAME="${SCRIPT_FILE%.*}"
 
 doPrintPrompt() {
 	printf "[%s] %s" "$SCRIPT_NAME" "$*"
@@ -785,13 +785,13 @@ doInstallYaourt() {
 
 	local URL="$YAOURT_PACKAGE_QUERY_URL"
 	tar xvf "$(basename "$URL")"
-	cd "$(basename "$URL" | awk -F '.' '{ print $1 }')"
+	cd "$(basename "$URL" | cut -d. -f1)"
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
 	URL="$YAOURT_YAOURT_URL"
 	tar xvf "$(basename "$URL")"
-	cd "$(basename "$URL" | awk -F '.' '{ print $1 }')"
+	cd "$(basename "$URL" | cut -d. -f1)"
 	makepkg -i -s --noconfirm --needed
 	cd ..
 
