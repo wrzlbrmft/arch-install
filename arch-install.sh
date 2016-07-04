@@ -152,6 +152,7 @@ doCheckInstallDevice() {
 }
 
 doConfirmInstall() {
+	lsblk
 	doPrint "Installing to '$INSTALL_DEVICE' - ALL DATA ON IT WILL BE LOST!"
 	doPrint "Enter 'YES' (in capitals) to confirm and start the installation."
 
