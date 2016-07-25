@@ -1028,6 +1028,7 @@ __END__
 doInstallVirtualboxHost() {
 	pacman -S --noconfirm --needed \
 		linux-headers \
+		qt5-x11extras \
 		virtualbox \
 		virtualbox-host-dkms \
 		virtualbox-guest-iso
