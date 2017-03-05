@@ -881,10 +881,9 @@ doUpdateIconCache() {
 }
 
 doX11InstallThemes() {
-	pacman -S --noconfirm --needed gtk-engine-murrine
+	pacman -S --noconfirm --needed gtk-engine-murrine numix-gtk-theme
 
 	doSuYaourt \
-		numix-themes-git \
 		gtk-theme-config \
 		elementary-xfce-icons-git
 
